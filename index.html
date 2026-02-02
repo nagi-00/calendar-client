@@ -131,7 +131,7 @@
     <div id="toast">Updated! 📅</div>
 
 <script>
-    const SERVER_URL = "https://your-server-name.onrender.com"; // Render 배포 후 URL 수정 필요
+    const https://calendar-server-hrgs.onrender.com = "https://your-server-name.onrender.com"; // Render 배포 후 URL 수정 필요
     const themes = ["e8bcbc", "f4f4bd", "c5e8c5", "a4c4e4", "ffffff", "1d1d1f"];
     let step = 1, selectedColor = "ffffff";
     const params = new URLSearchParams(window.location.search);
@@ -168,7 +168,7 @@
     async function moveStep(n) {
         if (n === 1 && step === 1) {
             const tk = document.getElementById('tokenInput').value;
-            const res = await fetch(`${SERVER_URL}/api/notion/databases`, { 
+            const res = await fetch(`${https://calendar-server-hrgs.onrender.com}/api/notion/databases`, { 
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ token: tk })
             });
             const dbs = await res.json();
@@ -190,7 +190,7 @@
     async function fetchEvents() {
         const listEl = document.getElementById('eventList');
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/events`, {
+            const res = await fetch(`${https://calendar-server-hrgs.onrender.com}/api/notion/events`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')) })
             });
@@ -217,7 +217,7 @@
         const date = document.getElementById('addDate').value;
         if(!title || !date) return alert("내용을 입력하세요.");
 
-        const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
+        const res = await fetch(`${https://calendar-server-hrgs.onrender.com}/api/notion/add-event`, {
             method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ 
                 token: atob(params.get('t')), 
