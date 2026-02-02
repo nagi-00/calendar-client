@@ -68,13 +68,13 @@
         .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--dark-theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.9); }
 
         /* Todo Widget Styles */
-        .todo-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow: hidden; }
-        .mini-input { width: 100%; padding: 6px 8px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
-        .mini-select { width: 100%; padding: 5px 8px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
-        .form-row { display: flex; gap: 4px; }
-        .form-row .mini-input { flex: 1; }
-        .btn-row { display: flex; gap: 4px; margin-top: auto; }
-        .btn-row button { flex: 1; padding: 6px; font-size: 9px; border-radius: 6px; border: none; cursor: pointer; }
+        .todo-form { flex: 1; display: flex; flex-direction: column; padding: 6px; overflow: hidden; }
+        .mini-input { width: 100%; padding: 5px 6px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 3px; background: #fafafa; }
+        .mini-select { width: 100%; padding: 4px 6px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 3px; background: #fafafa; }
+        .form-row { display: flex; gap: 3px; }
+        .form-row .mini-input { flex: 1; margin-bottom: 3px; }
+        .btn-row { display: flex; gap: 4px; margin-top: 2px; }
+        .btn-row button { flex: 1; padding: 5px; font-size: 9px; border-radius: 6px; border: none; cursor: pointer; }
         .btn-save { background: #1d1d1f; color: #fff; }
         .btn-cancel { background: #f5f5f7; color: #666; }
 
@@ -261,10 +261,12 @@
                     <input type="date" class="mini-input" id="taskDate">
                     <input type="time" class="mini-input" id="taskTime">
                 </div>
-                <select class="mini-select" id="taskCategory">
-                    <option value="">카테고리 선택</option>
-                </select>
-                <input type="text" class="mini-input" id="newCategory" placeholder="+ 새 카테고리 추가" style="display:none;">
+                <div class="form-row" id="categoryRow">
+                    <select class="mini-select" id="taskCategory" style="flex:1;margin-bottom:0;">
+                        <option value="">카테고리</option>
+                    </select>
+                    <input type="text" class="mini-input" id="newCategory" placeholder="새 카테고리" style="flex:1;margin-bottom:0;display:none;">
+                </div>
                 <div class="btn-row">
                     <button class="btn-cancel" onclick="hideTodoForm()">Cancel</button>
                     <button class="btn-save" onclick="saveTask()">Save</button>
@@ -416,8 +418,8 @@
     }
 
     function generateUrls() {
-        const t = btoa(document.getElementById('tokenInput').value);
-        const d = btoa(document.getElementById('dbSelect').value);
+        const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
+        const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
         const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ts=${timelineStyle}`;
 
@@ -475,9 +477,17 @@
         document.getElementById('taskTitle').value = '';
         document.getElementById('taskTime').value = '';
         document.getElementById('taskCategory').value = '';
+        document.getElementById('taskCategory').style.display = 'block';
         document.getElementById('newCategory').value = '';
         document.getElementById('newCategory').style.display = 'none';
         selectedTaskId = null;
+    }
+
+    function getToken() {
+        return atob(decodeURIComponent(params.get('t') || ''));
+    }
+    function getDbId() {
+        return atob(decodeURIComponent(params.get('d') || ''));
     }
 
     async function loadCategories() {
@@ -486,8 +496,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: atob(params.get('t')),
-                    dbId: atob(params.get('d'))
+                    token: getToken(),
+                    dbId: getDbId()
                 })
             });
             const data = await res.json();
@@ -502,17 +512,16 @@
     function updateCategorySelect() {
         const select = document.getElementById('taskCategory');
         if (!select) return;
-        select.innerHTML = '<option value="">카테고리 선택</option>' +
+        select.innerHTML = '<option value="">카테고리</option>' +
             categories.map(c => `<option value="${c}">${c}</option>`).join('') +
-            '<option value="__new__">+ 새 카테고리</option>';
+            '<option value="__new__">+ 새로 추가</option>';
 
         select.onchange = function() {
             const newCatInput = document.getElementById('newCategory');
             if (this.value === '__new__') {
+                select.style.display = 'none';
                 newCatInput.style.display = 'block';
                 newCatInput.focus();
-            } else {
-                newCatInput.style.display = 'none';
             }
         };
     }
@@ -537,32 +546,36 @@
     }
 
     async function saveTask() {
-        const title = document.getElementById('taskTitle').value;
+        const title = document.getElementById('taskTitle').value.trim();
         const date = document.getElementById('taskDate').value;
         const time = document.getElementById('taskTime').value;
         const categorySelect = document.getElementById('taskCategory');
-        let category = categorySelect.value;
+        const newCatInput = document.getElementById('newCategory');
 
-        if (category === '__new__') {
-            category = document.getElementById('newCategory').value;
-            if (category && !categories.includes(category)) {
+        let category = null;
+        if (newCatInput.style.display !== 'none' && newCatInput.value.trim()) {
+            category = newCatInput.value.trim();
+            if (!categories.includes(category)) {
                 categories.push(category);
             }
+        } else if (categorySelect.value && categorySelect.value !== '__new__') {
+            category = categorySelect.value;
         }
 
         if (!title) { showToast('할 일을 입력하세요'); return; }
+        if (!date) { showToast('날짜를 선택하세요'); return; }
 
-        const datetime = time ? `${date}T${time}` : date;
+        const datetime = time ? `${date}T${time}:00` : date;
 
         try {
             const endpoint = selectedTaskId ? '/api/notion/update-event' : '/api/notion/add-event';
             const body = {
-                token: atob(params.get('t')),
-                dbId: atob(params.get('d')),
+                token: getToken(),
+                dbId: getDbId(),
                 title,
-                date: datetime,
-                category
+                date: datetime
             };
+            if (category) body.category = category;
             if (selectedTaskId) body.taskId = selectedTaskId;
 
             const res = await fetch(`${SERVER_URL}${endpoint}`, {
@@ -571,15 +584,18 @@
                 body: JSON.stringify(body)
             });
 
-            if (res.ok) {
+            const result = await res.json();
+            if (res.ok && result.success) {
                 showToast(selectedTaskId ? '수정됨!' : '저장됨!');
                 hideTodoForm();
                 loadCategories();
             } else {
-                showToast('저장 실패');
+                console.error('Save error:', result);
+                showToast(result.error || '저장 실패');
             }
         } catch (e) {
-            showToast('오류 발생');
+            console.error('Save exception:', e);
+            showToast('연결 오류');
         }
     }
 
@@ -590,8 +606,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: atob(params.get('t')),
-                    dbId: atob(params.get('d'))
+                    token: getToken(),
+                    dbId: getDbId()
                 })
             });
             tasks = await res.json();
@@ -648,8 +664,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: atob(params.get('t')),
-                    dbId: atob(params.get('d')),
+                    token: getToken(),
+                    dbId: getDbId(),
                     taskId: id
                 })
             });
@@ -665,8 +681,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: atob(params.get('t')),
-                    dbId: atob(params.get('d')),
+                    token: getToken(),
+                    dbId: getDbId(),
                     taskId: id
                 })
             });
@@ -706,8 +722,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: atob(params.get('t')),
-                    dbId: atob(params.get('d')),
+                    token: getToken(),
+                    dbId: getDbId(),
                     taskId: selectedTaskId
                 })
             });
