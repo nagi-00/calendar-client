@@ -772,10 +772,14 @@
         if (!container) return;
 
         const today = new Date().toDateString();
-        const todayTasks = tasks.filter(t => {
+        const allTodayTasks = tasks.filter(t => {
+            if (!t.date) return false;
             const taskDate = new Date(t.date).toDateString();
-            return taskDate === today && t.startTime;
+            return taskDate === today;
         });
+
+        // 시간이 설정된 일정만 타임라인에 표시
+        const scheduledTasks = allTodayTasks.filter(t => t.startTime);
 
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -786,7 +790,7 @@
                 <div class="timeline-circular">
                     <svg width="100" height="100" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" fill="none" stroke="#f5f5f7" stroke-width="8"/>
-                        ${todayTasks.map(t => {
+                        ${scheduledTasks.map(t => {
                             const start = timeToMinutes(t.startTime);
                             const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
                             const startAngle = (start / 1440) * 360;
@@ -796,34 +800,60 @@
                                 stroke-dashoffset="${-startAngle / 360 * 283}"/>`;
                         }).join('')}
                         <circle cx="50" cy="50" r="45" fill="none" stroke="#ff3b30" stroke-width="2"
-                            stroke-dasharray="2 281"
+                            stroke-dasharray="4 279"
                             stroke-dashoffset="${-nowPercent / 100 * 283}"/>
                     </svg>
                     <div class="time-text">${now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
-                <div style="text-align:center;font-size:8px;color:#999;margin-top:8px;">${todayTasks.length} scheduled tasks</div>
+                <div style="text-align:center;font-size:8px;color:#999;margin-top:4px;">
+                    ${scheduledTasks.length > 0 ? scheduledTasks.length + ' scheduled' : ''}
+                    ${allTodayTasks.length > scheduledTasks.length ? ' / ' + (allTodayTasks.length - scheduledTasks.length) + ' tasks' : ''}
+                    ${allTodayTasks.length === 0 ? 'No tasks today' : ''}
+                </div>
             `;
-        } else {
-            const isVertical = timelineStyle === 'vertical';
+        } else if (timelineStyle === 'vertical') {
+            container.style.flexDirection = 'row';
             container.innerHTML = `
-                <div class="timeline-bar ${timelineStyle}">
-                    ${todayTasks.map(t => {
+                <div style="display:flex;justify-content:space-between;flex-direction:column;font-size:7px;color:#999;padding-right:6px;">
+                    <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
+                </div>
+                <div class="timeline-bar vertical" style="flex:1;height:100%;">
+                    ${scheduledTasks.map(t => {
                         const start = timeToMinutes(t.startTime);
                         const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
                         const startPercent = (start / 1440) * 100;
-                        const widthPercent = ((end - start) / 1440) * 100;
-                        return `<div class="timeline-block" style="${isVertical ? 'top' : 'left'}:${startPercent}%;${isVertical ? 'height' : 'width'}:${widthPercent}%"></div>`;
+                        const heightPercent = ((end - start) / 1440) * 100;
+                        return `<div class="timeline-block" style="top:${startPercent}%;height:${heightPercent}%;"></div>`;
                     }).join('')}
-                    <div class="timeline-now" style="${isVertical ? 'top' : 'left'}:${nowPercent}%"></div>
+                    <div class="timeline-now" style="top:${nowPercent}%;"></div>
                 </div>
-                <div class="timeline-labels">
-                    <span>00:00</span>
-                    <span>06:00</span>
-                    <span>12:00</span>
-                    <span>18:00</span>
-                    <span>24:00</span>
+                <div style="font-size:7px;color:#999;padding-left:6px;display:flex;flex-direction:column;justify-content:center;">
+                    <div style="font-size:12px;font-weight:700;color:var(--dark-theme-color);">${allTodayTasks.length}</div>
+                    <div>tasks</div>
                 </div>
-                <div style="text-align:center;font-size:8px;color:#999;margin-top:8px;">${todayTasks.length} scheduled</div>
+            `;
+        } else {
+            // horizontal (default)
+            container.innerHTML = `
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+                    <div class="timeline-bar horizontal">
+                        ${scheduledTasks.map(t => {
+                            const start = timeToMinutes(t.startTime);
+                            const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
+                            const startPercent = (start / 1440) * 100;
+                            const widthPercent = ((end - start) / 1440) * 100;
+                            return `<div class="timeline-block" style="left:${startPercent}%;width:${widthPercent}%;"></div>`;
+                        }).join('')}
+                        <div class="timeline-now" style="left:${nowPercent}%;"></div>
+                    </div>
+                    <div class="timeline-labels">
+                        <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+                    </div>
+                </div>
+                <div style="text-align:center;font-size:8px;color:#999;margin-top:6px;">
+                    ${allTodayTasks.length > 0 ? allTodayTasks.length + ' tasks today' : 'No tasks today'}
+                    ${scheduledTasks.length > 0 ? ' (' + scheduledTasks.length + ' scheduled)' : ''}
+                </div>
             `;
         }
     }
