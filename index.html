@@ -196,6 +196,36 @@
     function showAdd() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetAdd').style.display='flex'; }
     function goHome() { document.getElementById('widgetList').style.display='none'; document.getElementById('widgetAdd').style.display='none'; document.getElementById('widgetHome').style.display='flex'; }
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+
+    async function toggleStar(id) {
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/toggle-star`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            });
+            if (res.ok) { fetchTasks(); }
+        } catch (e) { showToast("Failed to update star"); }
+    }
+
+    async function postpone(id) {
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/postpone`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            });
+            if (res.ok) { showToast("Postponed!"); fetchTasks(); }
+        } catch (e) { showToast("Failed to postpone"); }
+    }
+
+    async function complete(id) {
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/complete`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            });
+            if (res.ok) { showToast("Completed! ✔"); fetchTasks(); }
+        } catch (e) { showToast("Failed to complete"); }
+    }
 </script>
 </body>
 </html>
