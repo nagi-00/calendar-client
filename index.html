@@ -11,16 +11,35 @@
             --hover-color: rgba(0, 0, 0, 0.04);
             --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
             --dark-theme-color: #333;
+            --onboarding-btn-color: #f5f5f7;
+            --onboarding-btn-active: #1d1d1f;
         }
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.01em; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; }
 
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+        @media (max-width: 700px), (max-height: 600px) and (max-width: 500px) {
+            .main-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
         .window {
             width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden;
             border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column;
-            margin-bottom: 25px; z-index: 10;
+            z-index: 10; flex-shrink: 0;
         }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
@@ -43,28 +62,53 @@
         .option-group { margin-bottom: 15px; }
         .option-group label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
         .option-row { display: flex; gap: 8px; }
-        .option-btn { flex: 1; padding: 10px; border: 1px solid #eee; border-radius: 8px; background: #f9f9fc; font-size: 11px; cursor: pointer; text-align: center; transition: 0.2s; }
-        .option-btn.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+        /* Onboarding buttons - fixed color, not affected by theme */
+        .option-btn { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: var(--onboarding-btn-color); font-size: 11px; cursor: pointer; text-align: center; transition: 0.2s; color: #666; }
+        .option-btn.active { background: var(--onboarding-btn-active); border-color: var(--onboarding-btn-active); color: #fff; }
         .url-box { background: #f5f5f7; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
         .url-box label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px; }
         .url-box .url-text { font-size: 10px; color: #333; word-break: break-all; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #eee; }
         .copy-btn { background: #1d1d1f; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; cursor: pointer; margin-top: 6px; }
 
-        /* 위젯 프레임 */
+        /* Preview Section */
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .preview-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .preview-widgets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* Widget Frame */
         .widget-frame {
             width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px;
             box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05); margin: 10px auto; position: relative;
+            border: 1px solid rgba(0,0,0,0.05); position: relative;
         }
         .widget-frame.timeline-widget {
             width: 120px !important; height: 320px !important;
+        }
+        .widget-frame.calendar-widget {
+            width: 200px !important; height: 240px !important;
         }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
         .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
         .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
         .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; cursor: pointer; }
 
-        /* 홈 화면 시계 */
+        /* Home Screen Clock */
         .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
         .current-time { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
         .current-date { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
@@ -99,7 +143,7 @@
         .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
         .cat-tag.active { background: var(--theme-color); color: var(--dark-theme-color); }
 
-        /* Timeline Widget Styles - 세로 일정표 */
+        /* Timeline Widget Styles */
         .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .timeline-header { text-align: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
         .timeline-header .free-label { font-size: 7px; color: #999; text-transform: uppercase; }
@@ -115,6 +159,23 @@
         .timeline-now-line { position: absolute; left: 20px; right: 0; height: 2px; background: #ff3b30; z-index: 10; }
         .timeline-now-dot { position: absolute; left: 16px; width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; transform: translateY(-3px); z-index: 10; }
 
+        /* Mini Calendar Widget Styles */
+        .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; }
+        .calendar-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; }
+        .calendar-nav-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #999; padding: 2px 6px; }
+        .calendar-nav-btn:hover { color: #333; }
+        .calendar-month { font-size: 16px; font-weight: 700; color: #333; }
+        .calendar-year { font-size: 10px; color: #999; text-align: center; margin-bottom: 8px; }
+        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
+        .calendar-day-label { font-size: 7px; color: #999; text-align: center; font-weight: 600; padding: 2px 0; }
+        .calendar-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .calendar-date { font-size: 10px; text-align: center; padding: 4px 2px; border-radius: 4px; cursor: pointer; position: relative; color: #666; }
+        .calendar-date:hover { background: #f5f5f5; }
+        .calendar-date.other-month { color: #ccc; }
+        .calendar-date.today { font-weight: 700; color: var(--dark-theme-color); background: var(--theme-color); }
+        .calendar-date.has-event::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-theme-color); border-radius: 50%; }
+        .calendar-date.today.has-event::after { background: #fff; }
+
         /* Context Menu */
         .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 100px; }
         .context-menu.show { display: block; }
@@ -126,111 +187,135 @@
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 11px; transition: 0.4s; z-index: 100; }
         #toast.show { bottom: 30px; }
 
-        body.is-embed .window { display: none; }
+        body.is-embed .main-layout { display: none; }
         body.is-embed { padding: 0; min-height: auto; }
         body.is-embed .widget-frame { margin: 0; }
     </style>
 </head>
 <body>
 
-    <div class="window" id="setupWindow">
-        <div class="title-bar">
-            <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
-            <div class="bar-title">Life Cooker Setup</div>
-            <div class="nav-controls">
-                <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
+    <div class="main-layout" id="mainLayout">
+        <div class="window" id="setupWindow">
+            <div class="title-bar">
+                <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="bar-title">Life Cooker Setup</div>
+                <div class="nav-controls">
+                    <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="content">
-            <div class="step active" id="step1">
-                <h1>Connect Notion</h1>
-                <p>프라이빗 API 토큰을 입력하세요.</p>
-                <input type="password" id="tokenInput" placeholder="secret_...">
-                <div style="margin-top: 5px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:12px; color:#86868b; text-decoration:none;">내 인테그레이션 바로가기 ↗</a></div>
-            </div>
+            <div class="content">
+                <div class="step active" id="step1">
+                    <h1>Connect Notion</h1>
+                    <p>프라이빗 API 토큰을 입력하세요.</p>
+                    <input type="password" id="tokenInput" placeholder="secret_...">
+                    <div style="margin-top: 5px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:12px; color:#86868b; text-decoration:none;">내 인테그레이션 바로가기 ↗</a></div>
+                </div>
 
-            <div class="step" id="step2">
-                <h1>Select Database</h1>
-                <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
-                <select id="dbSelect"></select>
-            </div>
+                <div class="step" id="step2">
+                    <h1>Select Database</h1>
+                    <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
+                    <select id="dbSelect"></select>
+                </div>
 
-            <div class="step" id="step3">
-                <h1>Customize</h1>
-                <p>위젯 테마 컬러를 선택하세요.</p>
-                <div class="color-palette" id="palette"></div>
-                <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
-                <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+                <div class="step" id="step3">
+                    <h1>Customize</h1>
+                    <p>위젯 테마 컬러를 선택하세요.</p>
+                    <div class="color-palette" id="palette"></div>
+                    <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
+                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
 
-                <div class="option-group" style="margin-top: 20px;">
-                    <label>완료된 일정 표시 방식</label>
-                    <div class="option-row">
-                        <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
-                        <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
+                    <div class="option-group" style="margin-top: 20px;">
+                        <label>완료된 일정 표시 방식</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
+                            <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label>캘린더 시작 요일</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">일요일</div>
+                            <div class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="step4">
+                    <h1>Your Widgets</h1>
+                    <p>아래 URL을 노션에 임베드하세요.</p>
+
+                    <div class="url-box">
+                        <label>1. Todo Widget (할일 추가)</label>
+                        <div class="url-text" id="todoUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>2. List Widget (오늘의 할일)</label>
+                        <div class="url-text" id="listUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('list')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>3. Timeline Widget (타임라인)</label>
+                        <div class="url-text" id="timelineUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('timeline')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>4. Calendar Widget (미니 캘린더)</label>
+                        <div class="url-text" id="calendarUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('calendar')">Copy</button>
                     </div>
                 </div>
             </div>
-
-            <div class="step" id="step4">
-                <h1>Your Widgets</h1>
-                <p>아래 URL을 노션에 임베드하세요.</p>
-
-                <div class="url-box">
-                    <label>1. Todo Widget (할일 추가)</label>
-                    <div class="url-text" id="todoUrl">-</div>
-                    <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
-                </div>
-
-                <div class="url-box">
-                    <label>2. List Widget (오늘의 할일)</label>
-                    <div class="url-text" id="listUrl">-</div>
-                    <button class="copy-btn" onclick="copyUrl('list')">Copy</button>
-                </div>
-
-                <div class="url-box">
-                    <label>3. Timeline Widget (타임라인)</label>
-                    <div class="url-text" id="timelineUrl">-</div>
-                    <button class="copy-btn" onclick="copyUrl('timeline')">Copy</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Widget Previews -->
-    <div id="widgetPreviews" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-        <div class="widget-frame" id="previewTodo">
-            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
-            <div class="widget-home">
-                <div class="current-time" id="time1">00:00</div>
-                <div class="current-date" id="date1">SUN, FEB 1</div>
-                <button class="action-btn">+ Add Task</button>
-            </div>
         </div>
 
-        <div class="widget-frame" id="previewList">
-            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">List</div></div>
-            <div class="widget-home">
-                <div class="current-time" id="time2">00:00</div>
-                <div class="current-date" id="date2">SUN, FEB 1</div>
-                <button class="action-btn">View Tasks</button>
-            </div>
-        </div>
-
-        <div class="widget-frame timeline-widget" id="previewTimeline">
-            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Timeline</div></div>
-            <div class="timeline-container">
-                <div class="timeline-header">
-                    <div class="free-label">FREE</div>
-                    <div class="free-time">-8H 30M</div>
-                    <div class="day-label">MON</div>
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-title">Widget Preview</div>
+            <div class="preview-widgets" id="widgetPreviews">
+                <div class="widget-frame" id="previewTodo">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
+                    <div class="widget-home">
+                        <div class="current-time" id="time1">00:00</div>
+                        <div class="current-date" id="date1">SUN, FEB 1</div>
+                        <button class="action-btn">+ Add Task</button>
+                    </div>
                 </div>
-                <div class="timeline-scroll">
-                    <div class="timeline-grid" id="previewGrid"></div>
+
+                <div class="widget-frame" id="previewList">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">List</div></div>
+                    <div class="widget-home">
+                        <div class="current-time" id="time2">00:00</div>
+                        <div class="current-date" id="date2">SUN, FEB 1</div>
+                        <button class="action-btn">View Tasks</button>
+                    </div>
+                </div>
+
+                <div class="widget-frame timeline-widget" id="previewTimeline">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Timeline</div></div>
+                    <div class="timeline-container">
+                        <div class="timeline-header">
+                            <div class="free-label">FREE</div>
+                            <div class="free-time">-8H 30M</div>
+                            <div class="day-label">MON</div>
+                        </div>
+                        <div class="timeline-scroll">
+                            <div class="timeline-grid" id="previewGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-frame calendar-widget" id="previewCalendar">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Calendar</div></div>
+                    <div class="calendar-container" id="previewCalendarContainer"></div>
                 </div>
             </div>
         </div>
@@ -286,6 +371,11 @@
         <div id="timelineWidget" style="display:none;">
             <div class="timeline-container" id="timelineContainer"></div>
         </div>
+
+        <!-- Calendar Widget -->
+        <div id="calendarWidget" style="display:none;">
+            <div class="calendar-container" id="calendarContainer"></div>
+        </div>
     </div>
 
     <!-- Context Menu -->
@@ -302,11 +392,13 @@
     let step = 1;
     let selectedColor = "c5e8c5";
     let doneStyle = "bottom";
+    let weekStart = "sun";
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
     let showCategoryFilter = false;
     let selectedCategory = null;
+    let calendarDate = new Date();
 
     const params = new URLSearchParams(window.location.search);
     const widgetType = params.get('w');
@@ -338,20 +430,30 @@
     }
     renderPreviewTimeline();
 
+    // Preview calendar
+    function renderPreviewCalendar() {
+        const container = document.getElementById('previewCalendarContainer');
+        if (!container) return;
+        renderCalendarContent(container, new Date(), weekStart, []);
+    }
+    renderPreviewCalendar();
+
     // Initialize
     if (params.get('t') && widgetType) {
         document.body.classList.add('is-embed');
-        document.getElementById('widgetPreviews').style.display = 'none';
         document.getElementById('embedWidget').style.display = 'flex';
 
         if (widgetType === 'timeline') {
             document.getElementById('embedWidget').classList.add('timeline-widget');
+        } else if (widgetType === 'calendar') {
+            document.getElementById('embedWidget').classList.add('calendar-widget');
         }
 
         const c = params.get('c');
         if (c) updateTheme('#' + c);
 
         doneStyle = params.get('ds') || 'bottom';
+        weekStart = params.get('ws') || 'sun';
 
         initWidget(widgetType);
     } else {
@@ -381,12 +483,22 @@
         const darkB = Math.max(0, b - 100);
         document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
         document.documentElement.style.setProperty('--hover-color', `rgba(${r},${g},${b},0.12)`);
+
+        // Update preview calendar with new theme
+        renderPreviewCalendar();
     }
 
     function setDoneStyle(style) {
         doneStyle = style;
         document.querySelectorAll('[data-done]').forEach(el => el.classList.remove('active'));
         document.querySelector(`[data-done="${style}"]`).classList.add('active');
+    }
+
+    function setWeekStart(start) {
+        weekStart = start;
+        document.querySelectorAll('[data-weekstart]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-weekstart="${start}"]`).classList.add('active');
+        renderPreviewCalendar();
     }
 
     async function moveStep(n) {
@@ -427,11 +539,12 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}`;
 
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
         document.getElementById('listUrl').innerText = `${base}?w=list&${common}`;
         document.getElementById('timelineUrl').innerText = `${base}?w=timeline&${common}`;
+        document.getElementById('calendarUrl').innerText = `${base}?w=calendar&${common}`;
     }
 
     function copyUrl(type) {
@@ -459,7 +572,11 @@
             document.getElementById('timelineWidget').style.display = 'flex';
             document.getElementById('timelineWidget').style.flex = '1';
             refreshTasks();
-            setInterval(refreshTasks, 60000); // 1분마다 갱신
+            setInterval(refreshTasks, 60000);
+        } else if (type === 'calendar') {
+            document.getElementById('calendarWidget').style.display = 'flex';
+            document.getElementById('calendarWidget').style.flex = '1';
+            refreshTasks();
         }
     }
 
@@ -584,6 +701,7 @@
             if (Array.isArray(tasks)) {
                 if (widgetType === 'list') renderTasks();
                 else if (widgetType === 'timeline') renderTimeline();
+                else if (widgetType === 'calendar') renderCalendar();
             }
         } catch (e) {
             console.error('태스크 로드 실패', e);
@@ -610,11 +728,9 @@
             if (doneStyle === 'bottom') {
                 if (a.done !== b.done) return a.done ? 1 : -1;
             }
-            // 종료시간 없는 것 상단
             const aHasEnd = !!a.endTime;
             const bHasEnd = !!b.endTime;
             if (aHasEnd !== bHasEnd) return aHasEnd ? 1 : -1;
-            // 시작시간순
             const aTime = a.startTime || '99:99';
             const bTime = b.startTime || '99:99';
             return aTime.localeCompare(bTime);
@@ -703,17 +819,14 @@
         const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
         const dayName = dayNames[now.getDay()];
 
-        // 오늘 일정 필터
         const todayTasks = tasks.filter(t => {
             if (!t.date) return false;
             return new Date(t.date).toDateString() === today;
         });
 
-        // 시간 설정된 일정
         const scheduledTasks = todayTasks.filter(t => t.startTime);
 
-        // FREE 시간 계산 (깨어있는 시간 기준 9시-23시 = 14시간)
-        const wakeHours = 14 * 60; // 840분
+        const wakeHours = 14 * 60;
         let busyMinutes = 0;
         scheduledTasks.forEach(t => {
             const start = timeToMinutes(t.startTime);
@@ -724,11 +837,9 @@
         const freeH = Math.floor(freeMinutes / 60);
         const freeM = freeMinutes % 60;
 
-        // 현재 시간 위치
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // HTML 생성
         let gridHtml = '';
         for (let h = 9; h <= 23; h++) {
             gridHtml += `<div class="timeline-hour" data-hour="${h}">
@@ -748,19 +859,17 @@
             </div>
         `;
 
-        // 일정 블록 배치
         scheduledTasks.forEach(t => {
             const startMin = timeToMinutes(t.startTime);
             const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
             const startHour = Math.floor(startMin / 60);
-            const endHour = Math.floor(endMin / 60);
 
             if (startHour < 9 || startHour > 23) return;
 
             const hourEl = document.getElementById(`hour-${startHour}`);
             if (!hourEl) return;
 
-            const topOffset = (startMin % 60) / 60 * 20; // 20px per hour
+            const topOffset = (startMin % 60) / 60 * 20;
             const duration = endMin - startMin;
             const height = duration / 60 * 20;
 
@@ -772,7 +881,6 @@
             hourEl.appendChild(taskEl);
         });
 
-        // 현재 시간 표시
         if (currentHour >= 9 && currentHour <= 23) {
             const grid = document.getElementById('timelineGrid');
             const hourOffset = (currentHour - 9) * 20;
@@ -795,6 +903,92 @@
         if (!timeStr) return 0;
         const parts = timeStr.split(':');
         return parseInt(parts[0]) * 60 + parseInt(parts[1] || 0);
+    }
+
+    // Calendar Functions
+    function renderCalendar() {
+        const container = document.getElementById('calendarContainer');
+        if (!container) return;
+        renderCalendarContent(container, calendarDate, weekStart, tasks);
+    }
+
+    function renderCalendarContent(container, date, startDay, taskList) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const dayLabels = startDay === 'sun'
+            ? ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+            : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        let startOffset = firstDay.getDay();
+        if (startDay === 'mon') {
+            startOffset = startOffset === 0 ? 6 : startOffset - 1;
+        }
+
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+        // Get dates with events
+        const eventDates = new Set();
+        if (Array.isArray(taskList)) {
+            taskList.forEach(t => {
+                if (t.date) eventDates.add(t.date);
+            });
+        }
+
+        let datesHtml = '';
+
+        // Previous month dates
+        const prevMonth = new Date(year, month, 0);
+        for (let i = startOffset - 1; i >= 0; i--) {
+            const d = prevMonth.getDate() - i;
+            datesHtml += `<div class="calendar-date other-month">${d}</div>`;
+        }
+
+        // Current month dates
+        for (let d = 1; d <= lastDay.getDate(); d++) {
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isToday = dateStr === todayStr;
+            const hasEvent = eventDates.has(dateStr);
+            let classes = 'calendar-date';
+            if (isToday) classes += ' today';
+            if (hasEvent) classes += ' has-event';
+            datesHtml += `<div class="${classes}">${d}</div>`;
+        }
+
+        // Next month dates
+        const totalCells = startOffset + lastDay.getDate();
+        const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+        for (let d = 1; d <= remaining; d++) {
+            datesHtml += `<div class="calendar-date other-month">${d}</div>`;
+        }
+
+        container.innerHTML = `
+            <div class="calendar-nav">
+                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                <span class="calendar-month">${monthNames[month]}</span>
+                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="calendar-year">${year}</div>
+            <div class="calendar-days">
+                ${dayLabels.map(d => `<div class="calendar-day-label">${d}</div>`).join('')}
+            </div>
+            <div class="calendar-dates">${datesHtml}</div>
+        `;
+    }
+
+    function changeMonth(delta) {
+        calendarDate.setMonth(calendarDate.getMonth() + delta);
+        if (widgetType === 'calendar') {
+            renderCalendar();
+        } else {
+            renderPreviewCalendar();
+        }
     }
 
     function showToast(msg) {
