@@ -6,7 +6,7 @@
     <title>Life Cooker</title>
     <style>
         :root {
-            --theme-color: #ffffff; 
+            --theme-color: #ffffff;
             --accent-color: #1d1d1f;
             --hover-color: rgba(0, 0, 0, 0.04);
             --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
@@ -16,58 +16,116 @@
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.01em; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; }
 
-        /* [기존 책 검색 위젯 UI 복구] */
-        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; margin-bottom: 25px; z-index: 10; }
+        .window {
+            width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column;
+            margin-bottom: 25px; z-index: 10;
+        }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
         .dot { width: 11px; height: 11px; border-radius: 50%; }
         .dot.red { background: #e8bcbc; } .dot.yellow { background: #f4f4bd; } .dot.green { background: #c5e8c5; }
         .bar-title { font-size: 13px; font-weight: 700; color: #333; flex: 2; text-align: center; }
         .nav-controls { flex: 1; display: flex; justify-content: flex-end; gap: 12px; }
-        
+        .nav-btn { background: none; border: none; cursor: pointer; color: #333; }
+        .nav-btn:disabled { color: #ccc; cursor: not-allowed; }
         .content { padding: 30px 25px; min-height: 280px; position: relative; }
         .step { display: none; animation: fadeUp 0.3s ease; }
         .step.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
         h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: #1d1d1f; }
         p { font-size: 13px; color: #86868b; margin-bottom: 20px; line-height: 1.4; }
         input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; background: #f9f9fc; outline: none; font-size: 13px; margin-bottom: 10px; }
+        .color-palette { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; }
+        .color-dot.active { box-shadow: 0 0 0 2px #333; }
+        .option-group { margin-bottom: 15px; }
+        .option-group label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
+        .option-row { display: flex; gap: 8px; }
+        .option-btn { flex: 1; padding: 10px; border: 1px solid #eee; border-radius: 8px; background: #f9f9fc; font-size: 11px; cursor: pointer; text-align: center; transition: 0.2s; }
+        .option-btn.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+        .url-box { background: #f5f5f7; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .url-box label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px; }
+        .url-box .url-text { font-size: 10px; color: #333; word-break: break-all; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #eee; }
+        .copy-btn { background: #1d1d1f; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; cursor: pointer; margin-top: 6px; }
 
-        /* 위젯 디자인 롤백 */
+        /* 위젯 프레임 */
         .widget-frame {
             width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px;
             box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05); margin: 0 auto; position: relative;
+            border: 1px solid rgba(0,0,0,0.05); margin: 10px auto; position: relative;
         }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
         .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
         .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
-        .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; }
+        .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; cursor: pointer; }
 
-        /* 홈 화면 시계 레이아웃 */
-        #widgetHome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
-        #currentTime { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
-        #currentDate { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-        
-        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.8); }
+        /* 홈 화면 시계 */
+        .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
+        .current-time { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
+        .current-date { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--dark-theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.9); }
 
-        /* 투두리스트 목록 뷰 */
-        #widgetList { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-        .todo-container { padding: 8px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .todo-card { display: flex; align-items: center; gap: 6px; padding: 6px; background: #fafafa; border-radius: 8px; font-size: 9px; cursor: pointer; }
-        .todo-card .star { color: #ddd; transition: 0.2s; }
-        .todo-card .star.active { color: #ffcc00; }
-        .todo-card .check { margin-left: auto; color: #eee; }
-        .todo-card.done { opacity: 0.5; text-decoration: line-through; }
+        /* Todo Widget Styles */
+        .todo-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow: hidden; }
+        .mini-input { width: 100%; padding: 6px 8px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .mini-select { width: 100%; padding: 5px 8px; font-size: 9px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .form-row { display: flex; gap: 4px; }
+        .form-row .mini-input { flex: 1; }
+        .btn-row { display: flex; gap: 4px; margin-top: auto; }
+        .btn-row button { flex: 1; padding: 6px; font-size: 9px; border-radius: 6px; border: none; cursor: pointer; }
+        .btn-save { background: #1d1d1f; color: #fff; }
+        .btn-cancel { background: #f5f5f7; color: #666; }
 
-        /* 입력 폼 */
-        #widgetAdd { display: none; flex: 1; flex-direction: column; padding: 12px; }
-        .mini-input { width: 100%; padding: 6px; font-size: 9px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 4px; }
+        /* List Widget Styles */
+        .list-header { padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #eee; }
+        .list-container { flex: 1; overflow-y: auto; padding: 4px 8px; }
+        .task-card { display: flex; align-items: center; gap: 6px; padding: 5px 6px; background: #fafafa; border-radius: 6px; font-size: 9px; margin-bottom: 3px; cursor: grab; }
+        .task-card.done { opacity: 0.5; }
+        .task-card.done .task-title { text-decoration: line-through; color: #999; }
+        .task-card .star { color: #ddd; cursor: pointer; font-size: 10px; }
+        .task-card .star.active { color: #ffcc00; }
+        .task-card .task-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .task-card .task-category { font-size: 7px; color: #999; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+        .task-card .check { color: #ddd; cursor: pointer; font-size: 10px; }
+        .task-card .check.active { color: #4cd964; }
+        .task-card.dragging { opacity: 0.5; background: #e0e0e0; }
+        .category-filter { display: none; padding: 4px 8px; gap: 4px; flex-wrap: wrap; border-bottom: 0.5px solid #eee; }
+        .category-filter.show { display: flex; }
+        .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
+        .cat-tag.active { background: var(--theme-color); color: var(--dark-theme-color); }
 
+        /* Timeline Widget Styles */
+        .timeline-container { flex: 1; padding: 10px; display: flex; flex-direction: column; }
+        .timeline-bar { position: relative; background: #f5f5f7; border-radius: 8px; overflow: hidden; }
+        .timeline-bar.horizontal { height: 30px; width: 100%; }
+        .timeline-bar.vertical { width: 30px; height: 100%; margin: 0 auto; }
+        .timeline-block { position: absolute; background: var(--theme-color); opacity: 0.6; }
+        .timeline-bar.horizontal .timeline-block { height: 100%; }
+        .timeline-bar.vertical .timeline-block { width: 100%; }
+        .timeline-now { position: absolute; background: #ff3b30; z-index: 2; }
+        .timeline-bar.horizontal .timeline-now { width: 2px; height: 100%; }
+        .timeline-bar.vertical .timeline-now { height: 2px; width: 100%; }
+        .timeline-labels { display: flex; justify-content: space-between; font-size: 7px; color: #999; margin-top: 4px; }
+        .timeline-bar.vertical + .timeline-labels { flex-direction: column; height: 100%; position: absolute; left: 50px; top: 10px; }
+        .timeline-circular { width: 100px; height: 100px; margin: 0 auto; position: relative; }
+        .timeline-circular svg { transform: rotate(-90deg); }
+        .timeline-circular .time-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; font-weight: 700; color: var(--dark-theme-color); }
+
+        /* Context Menu */
+        .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 100px; }
+        .context-menu.show { display: block; }
+        .context-menu-item { padding: 8px 12px; font-size: 11px; cursor: pointer; }
+        .context-menu-item:hover { background: #f5f5f7; }
+        .context-menu-item.danger { color: #ff3b30; }
+
+        /* Toast */
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 11px; transition: 0.4s; z-index: 100; }
         #toast.show { bottom: 30px; }
+
         body.is-embed .window { display: none; }
+        body.is-embed { padding: 0; min-height: auto; }
     </style>
 </head>
 <body>
@@ -76,155 +134,696 @@
         <div class="title-bar">
             <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
             <div class="bar-title">Life Cooker Setup</div>
+            <div class="nav-controls">
+                <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            </div>
         </div>
         <div class="content">
+            <!-- Step 1: Connect Notion -->
             <div class="step active" id="step1">
                 <h1>Connect Notion</h1>
                 <p>프라이빗 API 토큰을 입력하세요.</p>
                 <input type="password" id="tokenInput" placeholder="secret_...">
-                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Next Step</button>
+                <div style="margin-top: 5px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:12px; color:#86868b; text-decoration:none;">내 인테그레이션 바로가기 ↗</a></div>
             </div>
+
+            <!-- Step 2: Select Database -->
             <div class="step" id="step2">
                 <h1>Select Database</h1>
                 <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
                 <select id="dbSelect"></select>
-                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Create Widget</button>
+            </div>
+
+            <!-- Step 3: Customize Theme -->
+            <div class="step" id="step3">
+                <h1>Customize</h1>
+                <p>위젯 테마 컬러를 선택하세요.</p>
+                <div class="color-palette" id="palette"></div>
+                <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
+                <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+
+                <div class="option-group" style="margin-top: 20px;">
+                    <label>완료된 일정 표시 방식</label>
+                    <div class="option-row">
+                        <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
+                        <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>타임라인 스타일</label>
+                    <div class="option-row">
+                        <div class="option-btn active" data-timeline="horizontal" onclick="setTimelineStyle('horizontal')">가로</div>
+                        <div class="option-btn" data-timeline="vertical" onclick="setTimelineStyle('vertical')">세로</div>
+                        <div class="option-btn" data-timeline="circular" onclick="setTimelineStyle('circular')">원형</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Generate URLs -->
+            <div class="step" id="step4">
+                <h1>Your Widgets</h1>
+                <p>아래 URL을 노션에 임베드하세요.</p>
+
+                <div class="url-box">
+                    <label>1. Todo Widget (할일 추가/수정)</label>
+                    <div class="url-text" id="todoUrl">-</div>
+                    <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
+                </div>
+
+                <div class="url-box">
+                    <label>2. List Widget (오늘의 할일 목록)</label>
+                    <div class="url-text" id="listUrl">-</div>
+                    <button class="copy-btn" onclick="copyUrl('list')">Copy</button>
+                </div>
+
+                <div class="url-box">
+                    <label>3. Timeline Widget (시간 시각화)</label>
+                    <div class="url-text" id="timelineUrl">-</div>
+                    <button class="copy-btn" onclick="copyUrl('timeline')">Copy</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="widget-frame">
-        <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Focus</div></div>
-        
-        <div id="widgetHome">
-            <div id="currentTime">00:00</div>
-            <div id="currentDate">SUN, FEB 1</div>
-            <div style="display:flex; gap:5px;">
-                <button class="action-btn" onclick="showList()">Tasks</button>
-                <button class="action-btn" onclick="showAdd()">Add</button>
+    <!-- Widget Previews (Setup mode) -->
+    <div id="widgetPreviews">
+        <div class="widget-frame" id="previewTodo">
+            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
+            <div class="widget-home">
+                <div class="current-time" id="time1">00:00</div>
+                <div class="current-date" id="date1">SUN, FEB 1</div>
+                <button class="action-btn">+ Add Task</button>
             </div>
         </div>
 
-        <div id="widgetList">
-            <div style="padding: 5px 10px; display:flex; justify-content:space-between; align-items:center; border-bottom: 0.5px solid #eee;">
-                <button class="action-btn" onclick="goHome()" style="padding: 2px 6px;">←</button>
-                <span style="font-size:8px; font-weight:bold;">TO-DO</span>
-                <button class="action-btn" onclick="fetchTasks()" style="padding: 2px 6px;">🔄</button>
+        <div class="widget-frame" id="previewList">
+            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">List</div></div>
+            <div class="widget-home">
+                <div class="current-time" id="time2">00:00</div>
+                <div class="current-date" id="date2">SUN, FEB 1</div>
+                <button class="action-btn">View Tasks</button>
             </div>
-            <div class="todo-container" id="todoContainer"></div>
         </div>
 
-        <div id="widgetAdd">
-            <input type="text" id="addTitle" class="mini-input" placeholder="What to do?">
-            <input type="datetime-local" id="addDate" class="mini-input">
-            <button class="action-btn" style="width:100%; background:#1d1d1f; color:#fff;" onclick="saveTask()">Save Task</button>
-            <button class="action-btn" style="width:100%; background:none; color:#999; border:none; margin-top:5px;" onclick="goHome()">Cancel</button>
+        <div class="widget-frame" id="previewTimeline">
+            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Timeline</div></div>
+            <div class="widget-home">
+                <div class="current-time" id="time3">00:00</div>
+                <div class="current-date" id="date3">SUN, FEB 1</div>
+                <button class="action-btn">View Timeline</button>
+            </div>
         </div>
     </div>
 
-    <div id="toast">Saved! 🤍</div>
+    <!-- Actual Widget (Embed mode) -->
+    <div class="widget-frame" id="embedWidget" style="display:none;">
+        <div class="widget-top">
+            <div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div>
+            <div class="w-title" id="widgetTitle" onclick="toggleCategoryFilter()">Widget</div>
+        </div>
+
+        <!-- Todo Widget Content -->
+        <div id="todoWidget" style="display:none;">
+            <div class="widget-home" id="todoHome">
+                <div class="current-time" id="todoTime">00:00</div>
+                <div class="current-date" id="todoDate">SUN, FEB 1</div>
+                <button class="action-btn" onclick="showTodoForm()">+ Add Task</button>
+            </div>
+            <div class="todo-form" id="todoForm" style="display:none;">
+                <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력...">
+                <div class="form-row">
+                    <input type="date" class="mini-input" id="taskDate">
+                    <input type="time" class="mini-input" id="taskTime">
+                </div>
+                <select class="mini-select" id="taskCategory">
+                    <option value="">카테고리 선택</option>
+                </select>
+                <input type="text" class="mini-input" id="newCategory" placeholder="+ 새 카테고리 추가" style="display:none;">
+                <div class="btn-row">
+                    <button class="btn-cancel" onclick="hideTodoForm()">Cancel</button>
+                    <button class="btn-save" onclick="saveTask()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- List Widget Content -->
+        <div id="listWidget" style="display:none;">
+            <div class="category-filter" id="categoryFilter"></div>
+            <div class="list-header">
+                <button class="action-btn" onclick="refreshTasks()" style="padding:2px 6px;font-size:8px;">↻</button>
+                <span style="font-size:8px;font-weight:bold;">TODAY</span>
+                <span style="font-size:7px;color:#999;" id="taskCount">0 tasks</span>
+            </div>
+            <div class="list-container" id="listContainer"></div>
+        </div>
+
+        <!-- Timeline Widget Content -->
+        <div id="timelineWidget" style="display:none;">
+            <div class="timeline-container" id="timelineContainer"></div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="editTask()">수정</div>
+        <div class="context-menu-item danger" onclick="deleteTask()">삭제</div>
+    </div>
+
+    <div id="toast">Saved!</div>
 
 <script>
-    const SERVER_URL = "https://calendar-server-hrgs.onrender.com"; 
+    const SERVER_URL = "https://calendar-server-hrgs.onrender.com";
+    const themes = ["e8bcbc", "f4f4bd", "c5e8c5", "a4c4e4", "ffffff", "1d1d1f"];
     let step = 1;
-    const params = new URLSearchParams(window.location.search);
+    let selectedColor = "ffffff";
+    let doneStyle = "bottom";
+    let timelineStyle = "horizontal";
+    let categories = [];
+    let tasks = [];
+    let selectedTaskId = null;
+    let showCategoryFilter = false;
+    let selectedCategory = null;
+    let draggedElement = null;
 
-    // 시계 업데이트
+    const params = new URLSearchParams(window.location.search);
+    const widgetType = params.get('w'); // 'todo', 'list', 'timeline'
+
+    // Clock update
     function updateClock() {
         const now = new Date();
-        document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    }
-    setInterval(updateClock, 1000); updateClock();
+        const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-    if (params.get('t')) {
+        document.querySelectorAll('[id^="time"], .current-time').forEach(el => el.innerText = timeStr);
+        document.querySelectorAll('[id^="date"], .current-date').forEach(el => el.innerText = dateStr);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Initialize
+    if (params.get('t') && widgetType) {
+        // Embed mode
         document.body.classList.add('is-embed');
-        fetchTasks();
+        document.getElementById('widgetPreviews').style.display = 'none';
+        document.getElementById('embedWidget').style.display = 'flex';
+
+        const c = params.get('c');
+        if (c) updateTheme('#' + c);
+
+        doneStyle = params.get('ds') || 'bottom';
+        timelineStyle = params.get('ts') || 'horizontal';
+
+        initWidget(widgetType);
+    } else {
+        // Setup mode
+        const pal = document.getElementById('palette');
+        themes.forEach(t => {
+            const d = document.createElement('div');
+            d.className = 'color-dot' + (t === 'ffffff' ? ' active' : '');
+            d.style.background = '#' + t;
+            d.onclick = () => {
+                document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                d.classList.add('active');
+                updateTheme('#' + t);
+            };
+            pal.appendChild(d);
+        });
+    }
+
+    function updateTheme(hex) {
+        selectedColor = hex.replace('#', '');
+        document.documentElement.style.setProperty('--theme-color', hex);
+        const r = parseInt(selectedColor.slice(0,2), 16);
+        const g = parseInt(selectedColor.slice(2,4), 16);
+        const b = parseInt(selectedColor.slice(4,6), 16);
+        const darkR = Math.max(0, r - 100);
+        const darkG = Math.max(0, g - 100);
+        const darkB = Math.max(0, b - 100);
+        document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
+        document.documentElement.style.setProperty('--hover-color', `rgba(${r},${g},${b},0.12)`);
+    }
+
+    function setDoneStyle(style) {
+        doneStyle = style;
+        document.querySelectorAll('[data-done]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-done="${style}"]`).classList.add('active');
+    }
+
+    function setTimelineStyle(style) {
+        timelineStyle = style;
+        document.querySelectorAll('[data-timeline]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-timeline="${style}"]`).classList.add('active');
     }
 
     async function moveStep(n) {
-        if (step === 1) {
+        const newStep = step + n;
+
+        if (n === 1 && step === 1) {
             const tk = document.getElementById('tokenInput').value;
-            const res = await fetch(`${SERVER_URL}/api/notion/databases`, { 
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ token: tk })
-            });
-            const dbs = await res.json();
-            document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
-            step = 2;
-        } else {
-            const t = btoa(document.getElementById('tokenInput').value);
-            const d = btoa(document.getElementById('dbSelect').value);
-            const url = `${window.location.origin}${window.location.pathname}?t=${t}&d=${d}`;
-            navigator.clipboard.writeText(url); alert("URL 복사 완료! 노션에 임베드하세요.");
+            if (!tk) { showToast('토큰을 입력하세요'); return; }
+            try {
+                const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: tk })
+                });
+                const dbs = await res.json();
+                if (dbs.error) { showToast('토큰 오류'); return; }
+                document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
+            } catch (e) {
+                showToast('연결 실패');
+                return;
+            }
+        }
+
+        if (newStep === 4) {
+            generateUrls();
+        }
+
+        if (newStep < 1 || newStep > 4) return;
+
+        document.getElementById(`step${step}`).classList.remove('active');
+        step = newStep;
+        document.getElementById(`step${step}`).classList.add('active');
+        document.getElementById('prevBtn').disabled = (step === 1);
+        document.getElementById('nextBtn').style.visibility = (step === 4) ? 'hidden' : 'visible';
+    }
+
+    function generateUrls() {
+        const t = btoa(document.getElementById('tokenInput').value);
+        const d = btoa(document.getElementById('dbSelect').value);
+        const base = `${window.location.origin}${window.location.pathname}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ts=${timelineStyle}`;
+
+        const todoUrl = `${base}?w=todo&${common}`;
+        const listUrl = `${base}?w=list&${common}`;
+        const timelineUrl = `${base}?w=timeline&${common}`;
+
+        document.getElementById('todoUrl').innerText = todoUrl;
+        document.getElementById('listUrl').innerText = listUrl;
+        document.getElementById('timelineUrl').innerText = timelineUrl;
+    }
+
+    function copyUrl(type) {
+        const urlText = document.getElementById(`${type}Url`).innerText;
+        navigator.clipboard.writeText(urlText);
+        showToast('URL 복사됨!');
+    }
+
+    // ========== Widget Initialization ==========
+    function initWidget(type) {
+        document.getElementById('widgetTitle').innerText = type.charAt(0).toUpperCase() + type.slice(1);
+
+        if (type === 'todo') {
+            document.getElementById('todoWidget').style.display = 'flex';
+            document.getElementById('todoWidget').style.flexDirection = 'column';
+            document.getElementById('todoWidget').style.flex = '1';
+            loadCategories();
+        } else if (type === 'list') {
+            document.getElementById('listWidget').style.display = 'flex';
+            document.getElementById('listWidget').style.flexDirection = 'column';
+            document.getElementById('listWidget').style.flex = '1';
+            loadCategories();
+            refreshTasks();
+        } else if (type === 'timeline') {
+            document.getElementById('timelineWidget').style.display = 'flex';
+            document.getElementById('timelineWidget').style.flex = '1';
+            refreshTasks();
         }
     }
 
-    async function fetchTasks() {
-        const container = document.getElementById('todoContainer');
-        container.innerHTML = '<div style="font-size:8px; text-align:center; color:#ccc;">Loading...</div>';
+    // ========== Todo Widget Functions ==========
+    function showTodoForm() {
+        document.getElementById('todoHome').style.display = 'none';
+        document.getElementById('todoForm').style.display = 'flex';
+        document.getElementById('taskDate').value = new Date().toISOString().split('T')[0];
+    }
+
+    function hideTodoForm() {
+        document.getElementById('todoForm').style.display = 'none';
+        document.getElementById('todoHome').style.display = 'flex';
+        clearTodoForm();
+    }
+
+    function clearTodoForm() {
+        document.getElementById('taskTitle').value = '';
+        document.getElementById('taskTime').value = '';
+        document.getElementById('taskCategory').value = '';
+        document.getElementById('newCategory').value = '';
+        document.getElementById('newCategory').style.display = 'none';
+        selectedTaskId = null;
+    }
+
+    async function loadCategories() {
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/events`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')) })
+            const res = await fetch(`${SERVER_URL}/api/notion/categories`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: atob(params.get('t')),
+                    dbId: atob(params.get('d'))
+                })
             });
-            const tasks = await res.json();
-            container.innerHTML = tasks.map(t => `
-                <div class="todo-card" oncontextmenu="event.preventDefault(); postpone('${t.id}')">
-                    <span class="star" onclick="toggleStar('${t.id}')">★</span>
-                    <span style="flex:1">${t.title}</span>
-                    <span class="check" onclick="complete('${t.id}')">✔</span>
-                </div>
-            `).join('');
-        } catch (e) { container.innerHTML = "Load failed."; }
+            const data = await res.json();
+            categories = data.categories || [];
+            updateCategorySelect();
+            updateCategoryFilter();
+        } catch (e) {
+            console.error('카테고리 로드 실패', e);
+        }
+    }
+
+    function updateCategorySelect() {
+        const select = document.getElementById('taskCategory');
+        if (!select) return;
+        select.innerHTML = '<option value="">카테고리 선택</option>' +
+            categories.map(c => `<option value="${c}">${c}</option>`).join('') +
+            '<option value="__new__">+ 새 카테고리</option>';
+
+        select.onchange = function() {
+            const newCatInput = document.getElementById('newCategory');
+            if (this.value === '__new__') {
+                newCatInput.style.display = 'block';
+                newCatInput.focus();
+            } else {
+                newCatInput.style.display = 'none';
+            }
+        };
+    }
+
+    function updateCategoryFilter() {
+        const filter = document.getElementById('categoryFilter');
+        if (!filter) return;
+        filter.innerHTML = '<div class="cat-tag' + (!selectedCategory ? ' active' : '') + '" onclick="filterByCategory(null)">전체</div>' +
+            categories.map(c => `<div class="cat-tag${selectedCategory === c ? ' active' : ''}" onclick="filterByCategory('${c}')">${c}</div>`).join('');
+    }
+
+    function toggleCategoryFilter() {
+        if (widgetType !== 'list') return;
+        showCategoryFilter = !showCategoryFilter;
+        document.getElementById('categoryFilter').classList.toggle('show', showCategoryFilter);
+    }
+
+    function filterByCategory(cat) {
+        selectedCategory = cat;
+        updateCategoryFilter();
+        renderTasks();
     }
 
     async function saveTask() {
-        const title = document.getElementById('addTitle').value;
-        const date = document.getElementById('addDate').value;
-        if(!title || !date) return alert("Fill all fields.");
+        const title = document.getElementById('taskTitle').value;
+        const date = document.getElementById('taskDate').value;
+        const time = document.getElementById('taskTime').value;
+        const categorySelect = document.getElementById('taskCategory');
+        let category = categorySelect.value;
 
-        const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), title, date })
+        if (category === '__new__') {
+            category = document.getElementById('newCategory').value;
+            if (category && !categories.includes(category)) {
+                categories.push(category);
+            }
+        }
+
+        if (!title) { showToast('할 일을 입력하세요'); return; }
+
+        const datetime = time ? `${date}T${time}` : date;
+
+        try {
+            const endpoint = selectedTaskId ? '/api/notion/update-event' : '/api/notion/add-event';
+            const body = {
+                token: atob(params.get('t')),
+                dbId: atob(params.get('d')),
+                title,
+                date: datetime,
+                category
+            };
+            if (selectedTaskId) body.taskId = selectedTaskId;
+
+            const res = await fetch(`${SERVER_URL}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                showToast(selectedTaskId ? '수정됨!' : '저장됨!');
+                hideTodoForm();
+                loadCategories();
+            } else {
+                showToast('저장 실패');
+            }
+        } catch (e) {
+            showToast('오류 발생');
+        }
+    }
+
+    // ========== List Widget Functions ==========
+    async function refreshTasks() {
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/events`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: atob(params.get('t')),
+                    dbId: atob(params.get('d'))
+                })
+            });
+            tasks = await res.json();
+            if (widgetType === 'list') {
+                renderTasks();
+            } else if (widgetType === 'timeline') {
+                renderTimeline();
+            }
+        } catch (e) {
+            console.error('태스크 로드 실패', e);
+        }
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('listContainer');
+        if (!container) return;
+
+        let filtered = tasks.filter(t => {
+            const taskDate = new Date(t.date).toDateString();
+            const today = new Date().toDateString();
+            return taskDate === today;
         });
-        if(res.ok) { showToast("Saved! 🤍"); goHome(); fetchTasks(); }
+
+        if (selectedCategory) {
+            filtered = filtered.filter(t => t.category === selectedCategory);
+        }
+
+        // Sort: priority first, then done at bottom (if doneStyle is 'bottom')
+        filtered.sort((a, b) => {
+            if (doneStyle === 'bottom') {
+                if (a.done !== b.done) return a.done ? 1 : -1;
+            }
+            if (a.priority !== b.priority) return b.priority ? 1 : -1;
+            return 0;
+        });
+
+        document.getElementById('taskCount').innerText = `${filtered.length} tasks`;
+
+        container.innerHTML = filtered.map(t => `
+            <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" draggable="true"
+                 oncontextmenu="showContextMenu(event, '${t.id}')"
+                 ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)">
+                <span class="star ${t.priority ? 'active' : ''}" onclick="togglePriority('${t.id}')">★</span>
+                <span class="task-title">${t.title}</span>
+                ${t.category ? `<span class="task-category">${t.category}</span>` : ''}
+                <span class="check ${t.done ? 'active' : ''}" onclick="toggleDone('${t.id}')">✓</span>
+            </div>
+        `).join('');
     }
 
-    function showList() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetList').style.display='flex'; }
-    function showAdd() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetAdd').style.display='flex'; }
-    function goHome() { document.getElementById('widgetList').style.display='none'; document.getElementById('widgetAdd').style.display='none'; document.getElementById('widgetHome').style.display='flex'; }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
-
-    async function toggleStar(id) {
+    async function togglePriority(id) {
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/toggle-star`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            await fetch(`${SERVER_URL}/api/notion/toggle-star`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: atob(params.get('t')),
+                    dbId: atob(params.get('d')),
+                    taskId: id
+                })
             });
-            if (res.ok) { fetchTasks(); }
-        } catch (e) { showToast("Failed to update star"); }
+            refreshTasks();
+        } catch (e) {
+            showToast('오류 발생');
+        }
     }
 
-    async function postpone(id) {
+    async function toggleDone(id) {
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/postpone`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            await fetch(`${SERVER_URL}/api/notion/complete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: atob(params.get('t')),
+                    dbId: atob(params.get('d')),
+                    taskId: id
+                })
             });
-            if (res.ok) { showToast("Postponed!"); fetchTasks(); }
-        } catch (e) { showToast("Failed to postpone"); }
+            refreshTasks();
+        } catch (e) {
+            showToast('오류 발생');
+        }
     }
 
-    async function complete(id) {
+    // Context Menu
+    function showContextMenu(e, id) {
+        e.preventDefault();
+        selectedTaskId = id;
+        const menu = document.getElementById('contextMenu');
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        menu.classList.add('show');
+    }
+
+    document.addEventListener('click', () => {
+        document.getElementById('contextMenu').classList.remove('show');
+    });
+
+    function editTask() {
+        const task = tasks.find(t => t.id === selectedTaskId);
+        if (!task || widgetType !== 'list') {
+            // For list widget, redirect to todo widget for editing
+            showToast('Todo 위젯에서 수정하세요');
+            return;
+        }
+    }
+
+    async function deleteTask() {
+        if (!selectedTaskId) return;
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/complete`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), taskId: id })
+            await fetch(`${SERVER_URL}/api/notion/delete-event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: atob(params.get('t')),
+                    dbId: atob(params.get('d')),
+                    taskId: selectedTaskId
+                })
             });
-            if (res.ok) { showToast("Completed! ✔"); fetchTasks(); }
-        } catch (e) { showToast("Failed to complete"); }
+            showToast('삭제됨!');
+            refreshTasks();
+        } catch (e) {
+            showToast('삭제 실패');
+        }
+        selectedTaskId = null;
+    }
+
+    // Drag and Drop
+    function dragStart(e) {
+        draggedElement = e.target;
+        e.target.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+        const target = e.target.closest('.task-card');
+        if (target && target !== draggedElement) {
+            const rect = target.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            if (e.clientY < midY) {
+                target.parentNode.insertBefore(draggedElement, target);
+            } else {
+                target.parentNode.insertBefore(draggedElement, target.nextSibling);
+            }
+        }
+    }
+
+    function drop(e) {
+        e.preventDefault();
+    }
+
+    function dragEnd(e) {
+        e.target.classList.remove('dragging');
+        draggedElement = null;
+        // TODO: Save new order to server if needed
+    }
+
+    // ========== Timeline Widget Functions ==========
+    function renderTimeline() {
+        const container = document.getElementById('timelineContainer');
+        if (!container) return;
+
+        const today = new Date().toDateString();
+        const todayTasks = tasks.filter(t => {
+            const taskDate = new Date(t.date).toDateString();
+            return taskDate === today && t.startTime;
+        });
+
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const nowPercent = (currentMinutes / 1440) * 100;
+
+        if (timelineStyle === 'circular') {
+            container.innerHTML = `
+                <div class="timeline-circular">
+                    <svg width="100" height="100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#f5f5f7" stroke-width="8"/>
+                        ${todayTasks.map(t => {
+                            const start = timeToMinutes(t.startTime);
+                            const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
+                            const startAngle = (start / 1440) * 360;
+                            const endAngle = (end / 1440) * 360;
+                            return `<circle cx="50" cy="50" r="45" fill="none" stroke="var(--theme-color)" stroke-width="8" opacity="0.6"
+                                stroke-dasharray="${(endAngle - startAngle) / 360 * 283} 283"
+                                stroke-dashoffset="${-startAngle / 360 * 283}"/>`;
+                        }).join('')}
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#ff3b30" stroke-width="2"
+                            stroke-dasharray="2 281"
+                            stroke-dashoffset="${-nowPercent / 100 * 283}"/>
+                    </svg>
+                    <div class="time-text">${now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+                <div style="text-align:center;font-size:8px;color:#999;margin-top:8px;">${todayTasks.length} scheduled tasks</div>
+            `;
+        } else {
+            const isVertical = timelineStyle === 'vertical';
+            container.innerHTML = `
+                <div class="timeline-bar ${timelineStyle}">
+                    ${todayTasks.map(t => {
+                        const start = timeToMinutes(t.startTime);
+                        const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
+                        const startPercent = (start / 1440) * 100;
+                        const widthPercent = ((end - start) / 1440) * 100;
+                        return `<div class="timeline-block" style="${isVertical ? 'top' : 'left'}:${startPercent}%;${isVertical ? 'height' : 'width'}:${widthPercent}%"></div>`;
+                    }).join('')}
+                    <div class="timeline-now" style="${isVertical ? 'top' : 'left'}:${nowPercent}%"></div>
+                </div>
+                <div class="timeline-labels">
+                    <span>00:00</span>
+                    <span>06:00</span>
+                    <span>12:00</span>
+                    <span>18:00</span>
+                    <span>24:00</span>
+                </div>
+                <div style="text-align:center;font-size:8px;color:#999;margin-top:8px;">${todayTasks.length} scheduled</div>
+            `;
+        }
+    }
+
+    function timeToMinutes(timeStr) {
+        if (!timeStr) return 0;
+        const [h, m] = timeStr.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    // ========== Utility ==========
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
     }
 </script>
 </body>
