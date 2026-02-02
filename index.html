@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notion Life Cooker</title>
+    <title>Life Cooker</title>
     <style>
         :root {
             --theme-color: #ffffff; 
@@ -16,40 +16,54 @@
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.01em; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; }
 
-        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 25px; z-index: 10; }
+        /* [기존 책 검색 위젯 UI 복구] */
+        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; margin-bottom: 25px; z-index: 10; }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
         .dot { width: 11px; height: 11px; border-radius: 50%; }
         .dot.red { background: #e8bcbc; } .dot.yellow { background: #f4f4bd; } .dot.green { background: #c5e8c5; }
         .bar-title { font-size: 13px; font-weight: 700; color: #333; flex: 2; text-align: center; }
+        .nav-controls { flex: 1; display: flex; justify-content: flex-end; gap: 12px; }
         
         .content { padding: 30px 25px; min-height: 280px; position: relative; }
-        .step { display: none; } .step.active { display: block; }
+        .step { display: none; animation: fadeUp 0.3s ease; }
+        .step.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: #1d1d1f; }
+        p { font-size: 13px; color: #86868b; margin-bottom: 20px; line-height: 1.4; }
         input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; background: #f9f9fc; outline: none; font-size: 13px; margin-bottom: 10px; }
 
-        /* 위젯 프레임 (투두리스트 확장을 위해 높이 조절) */
+        /* 위젯 디자인 롤백 */
         .widget-frame {
-            width: 240px !important; min-height: 200px; background: #fff; border-radius: 16px;
+            width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px;
             box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column;
             border: 1px solid rgba(0,0,0,0.05); margin: 0 auto; position: relative;
         }
-        .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
+        .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
+        .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
         .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; }
-        
-        /* 목록 스타일 */
-        .event-list { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .todo-item { 
-            font-size: 10px; padding: 8px; background: #f8f8fa; border-radius: 8px; 
-            display: flex; align-items: center; gap: 6px; transition: 0.2s;
-        }
-        .todo-item.done { opacity: 0.5; text-decoration: line-through; }
-        .todo-item .star { cursor: pointer; color: #ddd; font-size: 12px; }
-        .todo-item .star.active { color: #ffcc00; }
-        .todo-item .text { flex: 1; }
-        .todo-item .check { cursor: pointer; color: #ccc; }
 
-        #widgetAdd { display: none; padding: 12px; }
-        .add-input { padding: 8px; border-radius: 6px; border: 1px solid #eee; font-size: 10px; margin-bottom: 6px; width: 100%; }
+        /* 홈 화면 시계 레이아웃 */
+        #widgetHome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
+        #currentTime { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
+        #currentDate { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        
+        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.8); }
+
+        /* 투두리스트 목록 뷰 */
+        #widgetList { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .todo-container { padding: 8px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .todo-card { display: flex; align-items: center; gap: 6px; padding: 6px; background: #fafafa; border-radius: 8px; font-size: 9px; cursor: pointer; }
+        .todo-card .star { color: #ddd; transition: 0.2s; }
+        .todo-card .star.active { color: #ffcc00; }
+        .todo-card .check { margin-left: auto; color: #eee; }
+        .todo-card.done { opacity: 0.5; text-decoration: line-through; }
+
+        /* 입력 폼 */
+        #widgetAdd { display: none; flex: 1; flex-direction: column; padding: 12px; }
+        .mini-input { width: 100%; padding: 6px; font-size: 9px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 4px; }
 
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 11px; transition: 0.4s; z-index: 100; }
         #toast.show { bottom: 30px; }
@@ -66,44 +80,62 @@
         <div class="content">
             <div class="step active" id="step1">
                 <h1>Connect Notion</h1>
+                <p>프라이빗 API 토큰을 입력하세요.</p>
                 <input type="password" id="tokenInput" placeholder="secret_...">
-                <button onclick="moveStep(1)" style="width:100%; padding:10px; border-radius:10px; border:none; background:#1d1d1f; color:#fff; cursor:pointer;">Next</button>
+                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Next Step</button>
             </div>
             <div class="step" id="step2">
                 <h1>Select Database</h1>
+                <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
                 <select id="dbSelect"></select>
-                <button onclick="moveStep(1)" style="width:100%; padding:10px; border-radius:10px; border:none; background:#1d1d1f; color:#fff; cursor:pointer;">Generate Widget</button>
+                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Create Widget</button>
             </div>
         </div>
     </div>
 
     <div class="widget-frame">
-        <div class="widget-top">
-            <div class="w-title">Daily Focus</div>
-            <div style="position:absolute; right:10px; display:flex; gap:5px;">
-                <button onclick="fetchTasks()" style="background:none; border:none; cursor:pointer; font-size:10px;">🔄</button>
-                <button onclick="showAdd()" style="background:none; border:none; cursor:pointer; font-size:10px;">+</button>
+        <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Focus</div></div>
+        
+        <div id="widgetHome">
+            <div id="currentTime">00:00</div>
+            <div id="currentDate">SUN, FEB 1</div>
+            <div style="display:flex; gap:5px;">
+                <button class="action-btn" onclick="showList()">Tasks</button>
+                <button class="action-btn" onclick="showAdd()">Add</button>
             </div>
         </div>
-        
-        <div id="widgetHome" class="event-list">
-            <div style="text-align:center; color:#ccc; font-size:9px; margin-top:20px;">로딩 중...</div>
+
+        <div id="widgetList">
+            <div style="padding: 5px 10px; display:flex; justify-content:space-between; align-items:center; border-bottom: 0.5px solid #eee;">
+                <button class="action-btn" onclick="goHome()" style="padding: 2px 6px;">←</button>
+                <span style="font-size:8px; font-weight:bold;">TO-DO</span>
+                <button class="action-btn" onclick="fetchTasks()" style="padding: 2px 6px;">🔄</button>
+            </div>
+            <div class="todo-container" id="todoContainer"></div>
         </div>
 
         <div id="widgetAdd">
-            <input type="text" id="addTitle" class="add-input" placeholder="할 일 입력">
-            <input type="datetime-local" id="addDate" class="add-input">
-            <button class="add-input" style="background:#1d1d1f; color:#fff;" onclick="saveTask()">추가하기</button>
-            <button class="add-input" style="background:#eee;" onclick="goHome()">취on</button>
+            <input type="text" id="addTitle" class="mini-input" placeholder="What to do?">
+            <input type="datetime-local" id="addDate" class="mini-input">
+            <button class="action-btn" style="width:100%; background:#1d1d1f; color:#fff;" onclick="saveTask()">Save Task</button>
+            <button class="action-btn" style="width:100%; background:none; color:#999; border:none; margin-top:5px;" onclick="goHome()">Cancel</button>
         </div>
     </div>
 
-    <div id="toast">Done! ✅</div>
+    <div id="toast">Saved! 🤍</div>
 
 <script>
     const SERVER_URL = "https://calendar-server-hrgs.onrender.com"; 
     let step = 1;
     const params = new URLSearchParams(window.location.search);
+
+    // 시계 업데이트
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000); updateClock();
 
     if (params.get('t')) {
         document.body.classList.add('is-embed');
@@ -125,51 +157,44 @@
             const t = btoa(document.getElementById('tokenInput').value);
             const d = btoa(document.getElementById('dbSelect').value);
             const url = `${window.location.origin}${window.location.pathname}?t=${t}&d=${d}`;
-            navigator.clipboard.writeText(url); alert("위젯 URL 복사 완료!");
+            navigator.clipboard.writeText(url); alert("URL 복사 완료! 노션에 임베드하세요.");
         }
     }
 
     async function fetchTasks() {
-        const listEl = document.getElementById('widgetHome');
+        const container = document.getElementById('todoContainer');
+        container.innerHTML = '<div style="font-size:8px; text-align:center; color:#ccc;">Loading...</div>';
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/events`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')) })
             });
             const tasks = await res.json();
-            
-            listEl.innerHTML = tasks.map(task => `
-                <div class="todo-item" oncontextmenu="postponeTask(event, '${task.id}')">
-                    <span class="star" onclick="toggleStar('${task.id}')">★</span>
-                    <span class="text">${task.title}</span>
-                    <span class="check" onclick="completeTask('${task.id}')">✔</span>
+            container.innerHTML = tasks.map(t => `
+                <div class="todo-card" oncontextmenu="event.preventDefault(); postpone('${t.id}')">
+                    <span class="star" onclick="toggleStar('${t.id}')">★</span>
+                    <span style="flex:1">${t.title}</span>
+                    <span class="check" onclick="complete('${t.id}')">✔</span>
                 </div>
             `).join('');
-        } catch (e) { listEl.innerHTML = "데이터 로드 실패"; }
+        } catch (e) { container.innerHTML = "Load failed."; }
     }
 
     async function saveTask() {
         const title = document.getElementById('addTitle').value;
-        const date = document.getElementById('addDate').value; // ISO 형식 자동 지원
-        if(!title || !date) return alert("입력 확인!");
+        const date = document.getElementById('addDate').value;
+        if(!title || !date) return alert("Fill all fields.");
 
-        await fetch(`${SERVER_URL}/api/notion/add-event`, {
+        const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
             method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), title, date })
         });
-        showToast("Added!"); goHome(); fetchTasks();
+        if(res.ok) { showToast("Saved! 🤍"); goHome(); fetchTasks(); }
     }
 
-    function postponeTask(e, id) {
-        e.preventDefault();
-        if(confirm("내일로 미루시겠습니까?")) {
-            // 여기에 날짜 +1일 업데이트 로직 추가 가능
-            showToast("Postponed to tomorrow");
-        }
-    }
-
-    function showAdd() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetAdd').style.display='block'; }
-    function goHome() { document.getElementById('widgetAdd').style.display='none'; document.getElementById('widgetHome').style.display='flex'; }
+    function showList() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetList').style.display='flex'; }
+    function showAdd() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetAdd').style.display='flex'; }
+    function goHome() { document.getElementById('widgetList').style.display='none'; document.getElementById('widgetAdd').style.display='none'; document.getElementById('widgetHome').style.display='flex'; }
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
 </script>
 </body>
