@@ -64,8 +64,8 @@
 
         /* Widget Frame */
         .widget-frame { width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px; box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.05); position: relative; }
-        .widget-frame.timeline-widget { width: 120px !important; height: 360px !important; }
-        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 140px !important; }
+        .widget-frame.timeline-widget { width: 90px !important; height: 360px !important; }
+        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 160px !important; }
         .widget-frame.calendar-widget { width: 200px !important; height: 240px !important; }
         .widget-frame.todo-widget { width: 240px !important; height: 220px !important; }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
@@ -144,35 +144,45 @@
         .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
         .cat-tag.active { background: var(--theme-color); color: var(--header-text-color); }
 
-        /* Timeline Widget Styles - no header */
+        /* Timeline Widget Styles - Notion-like thin translucent design */
         .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 16px; position: relative; }
-        .timeline-scroll { flex: 1; overflow-y: auto; position: relative; }
+        .timeline-scroll { flex: 1; overflow-y: auto; position: relative; padding-top: 20px; }
         .timeline-grid { position: relative; min-height: 100%; }
-        .timeline-hour { display: flex; align-items: flex-start; height: 24px; border-bottom: 1px solid #f5f5f5; }
-        .timeline-hour-label { width: 20px; font-size: 7px; color: #bbb; text-align: right; padding-right: 4px; flex-shrink: 0; padding-top: 1px; }
+        .timeline-hour { display: flex; align-items: flex-start; height: 20px; border-bottom: 1px solid #f8f8f8; }
+        .timeline-hour-label { width: 18px; font-size: 6px; color: #ccc; text-align: right; padding-right: 3px; flex-shrink: 0; padding-top: 1px; }
         .timeline-hour-content { flex: 1; position: relative; height: 100%; }
-        .timeline-task { position: absolute; left: 2px; right: 2px; border-radius: 3px; padding: 1px 3px; font-size: 6px; overflow: hidden; z-index: 1; }
-        .timeline-task.solid { background: var(--theme-color); opacity: 0.9; }
-        .timeline-task.gradient { background: linear-gradient(to bottom, var(--theme-color), transparent); }
-        .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); opacity: 0; transition: opacity 0.2s; }
+        .timeline-task { position: absolute; left: 1px; right: 1px; border-radius: 2px; padding: 0 2px; font-size: 5px; overflow: hidden; z-index: 1; border-left: 2px solid var(--dark-theme-color); }
+        .timeline-task.solid { background: var(--theme-color); opacity: 0.6; }
+        .timeline-task.gradient { background: linear-gradient(to bottom, var(--theme-color), transparent); opacity: 0.5; }
+        .timeline-task .task-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); opacity: 0; transition: opacity 0.2s; font-size: 6px; }
         .timeline-task:hover .task-name { opacity: 1; }
-        .timeline-now-line { position: absolute; left: 20px; right: 0; height: 2px; background: var(--dark-theme-color); z-index: 10; }
-        .timeline-now-dot { position: absolute; left: 16px; width: 8px; height: 8px; background: var(--dark-theme-color); border-radius: 50%; transform: translateY(-3px); z-index: 10; }
-        .timeline-date-label { position: absolute; top: 4px; left: 24px; font-size: 8px; color: #999; font-weight: 600; z-index: 5; }
+        .timeline-task:hover { opacity: 0.9; }
+        .timeline-now-line { position: absolute; left: 18px; right: 0; height: 1px; background: var(--dark-theme-color); z-index: 10; }
+        .timeline-now-indicator { position: absolute; left: 14px; z-index: 11; }
+        .timeline-date-label { position: absolute; top: 4px; left: 4px; right: 4px; font-size: 7px; color: #999; font-weight: 600; z-index: 15; background: #fff; padding: 2px 0; text-align: center; }
 
-        /* Horizontal Timeline */
-        .timeline-horizontal { flex: 1; display: flex; flex-direction: column; background: #fff; position: relative; }
-        .timeline-h-scroll { flex: 1; overflow-x: auto; padding: 8px 8px 4px; }
+        /* Horizontal Timeline - Notion-like */
+        .timeline-horizontal { flex: 1; display: flex; flex-direction: column; background: #fff; position: relative; padding-top: 24px; }
+        .timeline-h-scroll { flex: 1; overflow-x: auto; padding: 4px 8px; }
         .timeline-h-grid { display: flex; height: 100%; min-width: max-content; position: relative; }
-        .timeline-h-hour { width: 50px; height: 100%; border-left: 1px solid #eee; position: relative; flex-shrink: 0; }
-        .timeline-h-hour-label { position: absolute; top: 0; left: 2px; font-size: 7px; color: #bbb; }
-        .timeline-h-task { position: absolute; top: 16px; bottom: 4px; background: var(--theme-color); border-radius: 4px; padding: 2px 4px; font-size: 7px; color: transparent; overflow: hidden; transition: color 0.2s; }
-        .timeline-h-task:hover { color: var(--header-text-color); }
-        .timeline-h-now { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--dark-theme-color); z-index: 10; }
-        .timeline-h-date { position: absolute; top: 4px; right: 24px; font-size: 8px; color: #999; font-weight: 600; }
+        .timeline-h-hour { width: 60px; height: 100%; border-left: 1px solid #f0f0f0; position: relative; flex-shrink: 0; }
+        .timeline-h-hour-label { position: absolute; top: 2px; left: 4px; font-size: 8px; color: #bbb; }
+        .timeline-h-task { position: absolute; top: 22px; height: 20px; background: var(--theme-color); border-radius: 3px; padding: 2px 6px; font-size: 8px; color: transparent; overflow: hidden; transition: all 0.2s; opacity: 0.7; border-top: 2px solid var(--dark-theme-color); }
+        .timeline-h-task:hover { color: var(--header-text-color); opacity: 0.95; }
+        .timeline-h-now { position: absolute; top: 14px; bottom: 0; width: 2px; background: var(--dark-theme-color); z-index: 10; }
+        .timeline-h-now-indicator { position: absolute; top: 10px; z-index: 11; }
+        .timeline-h-date { position: absolute; top: 6px; left: 10px; font-size: 9px; color: #666; font-weight: 600; z-index: 5; }
 
         /* Circle Timeline - fills calendar-like size */
         .timeline-circle { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; padding: 8px; }
+        .timeline-circle .circle-date { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 8px; color: #999; font-weight: 600; cursor: pointer; }
+
+        /* All-day events popup */
+        .allday-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 160px; max-height: 150px; overflow-y: auto; display: none; }
+        .allday-popup.show { display: block; }
+        .allday-popup-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .allday-popup-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
+        .allday-popup-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--theme-color); flex-shrink: 0; }
 
         /* Calendar Widget Styles */
         .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; position: relative; }
@@ -194,7 +204,7 @@
         .calendar-date.today.has-priority { background: var(--theme-color); }
 
         /* Calendar Popup - click to show, constrained within widget */
-        .calendar-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 160px; max-height: 140px; overflow-y: auto; display: none; }
+        .calendar-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 170px; max-height: 180px; overflow-y: auto; display: none; }
         .calendar-popup.show { display: block; }
         .calendar-popup-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
         .calendar-popup-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
@@ -298,6 +308,12 @@
                                 <option value="23" selected>23시</option>
                                 <option value="24">24시</option>
                             </select>
+                        </div>
+                        <div class="option-row" style="margin-top:8px;">
+                            <div class="option-btn active" data-indicator="circle" onclick="setIndicatorShape('circle')">●</div>
+                            <div class="option-btn" data-indicator="triangle" onclick="setIndicatorShape('triangle')">▶</div>
+                            <div class="option-btn" data-indicator="square" onclick="setIndicatorShape('square')">■</div>
+                            <div class="option-btn" data-indicator="heart" onclick="setIndicatorShape('heart')">♥</div>
                         </div>
                     </div>
                 </div>
@@ -463,6 +479,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
             </button>
             <div class="timeline-container" id="timelineContainer"></div>
+            <div class="allday-popup" id="allDayPopup"></div>
         </div>
 
         <!-- Calendar Widget -->
@@ -494,6 +511,7 @@
     let timelineShape = "vertical";
     let timeStart = 6;
     let timeEnd = 23;
+    let indicatorShape = "circle"; // circle, triangle, square, heart
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
@@ -514,13 +532,11 @@
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     }
 
-    // Format time to GMT/UTC ISO string for Notion
+    // Format time for Notion - keep as local time string (GMT+0 style)
     function formatDateTimeForNotion(date, time) {
         if (!time) return date; // date only
-        // Create datetime in local timezone, then convert to ISO
-        const [hours, minutes] = time.split(':');
-        const dt = new Date(date + 'T' + time + ':00');
-        return dt.toISOString();
+        // Return as simple datetime string without timezone conversion
+        return `${date}T${time}:00.000+00:00`;
     }
 
     function updateClock() {
@@ -590,6 +606,7 @@
         timelineShape = params.get('ts') || 'vertical';
         timeStart = parseInt(params.get('th1')) || 6;
         timeEnd = parseInt(params.get('th2')) || 23;
+        indicatorShape = params.get('ti') || 'circle';
         initWidget(widgetType);
     } else {
         const pal = document.getElementById('palette');
@@ -646,6 +663,12 @@
         timeEnd = parseInt(document.getElementById('timeEnd').value);
     }
 
+    function setIndicatorShape(shape) {
+        indicatorShape = shape;
+        document.querySelectorAll('[data-indicator]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-indicator="${shape}"]`)?.classList.add('active');
+    }
+
     async function moveStep(n) {
         const newStep = step + n;
         if (n === 1 && step === 1) {
@@ -678,7 +701,7 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}&ti=${indicatorShape}`;
 
         document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
@@ -1030,10 +1053,13 @@
         const container = document.getElementById('todoContainer');
         if (!container) return;
 
-        const today = new Date().toDateString();
+        // Use YYYY-MM-DD format for consistent date comparison
+        const todayStr = getLocalDate();
         let filtered = tasks.filter(t => {
             if (!t.date) return false;
-            return new Date(t.date).toDateString() === today;
+            // Compare just the date part (YYYY-MM-DD)
+            const taskDate = t.date.split('T')[0];
+            return taskDate === todayStr;
         });
 
         if (selectedCategory) {
@@ -1121,6 +1147,9 @@
         if (!e.target.closest('.calendar-popup') && !e.target.closest('.calendar-date')) {
             hideCalendarPopup();
         }
+        if (!e.target.closest('.allday-popup') && !e.target.closest('.timeline-date-label') && !e.target.closest('.timeline-h-date') && !e.target.closest('.circle-date')) {
+            hideAllDayPopup();
+        }
     });
 
     async function postponeTask() {
@@ -1184,25 +1213,39 @@
         return `rgb(${Math.round(newR)}, ${Math.round(newG)}, ${Math.round(newB)})`;
     }
 
+    function getIndicatorSvg(shape, color) {
+        const shapes = {
+            circle: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="${color}"/></svg>`,
+            triangle: `<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 4 L7 1 L7 7 Z" fill="${color}"/></svg>`,
+            square: `<svg width="8" height="8" viewBox="0 0 8 8"><rect x="1" y="1" width="6" height="6" fill="${color}"/></svg>`,
+            heart: `<svg width="8" height="8" viewBox="0 0 8 8"><path d="M4 7 C1 4.5 0 3 0 2 C0 0.5 1 0 2 0 C3 0 4 1 4 1 C4 1 5 0 6 0 C7 0 8 0.5 8 2 C8 3 7 4.5 4 7Z" fill="${color}"/></svg>`
+        };
+        return shapes[shape] || shapes.circle;
+    }
+
     function renderVerticalTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
         const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
         const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
 
-        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
         const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
 
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
-        const hourHeight = 24;
+        const hourHeight = 20;
 
-        let gridHtml = `<div class="timeline-date-label">${dateLabel}</div>`;
+        let gridHtml = '';
         for (let h = timeStart; h <= timeEnd; h++) {
             gridHtml += `<div class="timeline-hour" data-hour="${h}"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content" id="hour-${h}"></div></div>`;
         }
 
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
         container.innerHTML = `
+            <div class="timeline-date-label" ${allDayClick} style="cursor:${allDayTasks.length > 0 ? 'pointer' : 'default'}">${dateLabel}${allDayTasks.length > 0 ? ` <span style="font-size:6px;color:#bbb;">(${allDayTasks.length})</span>` : ''}</div>
             <div class="timeline-scroll">
                 <div class="timeline-grid" id="timelineGrid">${gridHtml}</div>
             </div>
@@ -1226,7 +1269,7 @@
 
                 if (endMin !== null) {
                     const duration = endMin - startMin;
-                    height = Math.max(duration / 60 * hourHeight, 14);
+                    height = Math.max(duration / 60 * hourHeight, 12);
                     styleClass = 'solid';
                 } else {
                     height = hourHeight * 2;
@@ -1237,12 +1280,14 @@
                 taskEl.className = `timeline-task ${styleClass}`;
                 taskEl.style.top = topOffset + 'px';
                 taskEl.style.height = height + 'px';
-                taskEl.style.background = styleClass === 'solid' ? getTaskColor(index, group.length) : `linear-gradient(to bottom, ${getTaskColor(index, group.length)}, transparent)`;
+                const color = getTaskColor(index, group.length);
+                taskEl.style.background = styleClass === 'solid' ? color : `linear-gradient(to bottom, ${color}, transparent)`;
+                taskEl.style.borderLeftColor = 'var(--dark-theme-color)';
 
                 const widthPercent = 100 / group.length;
                 const leftPercent = index * widthPercent;
-                taskEl.style.left = `calc(2px + ${leftPercent}%)`;
-                taskEl.style.width = `calc(${widthPercent}% - 4px)`;
+                taskEl.style.left = `calc(1px + ${leftPercent}%)`;
+                taskEl.style.width = `calc(${widthPercent}% - 2px)`;
                 taskEl.style.right = 'auto';
 
                 taskEl.innerHTML = `<div class="task-name">${t.title}</div>`;
@@ -1252,7 +1297,7 @@
 
         if (currentHour >= timeStart && currentHour <= timeEnd) {
             const grid = document.getElementById('timelineGrid');
-            const hourOffset = (currentHour - timeStart) * hourHeight + 20; // +20 for date label
+            const hourOffset = (currentHour - timeStart) * hourHeight;
             const minOffset = currentMinute / 60 * hourHeight;
             const nowTop = hourOffset + minOffset;
 
@@ -1261,10 +1306,11 @@
             nowLine.style.top = nowTop + 'px';
             grid.appendChild(nowLine);
 
-            const nowDot = document.createElement('div');
-            nowDot.className = 'timeline-now-dot';
-            nowDot.style.top = nowTop + 'px';
-            grid.appendChild(nowDot);
+            const nowIndicator = document.createElement('div');
+            nowIndicator.className = 'timeline-now-indicator';
+            nowIndicator.style.top = (nowTop - 4) + 'px';
+            nowIndicator.innerHTML = getIndicatorSvg(indicatorShape, 'var(--dark-theme-color)');
+            grid.appendChild(nowIndicator);
         }
     }
 
@@ -1274,21 +1320,24 @@
         const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
         const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
 
-        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
         const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
 
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
-        const hourWidth = 50;
+        const hourWidth = 60;
 
         let gridHtml = '';
         for (let h = timeStart; h <= timeEnd; h++) {
             gridHtml += `<div class="timeline-h-hour" data-hour="${h}"><span class="timeline-h-hour-label">${h}</span></div>`;
         }
 
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
         container.innerHTML = `
             <div class="timeline-horizontal">
-                <div class="timeline-h-date">${dateLabel}</div>
+                <div class="timeline-h-date" ${allDayClick} style="cursor:${allDayTasks.length > 0 ? 'pointer' : 'default'}">${dateLabel}${allDayTasks.length > 0 ? ` <span style="font-size:7px;color:#bbb;">(${allDayTasks.length})</span>` : ''}</div>
                 <div class="timeline-h-scroll">
                     <div class="timeline-h-grid" id="timelineHGrid">${gridHtml}</div>
                 </div>
@@ -1309,24 +1358,23 @@
 
                 const leftOffset = (startHour - timeStart) * hourWidth + (startMin % 60) / 60 * hourWidth;
                 const duration = endMin - startMin;
-                const width = Math.max(duration / 60 * hourWidth, 30);
+                const width = Math.max(duration / 60 * hourWidth, 40);
 
-                const heightPercent = 100 / group.length;
-                const topPercent = index * heightPercent;
+                const rowHeight = 24;
+                const topOffset = 22 + (index * rowHeight);
 
                 const taskEl = document.createElement('div');
                 taskEl.className = 'timeline-h-task';
                 taskEl.style.left = leftOffset + 'px';
                 taskEl.style.width = width + 'px';
-                taskEl.style.top = `calc(16px + ${topPercent}%)`;
-                taskEl.style.height = `calc(${heightPercent}% - 20px)`;
-                taskEl.style.bottom = 'auto';
+                taskEl.style.top = topOffset + 'px';
+                taskEl.style.height = '20px';
 
                 // Apply gradient if no end time
+                const color = getTaskColor(index, group.length);
                 if (hasEndTime) {
-                    taskEl.style.background = getTaskColor(index, group.length);
+                    taskEl.style.background = color;
                 } else {
-                    const color = getTaskColor(index, group.length);
                     taskEl.style.background = `linear-gradient(to right, ${color}, transparent)`;
                 }
 
@@ -1341,15 +1389,25 @@
             nowLine.className = 'timeline-h-now';
             nowLine.style.left = nowLeft + 'px';
             grid.appendChild(nowLine);
+
+            const nowIndicator = document.createElement('div');
+            nowIndicator.className = 'timeline-h-now-indicator';
+            nowIndicator.style.left = (nowLeft - 4) + 'px';
+            nowIndicator.innerHTML = getIndicatorSvg(indicatorShape, 'var(--dark-theme-color)');
+            grid.appendChild(nowIndicator);
         }
     }
 
     function renderCircleTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
 
-        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
         const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
 
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
@@ -1413,16 +1471,16 @@
 
                 let fillAttr;
                 if (hasEndTime) {
-                    fillAttr = `fill="${color}" opacity="0.8"`;
+                    fillAttr = `fill="${color}" opacity="0.7"`;
                 } else {
                     // Create gradient for no end time
                     const gId = `grad${gradientId++}`;
-                    const midRad = (startRad + endRad) / 2;
-                    gradientDefs += `<linearGradient id="${gId}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}"><stop offset="0%" stop-color="${color}" stop-opacity="0.8"/><stop offset="100%" stop-color="${color}" stop-opacity="0.1"/></linearGradient>`;
+                    gradientDefs += `<linearGradient id="${gId}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}"><stop offset="0%" stop-color="${color}" stop-opacity="0.7"/><stop offset="100%" stop-color="${color}" stop-opacity="0.1"/></linearGradient>`;
                     fillAttr = `fill="url(#${gId})"`;
                 }
 
-                arcsHtml += `<path d="M${x1},${y1} A${taskInnerRadius},${taskInnerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${taskOuterRadius},${taskOuterRadius} 0 ${largeArc},0 ${x4},${y4} Z" ${fillAttr}/>`;
+                // Add title element for hover
+                arcsHtml += `<path d="M${x1},${y1} A${taskInnerRadius},${taskInnerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${taskOuterRadius},${taskOuterRadius} 0 ${largeArc},0 ${x4},${y4} Z" ${fillAttr} style="cursor:pointer"><title>${t.title}</title></path>`;
             });
         });
 
@@ -1435,6 +1493,7 @@
         arcsHtml += `<circle cx="${nowX}" cy="${nowY}" r="3" fill="var(--dark-theme-color)"/>`;
         arcsHtml += `<line x1="${center}" y1="${center}" x2="${center + Math.cos(nowRad) * innerRadius}" y2="${center + Math.sin(nowRad) * innerRadius}" stroke="var(--dark-theme-color)" stroke-width="1.5"/>`;
 
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
         container.innerHTML = `
             <div class="timeline-circle">
                 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
@@ -1443,6 +1502,7 @@
                     <circle cx="${center}" cy="${center}" r="${innerRadius}" fill="none" stroke="#eee" stroke-width="1"/>
                     ${arcsHtml}
                 </svg>
+                <div class="circle-date" ${allDayClick}>${dateLabel}${allDayTasks.length > 0 ? ` (${allDayTasks.length})` : ''}</div>
             </div>
         `;
     }
@@ -1512,9 +1572,11 @@
         if (Array.isArray(taskList)) {
             taskList.forEach(t => {
                 if (t.date) {
-                    if (!eventDates.has(t.date)) eventDates.set(t.date, []);
-                    eventDates.get(t.date).push(t);
-                    if (t.priority) priorityDates.add(t.date);
+                    // Normalize date to YYYY-MM-DD format for consistent comparison
+                    const normalizedDate = t.date.split('T')[0];
+                    if (!eventDates.has(normalizedDate)) eventDates.set(normalizedDate, []);
+                    eventDates.get(normalizedDate).push(t);
+                    if (t.priority) priorityDates.add(normalizedDate);
                 }
             });
         }
@@ -1573,7 +1635,7 @@
 
         popup.innerHTML = `
             <div class="calendar-popup-title">${title}</div>
-            ${dateTasks.slice(0, 6).map(t => `
+            ${dateTasks.map(t => `
                 <div class="calendar-popup-item">
                     <span class="star-mini ${t.priority ? 'active' : ''}" onclick="togglePriorityFromPopup(event, '${t.id}')">
                         <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -1583,7 +1645,6 @@
                     <span class="item-title">${t.title}</span>
                 </div>
             `).join('')}
-            ${dateTasks.length > 6 ? `<div class="calendar-popup-item" style="color:#999;">+${dateTasks.length - 6} more</div>` : ''}
         `;
 
         const rect = e.target.getBoundingClientRect();
@@ -1618,6 +1679,40 @@
         if (popup) popup.classList.remove('show');
     }
 
+    function showAllDayPopup(e) {
+        e.stopPropagation();
+        const popup = document.getElementById('allDayPopup');
+        if (!popup) return;
+
+        const now = new Date();
+        const todayStr = getLocalDate();
+        const allDayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr && !t.startTime);
+
+        if (allDayTasks.length === 0) return;
+
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const title = `${monthNames[now.getMonth()]} ${now.getDate()}일 종일`;
+
+        popup.innerHTML = `
+            <div class="allday-popup-title">${title}</div>
+            ${allDayTasks.map(t => `
+                <div class="allday-popup-item">
+                    <span class="dot"></span>
+                    <span>${t.title}</span>
+                </div>
+            `).join('')}
+        `;
+
+        popup.style.top = '30px';
+        popup.style.left = '10px';
+        popup.classList.add('show');
+    }
+
+    function hideAllDayPopup() {
+        const popup = document.getElementById('allDayPopup');
+        if (popup) popup.classList.remove('show');
+    }
+
     async function togglePriorityFromPopup(e, id) {
         e.stopPropagation();
         await togglePriority(id);
@@ -1632,7 +1727,7 @@
                 dateTasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
                 popup.innerHTML = `
                     <div class="calendar-popup-title">${title}</div>
-                    ${dateTasks.slice(0, 6).map(t => `
+                    ${dateTasks.map(t => `
                         <div class="calendar-popup-item">
                             <span class="star-mini ${t.priority ? 'active' : ''}" onclick="togglePriorityFromPopup(event, '${t.id}')">
                                 <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -1642,7 +1737,6 @@
                             <span class="item-title">${t.title}</span>
                         </div>
                     `).join('')}
-                    ${dateTasks.length > 6 ? `<div class="calendar-popup-item" style="color:#999;">+${dateTasks.length - 6} more</div>` : ''}
                 `;
             }
         }
