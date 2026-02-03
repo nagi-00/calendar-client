@@ -11,6 +11,7 @@
             --hover-color: rgba(0, 0, 0, 0.04);
             --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
             --dark-theme-color: #333;
+            --header-text-color: #1d1d1f;
             --onboarding-btn-color: #f5f5f7;
             --onboarding-btn-active: #1d1d1f;
             --widget-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -61,90 +62,109 @@
 
         /* Widget Frame */
         .widget-frame { width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px; box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.05); position: relative; }
-        .widget-frame.timeline-widget { width: 120px !important; height: 320px !important; }
-        .widget-frame.timeline-widget.no-topbar { }
+        .widget-frame.timeline-widget { width: 120px !important; height: 360px !important; }
+        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 120px !important; }
         .widget-frame.calendar-widget { width: 200px !important; height: 240px !important; }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
         .widget-top.hidden { display: none; }
         .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
         .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
-        .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; cursor: pointer; }
+        .w-title { font-size: 10px; font-weight: 700; color: var(--header-text-color); width: 100%; text-align: center; cursor: pointer; }
 
-        /* Refresh Button - subtle arrow */
+        /* Refresh Button with spin animation */
         .refresh-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #ccc; transition: 0.2s; }
         .refresh-btn:hover { color: #999; }
         .refresh-btn svg { width: 12px; height: 12px; }
+        .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* Home Screen Clock */
         .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .current-time { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
         .current-date { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--dark-theme-color); cursor: pointer; }
+        .action-btn { background: var(--theme-color); border: none; padding: 6px 14px; border-radius: 14px; font-size: 9px; color: var(--header-text-color); cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .action-btn:hover { opacity: 0.85; }
         .action-btns { display: flex; gap: 6px; }
 
         /* Setup Widget Form Styles */
-        .setup-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow: hidden; }
-        .setup-form-header { display: flex; align-items: center; margin-bottom: 4px; }
+        .setup-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow-y: auto; min-height: 0; }
+        .setup-form-header { display: flex; align-items: center; margin-bottom: 4px; flex-shrink: 0; }
         .back-btn { background: none; border: none; cursor: pointer; padding: 2px; color: #999; }
         .back-btn:hover { color: #333; }
         .form-type-btns { display: flex; gap: 4px; flex: 1; justify-content: center; }
         .form-type-btn { padding: 3px 10px; border: 1px solid #eee; border-radius: 10px; background: #f9f9fc; font-size: 8px; cursor: pointer; color: #666; }
-        .form-type-btn.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+        .form-type-btn.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--header-text-color); }
         .mini-input { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
         .mini-select { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
         .form-row { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
         .form-row .mini-input { flex: 1; margin-bottom: 0; }
         .form-label { font-size: 8px; color: #999; min-width: 24px; }
-        .btn-row { display: flex; gap: 4px; margin-top: auto; }
-        .btn-row button { flex: 1; padding: 6px; font-size: 10px; border-radius: 6px; border: none; cursor: pointer; }
-        .btn-save { background: #1d1d1f; color: #fff; }
+        .form-check { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 9px; color: #666; }
+        .form-check input[type="checkbox"] { width: 14px; height: 14px; margin: 0; }
+        .btn-row { display: flex; gap: 4px; margin-top: 8px; flex-shrink: 0; padding-top: 4px; }
+        .btn-row button { flex: 1; padding: 8px; font-size: 10px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-save { background: var(--theme-color); color: var(--header-text-color); }
+        .btn-save:hover { opacity: 0.85; }
         .btn-cancel { background: #f5f5f7; color: #666; }
 
         /* Routine repeat options */
         .repeat-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
-        .repeat-day { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ddd; background: #f9f9fc; font-size: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; }
-        .repeat-day.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+        .repeat-day { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ddd; background: #f9f9fc; font-size: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; transition: 0.2s; }
+        .repeat-day.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--header-text-color); }
 
         /* Todo Widget (formerly List) Styles */
-        .todo-header { padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #eee; }
-        .todo-container { flex: 1; overflow-y: auto; padding: 4px 8px; }
+        .todo-header { padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #eee; flex-shrink: 0; }
+        .todo-container { flex: 1; overflow-y: auto; padding: 4px 8px; min-height: 0; }
         .task-section { margin-bottom: 4px; }
         .task-section-divider { height: 1px; background: #eee; margin: 6px 0; }
         .task-card { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: #fafafa; border-radius: 6px; font-size: 9px; margin-bottom: 2px; cursor: default; }
         .task-card.done { opacity: 0.5; }
         .task-card.done .task-title-input { text-decoration: line-through; color: #999; }
-        .task-card .star { cursor: pointer; }
+        .task-card .star { cursor: pointer; flex-shrink: 0; }
         .task-card .star svg { width: 12px; height: 12px; fill: #ddd; transition: 0.2s; }
         .task-card .star.active svg { fill: var(--dark-theme-color); }
-        .task-card .task-time-input { font-size: 7px; color: #999; width: 32px; background: transparent; border: none; padding: 0; text-align: center; }
+        .task-card .task-time-input { font-size: 7px; color: #999; width: 32px; background: transparent; border: none; padding: 0; text-align: center; flex-shrink: 0; }
         .task-card .task-time-input:focus { background: #fff; border-radius: 2px; }
         .task-card .task-title-input { flex: 1; background: transparent; border: none; padding: 0; font-size: 9px; min-width: 0; }
         .task-card .task-title-input:focus { background: #fff; border-radius: 2px; }
-        .task-card .check { cursor: pointer; }
+        .task-card .check { cursor: pointer; flex-shrink: 0; }
         .task-card .check svg { width: 14px; height: 14px; color: #ddd; transition: 0.2s; }
         .task-card .check.active svg { color: var(--dark-theme-color); }
-        .task-card .drag-handle { cursor: grab; color: #ccc; font-size: 8px; padding: 0 2px; }
+        .task-card .drag-handle { cursor: grab; color: #ccc; font-size: 8px; padding: 0 2px; flex-shrink: 0; }
         .task-card.dragging { opacity: 0.5; background: var(--theme-color); }
+        .task-card .routine-badge { font-size: 6px; background: var(--theme-color); color: var(--header-text-color); padding: 1px 4px; border-radius: 4px; flex-shrink: 0; }
         .category-filter { display: none; padding: 4px 8px; gap: 4px; flex-wrap: wrap; border-bottom: 0.5px solid #eee; }
         .category-filter.show { display: flex; }
         .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
-        .cat-tag.active { background: var(--theme-color); color: var(--dark-theme-color); }
+        .cat-tag.active { background: var(--theme-color); color: var(--header-text-color); }
 
-        /* Timeline Widget Styles - no top bar */
+        /* Timeline Widget Styles */
         .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 16px; }
-        .timeline-header { text-align: center; padding: 8px 6px; background: var(--theme-color); }
-        .timeline-header .date-display { font-size: 12px; font-weight: 700; color: var(--dark-theme-color); }
-        .timeline-header .day-display { font-size: 9px; color: var(--dark-theme-color); opacity: 0.7; }
-        .timeline-header .weather-display { font-size: 8px; color: var(--dark-theme-color); opacity: 0.6; margin-top: 2px; }
+        .timeline-header { text-align: center; padding: 8px 6px; background: var(--theme-color); flex-shrink: 0; }
+        .timeline-header .date-display { font-size: 12px; font-weight: 700; color: var(--header-text-color); }
+        .timeline-header .day-display { font-size: 9px; color: var(--header-text-color); opacity: 0.7; }
         .timeline-scroll { flex: 1; overflow-y: auto; position: relative; }
         .timeline-grid { position: relative; min-height: 100%; }
-        .timeline-hour { display: flex; align-items: flex-start; height: 18px; border-bottom: 1px solid #f5f5f5; }
-        .timeline-hour-label { width: 18px; font-size: 7px; color: #bbb; text-align: right; padding-right: 3px; flex-shrink: 0; }
+        .timeline-hour { display: flex; align-items: flex-start; height: 24px; border-bottom: 1px solid #f5f5f5; }
+        .timeline-hour-label { width: 20px; font-size: 7px; color: #bbb; text-align: right; padding-right: 4px; flex-shrink: 0; }
         .timeline-hour-content { flex: 1; position: relative; height: 100%; }
-        .timeline-task { position: absolute; left: 2px; right: 2px; background: var(--theme-color); border-radius: 3px; padding: 1px 3px; font-size: 6px; color: var(--dark-theme-color); overflow: hidden; opacity: 0.9; z-index: 1; }
-        .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .timeline-now-line { position: absolute; left: 18px; right: 0; height: 2px; background: #ff3b30; z-index: 10; }
-        .timeline-now-dot { position: absolute; left: 14px; width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; transform: translateY(-3px); z-index: 10; }
+        .timeline-task { position: absolute; left: 2px; right: 2px; border-radius: 3px; padding: 1px 3px; font-size: 6px; overflow: hidden; z-index: 1; }
+        .timeline-task.solid { background: var(--theme-color); opacity: 0.9; }
+        .timeline-task.gradient { background: linear-gradient(to bottom, var(--theme-color), transparent); }
+        .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); }
+        .timeline-now-line { position: absolute; left: 20px; right: 0; height: 2px; background: var(--dark-theme-color); z-index: 10; }
+        .timeline-now-dot { position: absolute; left: 16px; width: 8px; height: 8px; background: var(--dark-theme-color); border-radius: 50%; transform: translateY(-3px); z-index: 10; }
+
+        /* Horizontal Timeline */
+        .timeline-horizontal { flex: 1; display: flex; flex-direction: column; background: #fff; }
+        .timeline-h-header { padding: 6px 10px; background: var(--theme-color); display: flex; justify-content: space-between; align-items: center; }
+        .timeline-h-date { font-size: 11px; font-weight: 700; color: var(--header-text-color); }
+        .timeline-h-scroll { flex: 1; overflow-x: auto; padding: 10px; }
+        .timeline-h-grid { display: flex; height: 100%; min-width: max-content; position: relative; }
+        .timeline-h-hour { width: 50px; height: 100%; border-left: 1px solid #eee; position: relative; flex-shrink: 0; }
+        .timeline-h-hour-label { position: absolute; top: 0; left: 2px; font-size: 7px; color: #bbb; }
+        .timeline-h-task { position: absolute; top: 18px; bottom: 4px; background: var(--theme-color); border-radius: 4px; padding: 2px 4px; font-size: 7px; color: var(--header-text-color); overflow: hidden; }
+        .timeline-h-now { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--dark-theme-color); z-index: 10; }
 
         /* Calendar Widget Styles */
         .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; position: relative; }
@@ -160,23 +180,29 @@
         .calendar-date { font-size: 9px; text-align: center; padding: 3px 1px; border-radius: 4px; cursor: pointer; position: relative; color: #666; }
         .calendar-date:hover { background: #f5f5f5; }
         .calendar-date.other-month { color: #ccc; }
-        .calendar-date.today { font-weight: 700; color: var(--dark-theme-color); background: var(--theme-color); }
+        .calendar-date.today { font-weight: 700; color: var(--header-text-color); background: var(--theme-color); }
         .calendar-date.has-event::after { content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-theme-color); border-radius: 50%; }
-        .calendar-date.today.has-event::after { background: #fff; }
+        .calendar-date.today.has-event::after { background: var(--header-text-color); }
 
-        /* Calendar Tooltip */
-        .calendar-tooltip { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 180px; display: none; }
+        /* Calendar Tooltip - stays visible on hover */
+        .calendar-tooltip { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 140px; max-width: 200px; display: none; }
         .calendar-tooltip.show { display: block; }
         .calendar-tooltip-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-        .calendar-tooltip-item { font-size: 8px; color: #666; padding: 2px 0; display: flex; align-items: center; gap: 4px; }
-        .calendar-tooltip-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dark-theme-color); }
+        .calendar-tooltip-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
+        .calendar-tooltip-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dark-theme-color); flex-shrink: 0; }
+        .calendar-tooltip-item .star-mini { cursor: pointer; }
+        .calendar-tooltip-item .star-mini svg { width: 10px; height: 10px; fill: #ddd; }
+        .calendar-tooltip-item .star-mini.active svg { fill: var(--dark-theme-color); }
+        .calendar-tooltip-item input { flex: 1; font-size: 8px; border: none; background: transparent; padding: 0; min-width: 0; }
+        .calendar-tooltip-item input:focus { background: #f5f5f5; border-radius: 2px; }
 
-        /* Context Menu */
-        .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 100px; }
+        /* Context Menu for delete options */
+        .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 120px; }
         .context-menu.show { display: block; }
         .context-menu-item { padding: 8px 12px; font-size: 11px; cursor: pointer; }
         .context-menu-item:hover { background: #f5f5f7; }
         .context-menu-item.danger { color: #ff3b30; }
+        .context-menu-divider { height: 1px; background: #eee; margin: 4px 0; }
 
         /* Toast */
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 11px; transition: 0.4s; z-index: 100; }
@@ -222,7 +248,7 @@
                     <p>위젯 테마를 설정하세요.</p>
                     <div class="color-palette" id="palette"></div>
                     <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
-                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;border-radius:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
 
                     <div class="option-group">
                         <label>위젯 폰트</label>
@@ -319,7 +345,7 @@
                 <div class="widget-frame timeline-widget" id="previewTimeline">
                     <div class="timeline-container">
                         <div class="timeline-header">
-                            <div class="date-display">3</div>
+                            <div class="date-display">2월 3일</div>
                             <div class="day-display">MON</div>
                         </div>
                         <div class="timeline-scroll">
@@ -343,7 +369,7 @@
             <div class="w-title" id="widgetTitle" onclick="toggleCategoryFilter()">Widget</div>
         </div>
 
-        <!-- Setup Widget (formerly Todo - for adding tasks) -->
+        <!-- Setup Widget (for adding tasks) -->
         <div id="setupWidget" style="display:none;">
             <div class="widget-home" id="setupHome">
                 <div class="current-time" id="setupTime">00:00</div>
@@ -365,13 +391,19 @@
                 </div>
                 <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력..." onkeydown="handleEnterKey(event)">
                 <input type="date" class="mini-input" id="taskDate">
-                <div class="form-row">
-                    <span class="form-label">시작</span>
-                    <input type="time" class="mini-input" id="taskStartTime">
-                </div>
-                <div class="form-row">
-                    <span class="form-label">종료</span>
-                    <input type="time" class="mini-input" id="taskEndTime">
+                <label class="form-check">
+                    <input type="checkbox" id="allDayCheck" onchange="toggleAllDay()">
+                    <span>종일</span>
+                </label>
+                <div id="timeInputs">
+                    <div class="form-row">
+                        <span class="form-label">시작</span>
+                        <input type="time" class="mini-input" id="taskStartTime">
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">종료</span>
+                        <input type="time" class="mini-input" id="taskEndTime">
+                    </div>
                 </div>
                 <div id="routineOptions" style="display:none;">
                     <div class="form-label" style="margin-bottom:4px;">반복 요일</div>
@@ -395,15 +427,15 @@
             </div>
         </div>
 
-        <!-- Todo Widget (formerly List - for viewing tasks) -->
+        <!-- Todo Widget (for viewing/editing tasks) -->
         <div id="todoWidget" style="display:none;">
             <div class="category-filter" id="categoryFilter"></div>
             <div class="todo-header">
-                <button class="refresh-btn" onclick="refreshTasks()">
+                <button class="refresh-btn" id="todoRefreshBtn" onclick="refreshTasksWithSpin()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
                 </button>
                 <span style="font-size:8px;font-weight:bold;">TODAY</span>
-                <span style="font-size:7px;color:#999;" id="taskCount">0 tasks</span>
+                <span style="font-size:7px;color:#999;" id="taskCount">0T 0R</span>
             </div>
             <div class="todo-container" id="todoContainer"></div>
         </div>
@@ -416,14 +448,16 @@
         <!-- Calendar Widget -->
         <div id="calendarWidget" style="display:none;">
             <div class="calendar-container" id="calendarContainer"></div>
-            <div class="calendar-tooltip" id="calendarTooltip"></div>
+            <div class="calendar-tooltip" id="calendarTooltip" onmouseenter="keepTooltip()" onmouseleave="hideTooltipDelayed()"></div>
         </div>
     </div>
 
-    <!-- Context Menu -->
+    <!-- Context Menu with delete options -->
     <div class="context-menu" id="contextMenu">
         <div class="context-menu-item" onclick="postponeTask()">내일로 미루기</div>
-        <div class="context-menu-item danger" onclick="deleteTask()">삭제</div>
+        <div class="context-menu-divider" id="routineMenuDivider" style="display:none;"></div>
+        <div class="context-menu-item danger" id="deleteSingleItem" style="display:none;" onclick="deleteRoutineSingle()">오늘만 삭제</div>
+        <div class="context-menu-item danger" id="deleteAllItem" onclick="deleteTask()">삭제</div>
     </div>
 
     <div id="toast">Saved!</div>
@@ -440,12 +474,15 @@
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
+    let selectedTaskIsRoutine = false;
     let showCategoryFilter = false;
     let selectedCategory = null;
     let calendarDate = new Date();
     let formType = 'task';
     let repeatDays = [];
     let draggedItem = null;
+    let tooltipTimeout = null;
+    let keepTooltipOpen = false;
 
     const params = new URLSearchParams(window.location.search);
     const widgetType = params.get('w');
@@ -490,13 +527,28 @@
     }
     renderPreviewCalendar();
 
+    // Update header text color based on theme brightness
+    function updateHeaderTextColor(hex) {
+        const r = parseInt(hex.slice(1,3), 16);
+        const g = parseInt(hex.slice(3,5), 16);
+        const b = parseInt(hex.slice(5,7), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        const textColor = brightness < 128 ? '#ffffff' : '#1d1d1f';
+        document.documentElement.style.setProperty('--header-text-color', textColor);
+    }
+
     // Initialize
     if (params.get('t') && widgetType) {
         document.body.classList.add('is-embed');
         document.getElementById('embedWidget').style.display = 'flex';
 
         if (widgetType === 'timeline') {
-            document.getElementById('embedWidget').classList.add('timeline-widget');
+            const shape = params.get('ts') || 'vertical';
+            if (shape === 'horizontal') {
+                document.getElementById('embedWidget').classList.add('timeline-widget', 'horizontal');
+            } else {
+                document.getElementById('embedWidget').classList.add('timeline-widget');
+            }
             document.getElementById('widgetTopBar').classList.add('hidden');
         } else if (widgetType === 'calendar') {
             document.getElementById('embedWidget').classList.add('calendar-widget');
@@ -538,6 +590,7 @@
         const darkG = Math.max(0, g - 100);
         const darkB = Math.max(0, b - 100);
         document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
+        updateHeaderTextColor(hex);
         renderPreviewCalendar();
     }
 
@@ -630,11 +683,13 @@
             document.getElementById('setupWidget').style.display = 'flex';
             document.getElementById('setupWidget').style.flexDirection = 'column';
             document.getElementById('setupWidget').style.flex = '1';
+            document.getElementById('setupWidget').style.minHeight = '0';
             loadCategories();
         } else if (type === 'todo') {
             document.getElementById('todoWidget').style.display = 'flex';
             document.getElementById('todoWidget').style.flexDirection = 'column';
             document.getElementById('todoWidget').style.flex = '1';
+            document.getElementById('todoWidget').style.minHeight = '0';
             loadCategories();
             refreshTasks();
         } else if (type === 'timeline') {
@@ -658,6 +713,8 @@
         document.getElementById('btnTask').classList.toggle('active', type === 'task');
         document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
         document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+        document.getElementById('allDayCheck').checked = false;
+        document.getElementById('timeInputs').style.display = 'block';
         document.getElementById('taskTitle').focus();
     }
 
@@ -672,6 +729,15 @@
         document.getElementById('btnTask').classList.toggle('active', type === 'task');
         document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
         document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+    }
+
+    function toggleAllDay() {
+        const isAllDay = document.getElementById('allDayCheck').checked;
+        document.getElementById('timeInputs').style.display = isAllDay ? 'none' : 'block';
+        if (isAllDay) {
+            document.getElementById('taskStartTime').value = '';
+            document.getElementById('taskEndTime').value = '';
+        }
     }
 
     function toggleRepeatDay(day) {
@@ -690,6 +756,8 @@
         document.getElementById('taskStartTime').value = '';
         document.getElementById('taskEndTime').value = '';
         document.getElementById('taskCategory').value = '';
+        document.getElementById('allDayCheck').checked = false;
+        document.getElementById('timeInputs').style.display = 'block';
         repeatDays = [];
         document.querySelectorAll('.repeat-day').forEach(el => el.classList.remove('active'));
         selectedTaskId = null;
@@ -753,8 +821,9 @@
     async function saveTask() {
         const title = document.getElementById('taskTitle').value.trim();
         const date = document.getElementById('taskDate').value;
-        const startTime = document.getElementById('taskStartTime').value;
-        const endTime = document.getElementById('taskEndTime').value;
+        const isAllDay = document.getElementById('allDayCheck').checked;
+        const startTime = isAllDay ? null : document.getElementById('taskStartTime').value;
+        const endTime = isAllDay ? null : document.getElementById('taskEndTime').value;
         const category = document.getElementById('taskCategory').value;
 
         if (!title) { showToast('할 일을 입력하세요'); return; }
@@ -770,7 +839,8 @@
                 endTime: endTime || null,
                 category: category || null,
                 isRoutine: formType === 'routine',
-                repeatDays: formType === 'routine' ? repeatDays : null
+                repeatDays: formType === 'routine' ? repeatDays : null,
+                isAllDay: isAllDay
             };
 
             const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
@@ -791,7 +861,16 @@
         }
     }
 
-    // Todo (List) Functions
+    // Todo Functions with spin animation
+    async function refreshTasksWithSpin() {
+        const btn = document.getElementById('todoRefreshBtn');
+        if (btn) btn.classList.add('spinning');
+        await refreshTasks();
+        setTimeout(() => {
+            if (btn) btn.classList.remove('spinning');
+        }, 500);
+    }
+
     async function refreshTasks() {
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/events`, {
@@ -817,6 +896,11 @@
         const today = new Date().toDateString();
         let filtered = tasks.filter(t => {
             if (!t.date) return false;
+            // For routines, check if today's day matches repeat days
+            if (t.isRoutine && t.repeatDays && t.repeatDays.length > 0) {
+                const todayDay = new Date().getDay();
+                return t.repeatDays.includes(todayDay);
+            }
             return new Date(t.date).toDateString() === today;
         });
 
@@ -824,39 +908,43 @@
             filtered = filtered.filter(t => t.category === selectedCategory);
         }
 
-        // Separate into groups: no end time, routines, timed
-        const noEndTime = filtered.filter(t => !t.endTime && !t.isRoutine && !t.done);
+        // Count tasks and routines separately
+        const taskCount = filtered.filter(t => !t.isRoutine && !t.done).length;
+        const routineCount = filtered.filter(t => t.isRoutine && !t.done).length;
+        document.getElementById('taskCount').innerText = `${taskCount}T ${routineCount}R`;
+
+        // Separate into groups
+        // All-day tasks (no time) and routines are draggable
+        const allDayTasks = filtered.filter(t => !t.startTime && !t.endTime && !t.isRoutine && !t.done);
         const routines = filtered.filter(t => t.isRoutine && !t.done);
-        const timed = filtered.filter(t => t.endTime && !t.isRoutine && !t.done);
+        const timedTasks = filtered.filter(t => (t.startTime || t.endTime) && !t.isRoutine && !t.done);
         const done = filtered.filter(t => t.done);
 
         // Sort timed by start time
-        timed.sort((a, b) => (a.startTime || '99:99').localeCompare(b.startTime || '99:99'));
-
-        document.getElementById('taskCount').innerText = `${filtered.length} tasks`;
+        timedTasks.sort((a, b) => (a.startTime || '99:99').localeCompare(b.startTime || '99:99'));
 
         let html = '';
 
-        // No end time section
-        if (noEndTime.length > 0) {
-            html += '<div class="task-section" id="section-noend">';
-            noEndTime.forEach(t => html += renderTaskCard(t, true));
+        // All-day tasks section (draggable)
+        if (allDayTasks.length > 0) {
+            html += '<div class="task-section" id="section-allday">';
+            allDayTasks.forEach(t => html += renderTaskCard(t, true, false));
             html += '</div>';
         }
 
-        // Routines section
+        // Routines section (draggable)
         if (routines.length > 0) {
-            if (noEndTime.length > 0) html += '<div class="task-section-divider"></div>';
+            if (allDayTasks.length > 0) html += '<div class="task-section-divider"></div>';
             html += '<div class="task-section" id="section-routine">';
-            routines.forEach(t => html += renderTaskCard(t, true));
+            routines.forEach(t => html += renderTaskCard(t, true, true));
             html += '</div>';
         }
 
-        // Timed section
-        if (timed.length > 0) {
-            if (noEndTime.length > 0 || routines.length > 0) html += '<div class="task-section-divider"></div>';
+        // Timed tasks section (not draggable)
+        if (timedTasks.length > 0) {
+            if (allDayTasks.length > 0 || routines.length > 0) html += '<div class="task-section-divider"></div>';
             html += '<div class="task-section">';
-            timed.forEach(t => html += renderTaskCard(t, false));
+            timedTasks.forEach(t => html += renderTaskCard(t, false, false));
             html += '</div>';
         }
 
@@ -864,7 +952,7 @@
         if (done.length > 0 && doneStyle === 'bottom') {
             html += '<div class="task-section-divider"></div>';
             html += '<div class="task-section">';
-            done.forEach(t => html += renderTaskCard(t, false));
+            done.forEach(t => html += renderTaskCard(t, false, t.isRoutine));
             html += '</div>';
         }
 
@@ -872,15 +960,17 @@
         setupDragAndDrop();
     }
 
-    function renderTaskCard(t, draggable) {
+    function renderTaskCard(t, draggable, isRoutine) {
         const timeDisplay = t.startTime ? t.startTime.substring(0,5) : '';
         const endDisplay = t.endTime ? t.endTime.substring(0,5) : '';
+        const routineBadge = isRoutine ? '<span class="routine-badge">R</span>' : '';
         return `
-        <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" ${draggable ? 'draggable="true"' : ''} oncontextmenu="showContextMenu(event, '${t.id}')">
+        <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" data-routine="${isRoutine}" ${draggable ? 'draggable="true"' : ''} oncontextmenu="showContextMenu(event, '${t.id}', ${isRoutine})">
             ${draggable ? '<span class="drag-handle">⋮⋮</span>' : ''}
             <span class="star ${t.priority ? 'active' : ''}" onclick="togglePriority('${t.id}')">
                 <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </span>
+            ${routineBadge}
             <input type="text" class="task-time-input" value="${timeDisplay}" onchange="updateTaskTime('${t.id}', this.value, 'start')" placeholder="--:--">
             <input type="text" class="task-title-input" value="${t.title}" onchange="updateTaskTitle('${t.id}', this.value)">
             <input type="text" class="task-time-input" value="${endDisplay}" onchange="updateTaskTime('${t.id}', this.value, 'end')" placeholder="--:--">
@@ -976,19 +1066,28 @@
         }
     }
 
-    function showContextMenu(e, id) {
+    function showContextMenu(e, id, isRoutine) {
         e.preventDefault();
         selectedTaskId = id;
+        selectedTaskIsRoutine = isRoutine;
         const menu = document.getElementById('contextMenu');
+
+        // Show/hide routine-specific options
+        document.getElementById('routineMenuDivider').style.display = isRoutine ? 'block' : 'none';
+        document.getElementById('deleteSingleItem').style.display = isRoutine ? 'block' : 'none';
+        document.getElementById('deleteAllItem').innerText = isRoutine ? '전체 루틴 삭제' : '삭제';
+
         menu.style.left = e.pageX + 'px';
         menu.style.top = e.pageY + 'px';
         menu.classList.add('show');
     }
 
-    document.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
         document.getElementById('contextMenu').classList.remove('show');
-        const tooltip = document.getElementById('calendarTooltip');
-        if (tooltip) tooltip.classList.remove('show');
+        // Don't hide tooltip if clicking inside it
+        if (!e.target.closest('.calendar-tooltip') && !e.target.closest('.calendar-date')) {
+            hideTooltip();
+        }
     });
 
     async function postponeTask() {
@@ -1003,6 +1102,24 @@
             refreshTasks();
         } catch (e) {
             showToast('미루기 실패');
+        }
+        selectedTaskId = null;
+    }
+
+    async function deleteRoutineSingle() {
+        if (!selectedTaskId) return;
+        // For single day deletion, we mark this specific occurrence as skipped
+        // This would require server-side support for routine exceptions
+        try {
+            await fetch(`${SERVER_URL}/api/notion/skip-routine`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: selectedTaskId, date: getLocalDate() })
+            });
+            showToast('오늘만 삭제됨!');
+            refreshTasks();
+        } catch (e) {
+            showToast('삭제 실패');
         }
         selectedTaskId = null;
     }
@@ -1028,17 +1145,29 @@
         const container = document.getElementById('timelineContainer');
         if (!container) return;
 
+        if (timelineShape === 'horizontal') {
+            renderHorizontalTimeline(container);
+        } else if (timelineShape === 'circle') {
+            renderCircleTimeline(container);
+        } else {
+            renderVerticalTimeline(container);
+        }
+    }
+
+    function renderVerticalTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
         const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
         const dayName = dayNames[now.getDay()];
-        const dateNum = now.getDate();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateDisplay = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
 
         const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
         const scheduledTasks = todayTasks.filter(t => t.startTime);
 
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+        const hourHeight = 24; // 2x longer (was 18)
 
         let gridHtml = '';
         for (let h = 6; h <= 23; h++) {
@@ -1047,7 +1176,7 @@
 
         container.innerHTML = `
             <div class="timeline-header">
-                <div class="date-display">${dateNum}</div>
+                <div class="date-display">${dateDisplay}</div>
                 <div class="day-display">${dayName}</div>
             </div>
             <div class="timeline-scroll">
@@ -1055,32 +1184,55 @@
             </div>
         `;
 
-        scheduledTasks.forEach(t => {
-            const startMin = timeToMinutes(t.startTime);
-            const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
-            const startHour = Math.floor(startMin / 60);
+        // Group overlapping tasks
+        const taskGroups = groupOverlappingTasks(scheduledTasks);
 
-            if (startHour < 6 || startHour > 23) return;
+        taskGroups.forEach(group => {
+            group.forEach((t, index) => {
+                const startMin = timeToMinutes(t.startTime);
+                const endMin = t.endTime ? timeToMinutes(t.endTime) : null;
+                const startHour = Math.floor(startMin / 60);
 
-            const hourEl = document.getElementById(`hour-${startHour}`);
-            if (!hourEl) return;
+                if (startHour < 6 || startHour > 23) return;
 
-            const topOffset = (startMin % 60) / 60 * 18;
-            const duration = endMin - startMin;
-            const height = duration / 60 * 18;
+                const hourEl = document.getElementById(`hour-${startHour}`);
+                if (!hourEl) return;
 
-            const taskEl = document.createElement('div');
-            taskEl.className = 'timeline-task';
-            taskEl.style.top = topOffset + 'px';
-            taskEl.style.height = Math.max(height, 12) + 'px';
-            taskEl.innerHTML = `<div class="task-name">${t.title}</div>`;
-            hourEl.appendChild(taskEl);
+                const topOffset = (startMin % 60) / 60 * hourHeight;
+                let height;
+                let styleClass;
+
+                if (endMin !== null) {
+                    const duration = endMin - startMin;
+                    height = Math.max(duration / 60 * hourHeight, 14);
+                    styleClass = 'solid';
+                } else {
+                    height = hourHeight * 2; // Default height for undefined end
+                    styleClass = 'gradient';
+                }
+
+                const taskEl = document.createElement('div');
+                taskEl.className = `timeline-task ${styleClass}`;
+                taskEl.style.top = topOffset + 'px';
+                taskEl.style.height = height + 'px';
+
+                // Split width for overlapping tasks
+                const widthPercent = 100 / group.length;
+                const leftPercent = index * widthPercent;
+                taskEl.style.left = `calc(2px + ${leftPercent}%)`;
+                taskEl.style.width = `calc(${widthPercent}% - 4px)`;
+                taskEl.style.right = 'auto';
+
+                taskEl.innerHTML = `<div class="task-name">${t.title}</div>`;
+                hourEl.appendChild(taskEl);
+            });
         });
 
+        // Current time line with theme color
         if (currentHour >= 6 && currentHour <= 23) {
             const grid = document.getElementById('timelineGrid');
-            const hourOffset = (currentHour - 6) * 18;
-            const minOffset = currentMinute / 60 * 18;
+            const hourOffset = (currentHour - 6) * hourHeight;
+            const minOffset = currentMinute / 60 * hourHeight;
             const nowTop = hourOffset + minOffset;
 
             const nowLine = document.createElement('div');
@@ -1093,6 +1245,179 @@
             nowDot.style.top = nowTop + 'px';
             grid.appendChild(nowDot);
         }
+    }
+
+    function renderHorizontalTimeline(container) {
+        const now = new Date();
+        const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        const dateDisplay = `${monthNames[now.getMonth()]} ${now.getDate()}일 ${dayNames[now.getDay()]}`;
+
+        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
+        const scheduledTasks = todayTasks.filter(t => t.startTime);
+
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const hourWidth = 50;
+
+        let gridHtml = '';
+        for (let h = 6; h <= 23; h++) {
+            gridHtml += `<div class="timeline-h-hour" data-hour="${h}"><span class="timeline-h-hour-label">${h}</span></div>`;
+        }
+
+        container.innerHTML = `
+            <div class="timeline-horizontal">
+                <div class="timeline-h-header">
+                    <span class="timeline-h-date">${dateDisplay}</span>
+                    <button class="refresh-btn" onclick="refreshTasks()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    </button>
+                </div>
+                <div class="timeline-h-scroll">
+                    <div class="timeline-h-grid" id="timelineHGrid">${gridHtml}</div>
+                </div>
+            </div>
+        `;
+
+        const grid = document.getElementById('timelineHGrid');
+
+        scheduledTasks.forEach(t => {
+            const startMin = timeToMinutes(t.startTime);
+            const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
+            const startHour = Math.floor(startMin / 60);
+
+            if (startHour < 6 || startHour > 23) return;
+
+            const leftOffset = (startHour - 6) * hourWidth + (startMin % 60) / 60 * hourWidth;
+            const duration = endMin - startMin;
+            const width = Math.max(duration / 60 * hourWidth, 30);
+
+            const taskEl = document.createElement('div');
+            taskEl.className = 'timeline-h-task';
+            taskEl.style.left = leftOffset + 'px';
+            taskEl.style.width = width + 'px';
+            taskEl.innerText = t.title;
+            grid.appendChild(taskEl);
+        });
+
+        // Current time line
+        if (currentHour >= 6 && currentHour <= 23) {
+            const nowLeft = (currentHour - 6) * hourWidth + currentMinute / 60 * hourWidth;
+            const nowLine = document.createElement('div');
+            nowLine.className = 'timeline-h-now';
+            nowLine.style.left = nowLeft + 'px';
+            grid.appendChild(nowLine);
+        }
+    }
+
+    function renderCircleTimeline(container) {
+        const now = new Date();
+        const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateDisplay = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+
+        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
+        const scheduledTasks = todayTasks.filter(t => t.startTime);
+
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        // Circle timeline with arcs
+        const size = 280;
+        const center = size / 2;
+        const radius = 100;
+        const innerRadius = 70;
+
+        let arcsHtml = '';
+
+        // Draw hour markers
+        for (let h = 0; h < 24; h++) {
+            const angle = (h / 24) * 360 - 90;
+            const rad = angle * Math.PI / 180;
+            const x1 = center + Math.cos(rad) * (radius - 5);
+            const y1 = center + Math.sin(rad) * (radius - 5);
+            const x2 = center + Math.cos(rad) * radius;
+            const y2 = center + Math.sin(rad) * radius;
+            arcsHtml += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#eee" stroke-width="1"/>`;
+
+            if (h % 6 === 0) {
+                const labelX = center + Math.cos(rad) * (radius + 12);
+                const labelY = center + Math.sin(rad) * (radius + 12);
+                arcsHtml += `<text x="${labelX}" y="${labelY}" font-size="8" fill="#999" text-anchor="middle" dominant-baseline="middle">${h}</text>`;
+            }
+        }
+
+        // Draw task arcs
+        scheduledTasks.forEach(t => {
+            const startMin = timeToMinutes(t.startTime);
+            const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
+
+            const startAngle = (startMin / (24 * 60)) * 360 - 90;
+            const endAngle = (endMin / (24 * 60)) * 360 - 90;
+
+            const startRad = startAngle * Math.PI / 180;
+            const endRad = endAngle * Math.PI / 180;
+
+            const x1 = center + Math.cos(startRad) * innerRadius;
+            const y1 = center + Math.sin(startRad) * innerRadius;
+            const x2 = center + Math.cos(endRad) * innerRadius;
+            const y2 = center + Math.sin(endRad) * innerRadius;
+            const x3 = center + Math.cos(endRad) * radius;
+            const y3 = center + Math.sin(endRad) * radius;
+            const x4 = center + Math.cos(startRad) * radius;
+            const y4 = center + Math.sin(startRad) * radius;
+
+            const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+
+            arcsHtml += `<path d="M${x1},${y1} A${innerRadius},${innerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${radius},${radius} 0 ${largeArc},0 ${x4},${y4} Z" fill="var(--theme-color)" opacity="0.7"/>`;
+        });
+
+        // Current time indicator
+        const nowAngle = ((currentHour * 60 + currentMinute) / (24 * 60)) * 360 - 90;
+        const nowRad = nowAngle * Math.PI / 180;
+        const nowX = center + Math.cos(nowRad) * (radius + 5);
+        const nowY = center + Math.sin(nowRad) * (radius + 5);
+        arcsHtml += `<circle cx="${nowX}" cy="${nowY}" r="4" fill="var(--dark-theme-color)"/>`;
+        arcsHtml += `<line x1="${center}" y1="${center}" x2="${nowX}" y2="${nowY}" stroke="var(--dark-theme-color)" stroke-width="2"/>`;
+
+        container.innerHTML = `
+            <div class="timeline-header">
+                <div class="date-display">${dateDisplay}</div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;">
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                    <circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="#eee" stroke-width="1"/>
+                    <circle cx="${center}" cy="${center}" r="${innerRadius}" fill="none" stroke="#eee" stroke-width="1"/>
+                    ${arcsHtml}
+                </svg>
+            </div>
+        `;
+    }
+
+    function groupOverlappingTasks(tasks) {
+        if (tasks.length === 0) return [];
+
+        const sorted = [...tasks].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+        const groups = [];
+        let currentGroup = [sorted[0]];
+        let currentEnd = sorted[0].endTime ? timeToMinutes(sorted[0].endTime) : timeToMinutes(sorted[0].startTime) + 60;
+
+        for (let i = 1; i < sorted.length; i++) {
+            const taskStart = timeToMinutes(sorted[i].startTime);
+            if (taskStart < currentEnd) {
+                currentGroup.push(sorted[i]);
+                const taskEnd = sorted[i].endTime ? timeToMinutes(sorted[i].endTime) : taskStart + 60;
+                currentEnd = Math.max(currentEnd, taskEnd);
+            } else {
+                groups.push(currentGroup);
+                currentGroup = [sorted[i]];
+                currentEnd = sorted[i].endTime ? timeToMinutes(sorted[i].endTime) : taskStart + 60;
+            }
+        }
+        groups.push(currentGroup);
+
+        return groups;
     }
 
     function timeToMinutes(timeStr) {
@@ -1147,7 +1472,7 @@
             let classes = 'calendar-date';
             if (isToday) classes += ' today';
             if (hasEvent) classes += ' has-event';
-            const hoverAttr = interactive && hasEvent ? `onmouseenter="showDateTooltip(event, '${dateStr}')" onmouseleave="hideDateTooltip()"` : '';
+            const hoverAttr = interactive && hasEvent ? `onmouseenter="showDateTooltip(event, '${dateStr}')" onmouseleave="hideTooltipDelayed()"` : '';
             datesHtml += `<div class="${classes}" ${hoverAttr}>${d}</div>`;
         }
 
@@ -1175,6 +1500,9 @@
     }
 
     function showDateTooltip(e, dateStr) {
+        clearTimeout(tooltipTimeout);
+        keepTooltipOpen = false;
+
         const tooltip = document.getElementById('calendarTooltip');
         if (!tooltip) return;
 
@@ -1194,20 +1522,53 @@
 
         tooltip.innerHTML = `
             <div class="calendar-tooltip-title">${title}</div>
-            ${sorted.slice(0, 5).map(t => `<div class="calendar-tooltip-item"><span class="dot"></span>${t.startTime ? t.startTime.substring(0,5) + ' ' : ''}${t.title}</div>`).join('')}
+            ${sorted.slice(0, 5).map(t => `
+                <div class="calendar-tooltip-item">
+                    <span class="star-mini ${t.priority ? 'active' : ''}" onclick="togglePriorityFromTooltip('${t.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="dot"></span>
+                    ${t.startTime ? '<span style="color:#999;font-size:7px;">' + t.startTime.substring(0,5) + '</span>' : ''}
+                    <input type="text" value="${t.title}" onchange="updateTaskTitleFromTooltip('${t.id}', this.value)">
+                </div>
+            `).join('')}
             ${sorted.length > 5 ? `<div class="calendar-tooltip-item" style="color:#999;">+${sorted.length - 5} more</div>` : ''}
         `;
 
         const rect = e.target.getBoundingClientRect();
         const containerRect = document.getElementById('calendarContainer').getBoundingClientRect();
-        tooltip.style.left = (rect.left - containerRect.left) + 'px';
+        tooltip.style.left = Math.min(rect.left - containerRect.left, containerRect.width - 150) + 'px';
         tooltip.style.top = (rect.bottom - containerRect.top + 4) + 'px';
         tooltip.classList.add('show');
     }
 
-    function hideDateTooltip() {
+    function keepTooltip() {
+        clearTimeout(tooltipTimeout);
+        keepTooltipOpen = true;
+    }
+
+    function hideTooltipDelayed() {
+        tooltipTimeout = setTimeout(() => {
+            if (!keepTooltipOpen) {
+                hideTooltip();
+            }
+        }, 200);
+    }
+
+    function hideTooltip() {
+        keepTooltipOpen = false;
         const tooltip = document.getElementById('calendarTooltip');
         if (tooltip) tooltip.classList.remove('show');
+    }
+
+    async function togglePriorityFromTooltip(id) {
+        await togglePriority(id);
+        // Refresh calendar to update tooltip
+        renderCalendar();
+    }
+
+    async function updateTaskTitleFromTooltip(id, newTitle) {
+        await updateTaskTitle(id, newTitle);
     }
 
     function changeMonth(delta) {
