@@ -13,34 +13,19 @@
             --dark-theme-color: #333;
             --onboarding-btn-color: #f5f5f7;
             --onboarding-btn-active: #1d1d1f;
+            --widget-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.01em; }
+        * { box-sizing: border-box; font-family: var(--widget-font); letter-spacing: -0.01em; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; }
 
         /* Main Layout */
-        .main-layout {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 30px;
-            width: 100%;
-            max-width: 900px;
-        }
+        .main-layout { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 30px; width: 100%; max-width: 900px; }
         @media (max-width: 700px), (max-height: 600px) and (max-width: 500px) {
-            .main-layout {
-                flex-direction: column;
-                align-items: center;
-            }
+            .main-layout { flex-direction: column; align-items: center; }
         }
 
-        .window {
-            width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column;
-            z-index: 10; flex-shrink: 0;
-        }
+        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; z-index: 10; flex-shrink: 0; }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
         .dot { width: 11px; height: 11px; border-radius: 50%; }
@@ -62,119 +47,129 @@
         .option-group { margin-bottom: 15px; }
         .option-group label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
         .option-row { display: flex; gap: 8px; }
-        /* Onboarding buttons - fixed color, not affected by theme */
         .option-btn { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: var(--onboarding-btn-color); font-size: 11px; cursor: pointer; text-align: center; transition: 0.2s; color: #666; }
         .option-btn.active { background: var(--onboarding-btn-active); border-color: var(--onboarding-btn-active); color: #fff; }
         .url-box { background: #f5f5f7; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
         .url-box label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px; }
-        .url-box .url-text { font-size: 10px; color: #333; word-break: break-all; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #eee; }
+        .url-box .url-text { font-size: 9px; color: #333; word-break: break-all; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #eee; max-height: 50px; overflow-y: auto; }
         .copy-btn { background: #1d1d1f; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; cursor: pointer; margin-top: 6px; }
 
         /* Preview Section */
-        .preview-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        .preview-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .preview-widgets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
+        .preview-section { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .preview-title { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preview-widgets { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
         /* Widget Frame */
-        .widget-frame {
-            width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px;
-            box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05); position: relative;
-        }
-        .widget-frame.timeline-widget {
-            width: 120px !important; height: 320px !important;
-        }
-        .widget-frame.calendar-widget {
-            width: 200px !important; height: 240px !important;
-        }
+        .widget-frame { width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px; box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.05); position: relative; }
+        .widget-frame.timeline-widget { width: 120px !important; height: 320px !important; }
+        .widget-frame.timeline-widget.no-topbar { }
+        .widget-frame.calendar-widget { width: 200px !important; height: 240px !important; }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
+        .widget-top.hidden { display: none; }
         .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
         .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
         .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; cursor: pointer; }
 
+        /* Refresh Button - subtle arrow */
+        .refresh-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #ccc; transition: 0.2s; }
+        .refresh-btn:hover { color: #999; }
+        .refresh-btn svg { width: 12px; height: 12px; }
+
         /* Home Screen Clock */
-        .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
+        .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .current-time { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
         .current-date { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--dark-theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.9); }
+        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--dark-theme-color); cursor: pointer; }
+        .action-btns { display: flex; gap: 6px; }
 
-        /* Todo Widget Styles */
-        .todo-form { flex: 1; display: flex; flex-direction: column; padding: 6px; overflow: hidden; }
-        .mini-input { width: 100%; padding: 4px 6px; font-size: 9px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 2px; background: #fafafa; }
-        .mini-select { width: 100%; padding: 4px 6px; font-size: 9px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 2px; background: #fafafa; }
-        .form-row { display: flex; gap: 3px; align-items: center; }
-        .form-row .mini-input { flex: 1; margin-bottom: 2px; }
-        .form-label { font-size: 8px; color: #999; min-width: 28px; }
+        /* Setup Widget Form Styles */
+        .setup-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow: hidden; }
+        .setup-form-header { display: flex; align-items: center; margin-bottom: 4px; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 2px; color: #999; }
+        .back-btn:hover { color: #333; }
+        .form-type-btns { display: flex; gap: 4px; flex: 1; justify-content: center; }
+        .form-type-btn { padding: 3px 10px; border: 1px solid #eee; border-radius: 10px; background: #f9f9fc; font-size: 8px; cursor: pointer; color: #666; }
+        .form-type-btn.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+        .mini-input { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .mini-select { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .form-row { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
+        .form-row .mini-input { flex: 1; margin-bottom: 0; }
+        .form-label { font-size: 8px; color: #999; min-width: 24px; }
         .btn-row { display: flex; gap: 4px; margin-top: auto; }
-        .btn-row button { flex: 1; padding: 5px; font-size: 9px; border-radius: 6px; border: none; cursor: pointer; }
+        .btn-row button { flex: 1; padding: 6px; font-size: 10px; border-radius: 6px; border: none; cursor: pointer; }
         .btn-save { background: #1d1d1f; color: #fff; }
         .btn-cancel { background: #f5f5f7; color: #666; }
 
-        /* List Widget Styles */
-        .list-header { padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #eee; }
-        .list-container { flex: 1; overflow-y: auto; padding: 4px 8px; }
-        .task-card { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: #fafafa; border-radius: 6px; font-size: 9px; margin-bottom: 2px; }
+        /* Routine repeat options */
+        .repeat-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+        .repeat-day { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ddd; background: #f9f9fc; font-size: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; }
+        .repeat-day.active { background: var(--theme-color); border-color: var(--dark-theme-color); color: var(--dark-theme-color); }
+
+        /* Todo Widget (formerly List) Styles */
+        .todo-header { padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #eee; }
+        .todo-container { flex: 1; overflow-y: auto; padding: 4px 8px; }
+        .task-section { margin-bottom: 4px; }
+        .task-section-divider { height: 1px; background: #eee; margin: 6px 0; }
+        .task-card { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: #fafafa; border-radius: 6px; font-size: 9px; margin-bottom: 2px; cursor: default; }
         .task-card.done { opacity: 0.5; }
-        .task-card.done .task-title { text-decoration: line-through; color: #999; }
-        .task-card .star { color: #ddd; cursor: pointer; font-size: 10px; }
-        .task-card .star.active { color: #ffcc00; }
-        .task-card .task-time { font-size: 7px; color: #999; min-width: 30px; }
-        .task-card .task-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .task-card .check { color: #ddd; cursor: pointer; font-size: 10px; }
-        .task-card .check.active { color: #4cd964; }
+        .task-card.done .task-title-input { text-decoration: line-through; color: #999; }
+        .task-card .star { cursor: pointer; }
+        .task-card .star svg { width: 12px; height: 12px; fill: #ddd; transition: 0.2s; }
+        .task-card .star.active svg { fill: var(--dark-theme-color); }
+        .task-card .task-time-input { font-size: 7px; color: #999; width: 32px; background: transparent; border: none; padding: 0; text-align: center; }
+        .task-card .task-time-input:focus { background: #fff; border-radius: 2px; }
+        .task-card .task-title-input { flex: 1; background: transparent; border: none; padding: 0; font-size: 9px; min-width: 0; }
+        .task-card .task-title-input:focus { background: #fff; border-radius: 2px; }
+        .task-card .check { cursor: pointer; }
+        .task-card .check svg { width: 14px; height: 14px; color: #ddd; transition: 0.2s; }
+        .task-card .check.active svg { color: var(--dark-theme-color); }
+        .task-card .drag-handle { cursor: grab; color: #ccc; font-size: 8px; padding: 0 2px; }
+        .task-card.dragging { opacity: 0.5; background: var(--theme-color); }
         .category-filter { display: none; padding: 4px 8px; gap: 4px; flex-wrap: wrap; border-bottom: 0.5px solid #eee; }
         .category-filter.show { display: flex; }
         .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
         .cat-tag.active { background: var(--theme-color); color: var(--dark-theme-color); }
 
-        /* Timeline Widget Styles */
-        .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .timeline-header { text-align: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
-        .timeline-header .free-label { font-size: 7px; color: #999; text-transform: uppercase; }
-        .timeline-header .free-time { font-size: 11px; font-weight: 700; color: var(--dark-theme-color); }
-        .timeline-header .day-label { font-size: 10px; font-weight: 700; color: #333; margin-top: 2px; }
+        /* Timeline Widget Styles - no top bar */
+        .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 16px; }
+        .timeline-header { text-align: center; padding: 8px 6px; background: var(--theme-color); }
+        .timeline-header .date-display { font-size: 12px; font-weight: 700; color: var(--dark-theme-color); }
+        .timeline-header .day-display { font-size: 9px; color: var(--dark-theme-color); opacity: 0.7; }
+        .timeline-header .weather-display { font-size: 8px; color: var(--dark-theme-color); opacity: 0.6; margin-top: 2px; }
         .timeline-scroll { flex: 1; overflow-y: auto; position: relative; }
         .timeline-grid { position: relative; min-height: 100%; }
-        .timeline-hour { display: flex; align-items: flex-start; height: 20px; border-bottom: 1px solid #f5f5f5; }
-        .timeline-hour-label { width: 20px; font-size: 7px; color: #bbb; text-align: right; padding-right: 4px; flex-shrink: 0; }
+        .timeline-hour { display: flex; align-items: flex-start; height: 18px; border-bottom: 1px solid #f5f5f5; }
+        .timeline-hour-label { width: 18px; font-size: 7px; color: #bbb; text-align: right; padding-right: 3px; flex-shrink: 0; }
         .timeline-hour-content { flex: 1; position: relative; height: 100%; }
-        .timeline-task { position: absolute; left: 2px; right: 2px; background: var(--theme-color); border-radius: 3px; padding: 2px 4px; font-size: 7px; color: var(--dark-theme-color); overflow: hidden; opacity: 0.85; z-index: 1; }
+        .timeline-task { position: absolute; left: 2px; right: 2px; background: var(--theme-color); border-radius: 3px; padding: 1px 3px; font-size: 6px; color: var(--dark-theme-color); overflow: hidden; opacity: 0.9; z-index: 1; }
         .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .timeline-now-line { position: absolute; left: 20px; right: 0; height: 2px; background: #ff3b30; z-index: 10; }
-        .timeline-now-dot { position: absolute; left: 16px; width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; transform: translateY(-3px); z-index: 10; }
+        .timeline-now-line { position: absolute; left: 18px; right: 0; height: 2px; background: #ff3b30; z-index: 10; }
+        .timeline-now-dot { position: absolute; left: 14px; width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; transform: translateY(-3px); z-index: 10; }
 
-        /* Mini Calendar Widget Styles */
-        .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; }
-        .calendar-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; }
+        /* Calendar Widget Styles */
+        .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; position: relative; }
+        .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+        .calendar-nav { display: flex; align-items: center; gap: 8px; }
         .calendar-nav-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #999; padding: 2px 6px; }
         .calendar-nav-btn:hover { color: #333; }
-        .calendar-month { font-size: 16px; font-weight: 700; color: #333; }
-        .calendar-year { font-size: 10px; color: #999; text-align: center; margin-bottom: 8px; }
-        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
-        .calendar-day-label { font-size: 7px; color: #999; text-align: center; font-weight: 600; padding: 2px 0; }
-        .calendar-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .calendar-date { font-size: 10px; text-align: center; padding: 4px 2px; border-radius: 4px; cursor: pointer; position: relative; color: #666; }
+        .calendar-month { font-size: 14px; font-weight: 700; color: #333; }
+        .calendar-year { font-size: 10px; color: #999; text-align: center; margin-bottom: 6px; }
+        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 2px; }
+        .calendar-day-label { font-size: 6px; color: #999; text-align: center; font-weight: 600; padding: 2px 0; }
+        .calendar-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+        .calendar-date { font-size: 9px; text-align: center; padding: 3px 1px; border-radius: 4px; cursor: pointer; position: relative; color: #666; }
         .calendar-date:hover { background: #f5f5f5; }
         .calendar-date.other-month { color: #ccc; }
         .calendar-date.today { font-weight: 700; color: var(--dark-theme-color); background: var(--theme-color); }
-        .calendar-date.has-event::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-theme-color); border-radius: 50%; }
+        .calendar-date.has-event::after { content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-theme-color); border-radius: 50%; }
         .calendar-date.today.has-event::after { background: #fff; }
+
+        /* Calendar Tooltip */
+        .calendar-tooltip { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 180px; display: none; }
+        .calendar-tooltip.show { display: block; }
+        .calendar-tooltip-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .calendar-tooltip-item { font-size: 8px; color: #666; padding: 2px 0; display: flex; align-items: center; gap: 4px; }
+        .calendar-tooltip-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dark-theme-color); }
 
         /* Context Menu */
         .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 100px; }
@@ -224,13 +219,23 @@
 
                 <div class="step" id="step3">
                     <h1>Customize</h1>
-                    <p>위젯 테마 컬러를 선택하세요.</p>
+                    <p>위젯 테마를 설정하세요.</p>
                     <div class="color-palette" id="palette"></div>
                     <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
-                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;" onclick="document.getElementById('cp').click()">Custom Color</button>
 
-                    <div class="option-group" style="margin-top: 20px;">
-                        <label>완료된 일정 표시 방식</label>
+                    <div class="option-group">
+                        <label>위젯 폰트</label>
+                        <select id="fontSelect" onchange="setFont(this.value)" style="padding:8px;">
+                            <option value="system">System Default</option>
+                            <option value="serif">Serif (Georgia)</option>
+                            <option value="mono">Monospace</option>
+                            <option value="round">Rounded (Nunito)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label>완료된 일정 표시</label>
                         <div class="option-row">
                             <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
                             <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
@@ -244,6 +249,15 @@
                             <div class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</div>
                         </div>
                     </div>
+
+                    <div class="option-group">
+                        <label>타임라인 모양</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">세로 바</div>
+                            <div class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">가로 바</div>
+                            <div class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">원형</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="step" id="step4">
@@ -251,15 +265,15 @@
                     <p>아래 URL을 노션에 임베드하세요.</p>
 
                     <div class="url-box">
-                        <label>1. Todo Widget (할일 추가)</label>
-                        <div class="url-text" id="todoUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
+                        <label>1. Setup Widget (할일 추가)</label>
+                        <div class="url-text" id="setupUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('setup')">Copy</button>
                     </div>
 
                     <div class="url-box">
-                        <label>2. List Widget (오늘의 할일)</label>
-                        <div class="url-text" id="listUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('list')">Copy</button>
+                        <label>2. Todo Widget (오늘의 할일)</label>
+                        <div class="url-text" id="todoUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
                     </div>
 
                     <div class="url-box">
@@ -281,31 +295,32 @@
         <div class="preview-section" id="previewSection">
             <div class="preview-title">Widget Preview</div>
             <div class="preview-widgets" id="widgetPreviews">
-                <div class="widget-frame" id="previewTodo">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
+                <div class="widget-frame" id="previewSetup">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Setup</div></div>
                     <div class="widget-home">
-                        <div class="current-time" id="time1">00:00</div>
-                        <div class="current-date" id="date1">SUN, FEB 1</div>
-                        <button class="action-btn">+ Add Task</button>
+                        <div class="current-time">00:00</div>
+                        <div class="current-date">SUN, FEB 1</div>
+                        <div class="action-btns">
+                            <button class="action-btn">+ Task</button>
+                            <button class="action-btn">+ Routine</button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="widget-frame" id="previewList">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">List</div></div>
+                <div class="widget-frame" id="previewTodo">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
                     <div class="widget-home">
-                        <div class="current-time" id="time2">00:00</div>
-                        <div class="current-date" id="date2">SUN, FEB 1</div>
+                        <div class="current-time">00:00</div>
+                        <div class="current-date">SUN, FEB 1</div>
                         <button class="action-btn">View Tasks</button>
                     </div>
                 </div>
 
                 <div class="widget-frame timeline-widget" id="previewTimeline">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Timeline</div></div>
                     <div class="timeline-container">
                         <div class="timeline-header">
-                            <div class="free-label">FREE</div>
-                            <div class="free-time">-8H 30M</div>
-                            <div class="day-label">MON</div>
+                            <div class="date-display">3</div>
+                            <div class="day-display">MON</div>
                         </div>
                         <div class="timeline-scroll">
                             <div class="timeline-grid" id="previewGrid"></div>
@@ -323,48 +338,74 @@
 
     <!-- Embed Widget -->
     <div class="widget-frame" id="embedWidget" style="display:none;">
-        <div class="widget-top">
+        <div class="widget-top" id="widgetTopBar">
             <div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div>
             <div class="w-title" id="widgetTitle" onclick="toggleCategoryFilter()">Widget</div>
         </div>
 
-        <!-- Todo Widget -->
-        <div id="todoWidget" style="display:none;">
-            <div class="widget-home" id="todoHome">
-                <div class="current-time" id="todoTime">00:00</div>
-                <div class="current-date" id="todoDate">SUN, FEB 1</div>
-                <button class="action-btn" onclick="showTodoForm()">+ Add Task</button>
+        <!-- Setup Widget (formerly Todo - for adding tasks) -->
+        <div id="setupWidget" style="display:none;">
+            <div class="widget-home" id="setupHome">
+                <div class="current-time" id="setupTime">00:00</div>
+                <div class="current-date" id="setupDate">SUN, FEB 1</div>
+                <div class="action-btns">
+                    <button class="action-btn" onclick="showSetupForm('task')">+ Task</button>
+                    <button class="action-btn" onclick="showSetupForm('routine')">+ Routine</button>
+                </div>
             </div>
-            <div class="todo-form" id="todoForm" style="display:none;">
-                <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력...">
+            <div class="setup-form" id="setupForm" style="display:none;">
+                <div class="setup-form-header">
+                    <button class="back-btn" onclick="hideSetupForm()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="form-type-btns">
+                        <button class="form-type-btn active" id="btnTask" onclick="setFormType('task')">Task</button>
+                        <button class="form-type-btn" id="btnRoutine" onclick="setFormType('routine')">Routine</button>
+                    </div>
+                </div>
+                <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력..." onkeydown="handleEnterKey(event)">
                 <input type="date" class="mini-input" id="taskDate">
                 <div class="form-row">
                     <span class="form-label">시작</span>
-                    <input type="time" class="mini-input" id="taskStartTime" style="flex:1;">
+                    <input type="time" class="mini-input" id="taskStartTime">
                 </div>
                 <div class="form-row">
                     <span class="form-label">종료</span>
-                    <input type="time" class="mini-input" id="taskEndTime" style="flex:1;">
+                    <input type="time" class="mini-input" id="taskEndTime">
+                </div>
+                <div id="routineOptions" style="display:none;">
+                    <div class="form-label" style="margin-bottom:4px;">반복 요일</div>
+                    <div class="repeat-row">
+                        <div class="repeat-day" data-day="0" onclick="toggleRepeatDay(0)">일</div>
+                        <div class="repeat-day" data-day="1" onclick="toggleRepeatDay(1)">월</div>
+                        <div class="repeat-day" data-day="2" onclick="toggleRepeatDay(2)">화</div>
+                        <div class="repeat-day" data-day="3" onclick="toggleRepeatDay(3)">수</div>
+                        <div class="repeat-day" data-day="4" onclick="toggleRepeatDay(4)">목</div>
+                        <div class="repeat-day" data-day="5" onclick="toggleRepeatDay(5)">금</div>
+                        <div class="repeat-day" data-day="6" onclick="toggleRepeatDay(6)">토</div>
+                    </div>
                 </div>
                 <select class="mini-select" id="taskCategory">
                     <option value="">카테고리</option>
                 </select>
                 <div class="btn-row">
-                    <button class="btn-cancel" onclick="hideTodoForm()">Cancel</button>
+                    <button class="btn-cancel" onclick="hideSetupForm()">Cancel</button>
                     <button class="btn-save" onclick="saveTask()">Save</button>
                 </div>
             </div>
         </div>
 
-        <!-- List Widget -->
-        <div id="listWidget" style="display:none;">
+        <!-- Todo Widget (formerly List - for viewing tasks) -->
+        <div id="todoWidget" style="display:none;">
             <div class="category-filter" id="categoryFilter"></div>
-            <div class="list-header">
-                <button class="action-btn" onclick="refreshTasks()" style="padding:2px 6px;font-size:8px;">↻</button>
+            <div class="todo-header">
+                <button class="refresh-btn" onclick="refreshTasks()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                </button>
                 <span style="font-size:8px;font-weight:bold;">TODAY</span>
                 <span style="font-size:7px;color:#999;" id="taskCount">0 tasks</span>
             </div>
-            <div class="list-container" id="listContainer"></div>
+            <div class="todo-container" id="todoContainer"></div>
         </div>
 
         <!-- Timeline Widget -->
@@ -375,12 +416,13 @@
         <!-- Calendar Widget -->
         <div id="calendarWidget" style="display:none;">
             <div class="calendar-container" id="calendarContainer"></div>
+            <div class="calendar-tooltip" id="calendarTooltip"></div>
         </div>
     </div>
 
     <!-- Context Menu -->
     <div class="context-menu" id="contextMenu">
-        <div class="context-menu-item" onclick="editTask()">수정</div>
+        <div class="context-menu-item" onclick="postponeTask()">내일로 미루기</div>
         <div class="context-menu-item danger" onclick="deleteTask()">삭제</div>
     </div>
 
@@ -393,24 +435,37 @@
     let selectedColor = "c5e8c5";
     let doneStyle = "bottom";
     let weekStart = "sun";
+    let timelineShape = "vertical";
+    let selectedFont = "system";
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
     let showCategoryFilter = false;
     let selectedCategory = null;
     let calendarDate = new Date();
+    let formType = 'task';
+    let repeatDays = [];
+    let draggedItem = null;
 
     const params = new URLSearchParams(window.location.search);
     const widgetType = params.get('w');
+
+    // Get user's local date
+    function getLocalDate() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     // Clock update
     function updateClock() {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
         const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-        document.querySelectorAll('[id^="time"], .current-time').forEach(el => el.innerText = timeStr);
-        document.querySelectorAll('[id^="date"], .current-date').forEach(el => el.innerText = dateStr);
+        document.querySelectorAll('.current-time').forEach(el => el.innerText = timeStr);
+        document.querySelectorAll('.current-date').forEach(el => el.innerText = dateStr);
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -420,11 +475,8 @@
         const grid = document.getElementById('previewGrid');
         if (!grid) return;
         let html = '';
-        for (let h = 9; h <= 22; h++) {
-            html += `<div class="timeline-hour">
-                <div class="timeline-hour-label">${h}</div>
-                <div class="timeline-hour-content"></div>
-            </div>`;
+        for (let h = 9; h <= 23; h++) {
+            html += `<div class="timeline-hour"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content"></div></div>`;
         }
         grid.innerHTML = html;
     }
@@ -434,7 +486,7 @@
     function renderPreviewCalendar() {
         const container = document.getElementById('previewCalendarContainer');
         if (!container) return;
-        renderCalendarContent(container, new Date(), weekStart, []);
+        renderCalendarContent(container, new Date(), weekStart, [], false);
     }
     renderPreviewCalendar();
 
@@ -445,6 +497,7 @@
 
         if (widgetType === 'timeline') {
             document.getElementById('embedWidget').classList.add('timeline-widget');
+            document.getElementById('widgetTopBar').classList.add('hidden');
         } else if (widgetType === 'calendar') {
             document.getElementById('embedWidget').classList.add('calendar-widget');
         }
@@ -454,6 +507,9 @@
 
         doneStyle = params.get('ds') || 'bottom';
         weekStart = params.get('ws') || 'sun';
+        timelineShape = params.get('ts') || 'vertical';
+        selectedFont = params.get('f') || 'system';
+        applyFont(selectedFont);
 
         initWidget(widgetType);
     } else {
@@ -482,28 +538,45 @@
         const darkG = Math.max(0, g - 100);
         const darkB = Math.max(0, b - 100);
         document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
-        document.documentElement.style.setProperty('--hover-color', `rgba(${r},${g},${b},0.12)`);
-
-        // Update preview calendar with new theme
         renderPreviewCalendar();
     }
 
     function setDoneStyle(style) {
         doneStyle = style;
         document.querySelectorAll('[data-done]').forEach(el => el.classList.remove('active'));
-        document.querySelector(`[data-done="${style}"]`).classList.add('active');
+        document.querySelector(`[data-done="${style}"]`)?.classList.add('active');
     }
 
     function setWeekStart(start) {
         weekStart = start;
         document.querySelectorAll('[data-weekstart]').forEach(el => el.classList.remove('active'));
-        document.querySelector(`[data-weekstart="${start}"]`).classList.add('active');
+        document.querySelector(`[data-weekstart="${start}"]`)?.classList.add('active');
         renderPreviewCalendar();
+    }
+
+    function setTimelineShape(shape) {
+        timelineShape = shape;
+        document.querySelectorAll('[data-shape]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-shape="${shape}"]`)?.classList.add('active');
+    }
+
+    function setFont(font) {
+        selectedFont = font;
+        applyFont(font);
+    }
+
+    function applyFont(font) {
+        const fonts = {
+            'system': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            'serif': 'Georgia, "Times New Roman", serif',
+            'mono': '"SF Mono", "Fira Code", monospace',
+            'round': '"Nunito", "Varela Round", sans-serif'
+        };
+        document.documentElement.style.setProperty('--widget-font', fonts[font] || fonts.system);
     }
 
     async function moveStep(n) {
         const newStep = step + n;
-
         if (n === 1 && step === 1) {
             const tk = document.getElementById('tokenInput').value;
             if (!tk) { showToast('토큰을 입력하세요'); return; }
@@ -521,13 +594,8 @@
                 return;
             }
         }
-
-        if (newStep === 4) {
-            generateUrls();
-        }
-
+        if (newStep === 4) generateUrls();
         if (newStep < 1 || newStep > 4) return;
-
         document.getElementById(`step${step}`).classList.remove('active');
         step = newStep;
         document.getElementById(`step${step}`).classList.add('active');
@@ -539,10 +607,10 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&f=${selectedFont}`;
 
+        document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
-        document.getElementById('listUrl').innerText = `${base}?w=list&${common}`;
         document.getElementById('timelineUrl').innerText = `${base}?w=timeline&${common}`;
         document.getElementById('calendarUrl').innerText = `${base}?w=calendar&${common}`;
     }
@@ -555,17 +623,18 @@
 
     // Widget Init
     function initWidget(type) {
-        document.getElementById('widgetTitle').innerText = type.charAt(0).toUpperCase() + type.slice(1);
+        const titles = { setup: 'Setup', todo: 'Todo', timeline: 'Timeline', calendar: 'Calendar' };
+        document.getElementById('widgetTitle').innerText = titles[type] || 'Widget';
 
-        if (type === 'todo') {
+        if (type === 'setup') {
+            document.getElementById('setupWidget').style.display = 'flex';
+            document.getElementById('setupWidget').style.flexDirection = 'column';
+            document.getElementById('setupWidget').style.flex = '1';
+            loadCategories();
+        } else if (type === 'todo') {
             document.getElementById('todoWidget').style.display = 'flex';
             document.getElementById('todoWidget').style.flexDirection = 'column';
             document.getElementById('todoWidget').style.flex = '1';
-            loadCategories();
-        } else if (type === 'list') {
-            document.getElementById('listWidget').style.display = 'flex';
-            document.getElementById('listWidget').style.flexDirection = 'column';
-            document.getElementById('listWidget').style.flex = '1';
             loadCategories();
             refreshTasks();
         } else if (type === 'timeline') {
@@ -580,25 +649,57 @@
         }
     }
 
-    // Todo Functions
-    function showTodoForm() {
-        document.getElementById('todoHome').style.display = 'none';
-        document.getElementById('todoForm').style.display = 'flex';
-        document.getElementById('taskDate').value = new Date().toISOString().split('T')[0];
+    // Setup Form Functions
+    function showSetupForm(type) {
+        formType = type;
+        document.getElementById('setupHome').style.display = 'none';
+        document.getElementById('setupForm').style.display = 'flex';
+        document.getElementById('taskDate').value = getLocalDate();
+        document.getElementById('btnTask').classList.toggle('active', type === 'task');
+        document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
+        document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+        document.getElementById('taskTitle').focus();
     }
 
-    function hideTodoForm() {
-        document.getElementById('todoForm').style.display = 'none';
-        document.getElementById('todoHome').style.display = 'flex';
-        clearTodoForm();
+    function hideSetupForm() {
+        document.getElementById('setupForm').style.display = 'none';
+        document.getElementById('setupHome').style.display = 'flex';
+        clearSetupForm();
     }
 
-    function clearTodoForm() {
+    function setFormType(type) {
+        formType = type;
+        document.getElementById('btnTask').classList.toggle('active', type === 'task');
+        document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
+        document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+    }
+
+    function toggleRepeatDay(day) {
+        const el = document.querySelector(`[data-day="${day}"]`);
+        if (repeatDays.includes(day)) {
+            repeatDays = repeatDays.filter(d => d !== day);
+            el.classList.remove('active');
+        } else {
+            repeatDays.push(day);
+            el.classList.add('active');
+        }
+    }
+
+    function clearSetupForm() {
         document.getElementById('taskTitle').value = '';
         document.getElementById('taskStartTime').value = '';
         document.getElementById('taskEndTime').value = '';
         document.getElementById('taskCategory').value = '';
+        repeatDays = [];
+        document.querySelectorAll('.repeat-day').forEach(el => el.classList.remove('active'));
         selectedTaskId = null;
+    }
+
+    function handleEnterKey(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveTask();
+        }
     }
 
     function getToken() {
@@ -627,8 +728,7 @@
     function updateCategorySelect() {
         const select = document.getElementById('taskCategory');
         if (!select) return;
-        select.innerHTML = '<option value="">카테고리</option>' +
-            categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        select.innerHTML = '<option value="">카테고리</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
     function updateCategoryFilter() {
@@ -639,7 +739,7 @@
     }
 
     function toggleCategoryFilter() {
-        if (widgetType !== 'list') return;
+        if (widgetType !== 'todo') return;
         showCategoryFilter = !showCategoryFilter;
         document.getElementById('categoryFilter').classList.toggle('show', showCategoryFilter);
     }
@@ -665,10 +765,12 @@
                 token: getToken(),
                 dbId: getDbId(),
                 title,
-                date: date,
+                date,
                 startTime: startTime || null,
                 endTime: endTime || null,
-                category: category || null
+                category: category || null,
+                isRoutine: formType === 'routine',
+                repeatDays: formType === 'routine' ? repeatDays : null
             };
 
             const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
@@ -680,7 +782,7 @@
             const result = await res.json();
             if (res.ok && result.success) {
                 showToast('저장됨!');
-                hideTodoForm();
+                hideSetupForm();
             } else {
                 showToast(result.error || '저장 실패');
             }
@@ -689,7 +791,7 @@
         }
     }
 
-    // List Functions
+    // Todo (List) Functions
     async function refreshTasks() {
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/events`, {
@@ -699,7 +801,7 @@
             });
             tasks = await res.json();
             if (Array.isArray(tasks)) {
-                if (widgetType === 'list') renderTasks();
+                if (widgetType === 'todo') renderTasks();
                 else if (widgetType === 'timeline') renderTimeline();
                 else if (widgetType === 'calendar') renderCalendar();
             }
@@ -709,45 +811,143 @@
     }
 
     function renderTasks() {
-        const container = document.getElementById('listContainer');
+        const container = document.getElementById('todoContainer');
         if (!container) return;
 
         const today = new Date().toDateString();
         let filtered = tasks.filter(t => {
             if (!t.date) return false;
-            const taskDate = new Date(t.date).toDateString();
-            return taskDate === today;
+            return new Date(t.date).toDateString() === today;
         });
 
         if (selectedCategory) {
             filtered = filtered.filter(t => t.category === selectedCategory);
         }
 
-        // 정렬: 1) 완료된 항목 하단 2) 종료시간 없는 것 상단 3) 시작시간순
-        filtered.sort((a, b) => {
-            if (doneStyle === 'bottom') {
-                if (a.done !== b.done) return a.done ? 1 : -1;
-            }
-            const aHasEnd = !!a.endTime;
-            const bHasEnd = !!b.endTime;
-            if (aHasEnd !== bHasEnd) return aHasEnd ? 1 : -1;
-            const aTime = a.startTime || '99:99';
-            const bTime = b.startTime || '99:99';
-            return aTime.localeCompare(bTime);
-        });
+        // Separate into groups: no end time, routines, timed
+        const noEndTime = filtered.filter(t => !t.endTime && !t.isRoutine && !t.done);
+        const routines = filtered.filter(t => t.isRoutine && !t.done);
+        const timed = filtered.filter(t => t.endTime && !t.isRoutine && !t.done);
+        const done = filtered.filter(t => t.done);
+
+        // Sort timed by start time
+        timed.sort((a, b) => (a.startTime || '99:99').localeCompare(b.startTime || '99:99'));
 
         document.getElementById('taskCount').innerText = `${filtered.length} tasks`;
 
-        container.innerHTML = filtered.map(t => {
-            const timeDisplay = t.startTime ? t.startTime.substring(0,5) : '';
-            return `
-            <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" oncontextmenu="showContextMenu(event, '${t.id}')">
-                <span class="star ${t.priority ? 'active' : ''}" onclick="togglePriority('${t.id}')">★</span>
-                <span class="task-time">${timeDisplay}</span>
-                <span class="task-title">${t.title}</span>
-                <span class="check ${t.done ? 'active' : ''}" onclick="toggleDone('${t.id}')">✓</span>
-            </div>
-        `}).join('');
+        let html = '';
+
+        // No end time section
+        if (noEndTime.length > 0) {
+            html += '<div class="task-section" id="section-noend">';
+            noEndTime.forEach(t => html += renderTaskCard(t, true));
+            html += '</div>';
+        }
+
+        // Routines section
+        if (routines.length > 0) {
+            if (noEndTime.length > 0) html += '<div class="task-section-divider"></div>';
+            html += '<div class="task-section" id="section-routine">';
+            routines.forEach(t => html += renderTaskCard(t, true));
+            html += '</div>';
+        }
+
+        // Timed section
+        if (timed.length > 0) {
+            if (noEndTime.length > 0 || routines.length > 0) html += '<div class="task-section-divider"></div>';
+            html += '<div class="task-section">';
+            timed.forEach(t => html += renderTaskCard(t, false));
+            html += '</div>';
+        }
+
+        // Done section
+        if (done.length > 0 && doneStyle === 'bottom') {
+            html += '<div class="task-section-divider"></div>';
+            html += '<div class="task-section">';
+            done.forEach(t => html += renderTaskCard(t, false));
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+        setupDragAndDrop();
+    }
+
+    function renderTaskCard(t, draggable) {
+        const timeDisplay = t.startTime ? t.startTime.substring(0,5) : '';
+        const endDisplay = t.endTime ? t.endTime.substring(0,5) : '';
+        return `
+        <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" ${draggable ? 'draggable="true"' : ''} oncontextmenu="showContextMenu(event, '${t.id}')">
+            ${draggable ? '<span class="drag-handle">⋮⋮</span>' : ''}
+            <span class="star ${t.priority ? 'active' : ''}" onclick="togglePriority('${t.id}')">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </span>
+            <input type="text" class="task-time-input" value="${timeDisplay}" onchange="updateTaskTime('${t.id}', this.value, 'start')" placeholder="--:--">
+            <input type="text" class="task-title-input" value="${t.title}" onchange="updateTaskTitle('${t.id}', this.value)">
+            <input type="text" class="task-time-input" value="${endDisplay}" onchange="updateTaskTime('${t.id}', this.value, 'end')" placeholder="--:--">
+            <span class="check ${t.done ? 'active' : ''}" onclick="toggleDone('${t.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            </span>
+        </div>`;
+    }
+
+    function setupDragAndDrop() {
+        const cards = document.querySelectorAll('.task-card[draggable="true"]');
+        cards.forEach(card => {
+            card.addEventListener('dragstart', e => {
+                draggedItem = card;
+                card.classList.add('dragging');
+            });
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                draggedItem = null;
+            });
+            card.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (draggedItem && draggedItem !== card) {
+                    const rect = card.getBoundingClientRect();
+                    const midY = rect.top + rect.height / 2;
+                    if (e.clientY < midY) {
+                        card.parentNode.insertBefore(draggedItem, card);
+                    } else {
+                        card.parentNode.insertBefore(draggedItem, card.nextSibling);
+                    }
+                }
+            });
+        });
+    }
+
+    async function updateTaskTitle(id, newTitle) {
+        try {
+            await fetch(`${SERVER_URL}/api/notion/update-event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId(), taskId: id, title: newTitle })
+            });
+        } catch (e) {
+            showToast('수정 실패');
+        }
+    }
+
+    async function updateTaskTime(id, time, type) {
+        const task = tasks.find(t => t.id === id);
+        if (!task) return;
+        try {
+            const body = {
+                token: getToken(),
+                dbId: getDbId(),
+                taskId: id,
+                date: task.date,
+                startTime: type === 'start' ? time : task.startTime,
+                endTime: type === 'end' ? time : task.endTime
+            };
+            await fetch(`${SERVER_URL}/api/notion/update-event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+        } catch (e) {
+            showToast('수정 실패');
+        }
     }
 
     async function togglePriority(id) {
@@ -755,7 +955,7 @@
             await fetch(`${SERVER_URL}/api/notion/toggle-star`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: getToken(), dbId: getDbId(), taskId: id })
+                body: JSON.stringify({ token: getToken(), taskId: id })
             });
             refreshTasks();
         } catch (e) {
@@ -768,7 +968,7 @@
             await fetch(`${SERVER_URL}/api/notion/complete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: getToken(), dbId: getDbId(), taskId: id })
+                body: JSON.stringify({ token: getToken(), taskId: id })
             });
             refreshTasks();
         } catch (e) {
@@ -787,10 +987,24 @@
 
     document.addEventListener('click', () => {
         document.getElementById('contextMenu').classList.remove('show');
+        const tooltip = document.getElementById('calendarTooltip');
+        if (tooltip) tooltip.classList.remove('show');
     });
 
-    function editTask() {
-        showToast('Todo 위젯에서 수정하세요');
+    async function postponeTask() {
+        if (!selectedTaskId) return;
+        try {
+            await fetch(`${SERVER_URL}/api/notion/postpone`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
+            });
+            showToast('내일로 미룸!');
+            refreshTasks();
+        } catch (e) {
+            showToast('미루기 실패');
+        }
+        selectedTaskId = null;
     }
 
     async function deleteTask() {
@@ -799,7 +1013,7 @@
             await fetch(`${SERVER_URL}/api/notion/delete-event`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: getToken(), dbId: getDbId(), taskId: selectedTaskId })
+                body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
             });
             showToast('삭제됨!');
             refreshTasks();
@@ -818,41 +1032,23 @@
         const today = now.toDateString();
         const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
         const dayName = dayNames[now.getDay()];
+        const dateNum = now.getDate();
 
-        const todayTasks = tasks.filter(t => {
-            if (!t.date) return false;
-            return new Date(t.date).toDateString() === today;
-        });
-
+        const todayTasks = tasks.filter(t => t.date && new Date(t.date).toDateString() === today);
         const scheduledTasks = todayTasks.filter(t => t.startTime);
-
-        const wakeHours = 14 * 60;
-        let busyMinutes = 0;
-        scheduledTasks.forEach(t => {
-            const start = timeToMinutes(t.startTime);
-            const end = t.endTime ? timeToMinutes(t.endTime) : start + 60;
-            busyMinutes += (end - start);
-        });
-        const freeMinutes = Math.max(0, wakeHours - busyMinutes);
-        const freeH = Math.floor(freeMinutes / 60);
-        const freeM = freeMinutes % 60;
 
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
         let gridHtml = '';
-        for (let h = 9; h <= 23; h++) {
-            gridHtml += `<div class="timeline-hour" data-hour="${h}">
-                <div class="timeline-hour-label">${h}</div>
-                <div class="timeline-hour-content" id="hour-${h}"></div>
-            </div>`;
+        for (let h = 6; h <= 23; h++) {
+            gridHtml += `<div class="timeline-hour" data-hour="${h}"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content" id="hour-${h}"></div></div>`;
         }
 
         container.innerHTML = `
             <div class="timeline-header">
-                <div class="free-label">FREE</div>
-                <div class="free-time">-${freeH}H ${freeM}M</div>
-                <div class="day-label">${dayName}</div>
+                <div class="date-display">${dateNum}</div>
+                <div class="day-display">${dayName}</div>
             </div>
             <div class="timeline-scroll">
                 <div class="timeline-grid" id="timelineGrid">${gridHtml}</div>
@@ -864,27 +1060,27 @@
             const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
             const startHour = Math.floor(startMin / 60);
 
-            if (startHour < 9 || startHour > 23) return;
+            if (startHour < 6 || startHour > 23) return;
 
             const hourEl = document.getElementById(`hour-${startHour}`);
             if (!hourEl) return;
 
-            const topOffset = (startMin % 60) / 60 * 20;
+            const topOffset = (startMin % 60) / 60 * 18;
             const duration = endMin - startMin;
-            const height = duration / 60 * 20;
+            const height = duration / 60 * 18;
 
             const taskEl = document.createElement('div');
             taskEl.className = 'timeline-task';
             taskEl.style.top = topOffset + 'px';
-            taskEl.style.height = Math.max(height, 14) + 'px';
+            taskEl.style.height = Math.max(height, 12) + 'px';
             taskEl.innerHTML = `<div class="task-name">${t.title}</div>`;
             hourEl.appendChild(taskEl);
         });
 
-        if (currentHour >= 9 && currentHour <= 23) {
+        if (currentHour >= 6 && currentHour <= 23) {
             const grid = document.getElementById('timelineGrid');
-            const hourOffset = (currentHour - 9) * 20;
-            const minOffset = currentMinute / 60 * 20;
+            const hourOffset = (currentHour - 6) * 18;
+            const minOffset = currentMinute / 60 * 18;
             const nowTop = hourOffset + minOffset;
 
             const nowLine = document.createElement('div');
@@ -909,48 +1105,41 @@
     function renderCalendar() {
         const container = document.getElementById('calendarContainer');
         if (!container) return;
-        renderCalendarContent(container, calendarDate, weekStart, tasks);
+        renderCalendarContent(container, calendarDate, weekStart, tasks, true);
     }
 
-    function renderCalendarContent(container, date, startDay, taskList) {
+    function renderCalendarContent(container, date, startDay, taskList, interactive) {
         const year = date.getFullYear();
         const month = date.getMonth();
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        const dayLabels = startDay === 'sun'
-            ? ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-            : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        const dayLabels = startDay === 'sun' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
 
         let startOffset = firstDay.getDay();
-        if (startDay === 'mon') {
-            startOffset = startOffset === 0 ? 6 : startOffset - 1;
-        }
+        if (startDay === 'mon') startOffset = startOffset === 0 ? 6 : startOffset - 1;
 
         const today = new Date();
         const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-        // Get dates with events
-        const eventDates = new Set();
+        const eventDates = new Map();
         if (Array.isArray(taskList)) {
             taskList.forEach(t => {
-                if (t.date) eventDates.add(t.date);
+                if (t.date) {
+                    if (!eventDates.has(t.date)) eventDates.set(t.date, []);
+                    eventDates.get(t.date).push(t);
+                }
             });
         }
 
         let datesHtml = '';
-
-        // Previous month dates
         const prevMonth = new Date(year, month, 0);
         for (let i = startOffset - 1; i >= 0; i--) {
-            const d = prevMonth.getDate() - i;
-            datesHtml += `<div class="calendar-date other-month">${d}</div>`;
+            datesHtml += `<div class="calendar-date other-month">${prevMonth.getDate() - i}</div>`;
         }
 
-        // Current month dates
         for (let d = 1; d <= lastDay.getDate(); d++) {
             const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const isToday = dateStr === todayStr;
@@ -958,37 +1147,73 @@
             let classes = 'calendar-date';
             if (isToday) classes += ' today';
             if (hasEvent) classes += ' has-event';
-            datesHtml += `<div class="${classes}">${d}</div>`;
+            const hoverAttr = interactive && hasEvent ? `onmouseenter="showDateTooltip(event, '${dateStr}')" onmouseleave="hideDateTooltip()"` : '';
+            datesHtml += `<div class="${classes}" ${hoverAttr}>${d}</div>`;
         }
 
-        // Next month dates
         const totalCells = startOffset + lastDay.getDate();
         const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
         for (let d = 1; d <= remaining; d++) {
             datesHtml += `<div class="calendar-date other-month">${d}</div>`;
         }
 
+        const refreshBtn = interactive ? `<button class="refresh-btn" onclick="refreshTasks()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>` : '';
+
         container.innerHTML = `
-            <div class="calendar-nav">
-                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
-                <span class="calendar-month">${monthNames[month]}</span>
-                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+            <div class="calendar-header">
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                    <span class="calendar-month">${monthNames[month]}</span>
+                    <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+                </div>
+                ${refreshBtn}
             </div>
             <div class="calendar-year">${year}</div>
-            <div class="calendar-days">
-                ${dayLabels.map(d => `<div class="calendar-day-label">${d}</div>`).join('')}
-            </div>
+            <div class="calendar-days">${dayLabels.map(d => `<div class="calendar-day-label">${d}</div>`).join('')}</div>
             <div class="calendar-dates">${datesHtml}</div>
         `;
     }
 
+    function showDateTooltip(e, dateStr) {
+        const tooltip = document.getElementById('calendarTooltip');
+        if (!tooltip) return;
+
+        const dateTasks = tasks.filter(t => t.date === dateStr);
+        if (dateTasks.length === 0) return;
+
+        // Sort same as todo widget
+        const noEnd = dateTasks.filter(t => !t.endTime && !t.isRoutine);
+        const routines = dateTasks.filter(t => t.isRoutine);
+        const timed = dateTasks.filter(t => t.endTime && !t.isRoutine);
+        timed.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+        const sorted = [...noEnd, ...routines, ...timed];
+
+        const d = new Date(dateStr);
+        const title = `${d.getMonth()+1}월 ${d.getDate()}일`;
+
+        tooltip.innerHTML = `
+            <div class="calendar-tooltip-title">${title}</div>
+            ${sorted.slice(0, 5).map(t => `<div class="calendar-tooltip-item"><span class="dot"></span>${t.startTime ? t.startTime.substring(0,5) + ' ' : ''}${t.title}</div>`).join('')}
+            ${sorted.length > 5 ? `<div class="calendar-tooltip-item" style="color:#999;">+${sorted.length - 5} more</div>` : ''}
+        `;
+
+        const rect = e.target.getBoundingClientRect();
+        const containerRect = document.getElementById('calendarContainer').getBoundingClientRect();
+        tooltip.style.left = (rect.left - containerRect.left) + 'px';
+        tooltip.style.top = (rect.bottom - containerRect.top + 4) + 'px';
+        tooltip.classList.add('show');
+    }
+
+    function hideDateTooltip() {
+        const tooltip = document.getElementById('calendarTooltip');
+        if (tooltip) tooltip.classList.remove('show');
+    }
+
     function changeMonth(delta) {
         calendarDate.setMonth(calendarDate.getMonth() + delta);
-        if (widgetType === 'calendar') {
-            renderCalendar();
-        } else {
-            renderPreviewCalendar();
-        }
+        if (widgetType === 'calendar') renderCalendar();
+        else renderPreviewCalendar();
     }
 
     function showToast(msg) {
