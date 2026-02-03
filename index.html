@@ -65,7 +65,7 @@
         /* Widget Frame */
         .widget-frame { width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px; box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.05); position: relative; }
         .widget-frame.timeline-widget { width: 120px !important; height: 360px !important; }
-        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 100px !important; }
+        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 140px !important; }
         .widget-frame.calendar-widget { width: 200px !important; height: 240px !important; }
         .widget-frame.todo-widget { width: 240px !important; height: 220px !important; }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
@@ -99,6 +99,10 @@
         .form-type-btn.active { background: var(--theme-color); color: var(--header-text-color); }
         .mini-input { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
         .mini-select { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .mini-cat-btn { padding: 4px 8px; font-size: 10px; border: none; border-radius: 6px; background: #f0f0f0; cursor: pointer; margin-left: 2px; }
+        .mini-cat-btn:hover { background: #e0e0e0; }
+        .mini-cat-btn.danger { color: #ff3b30; }
+        .mini-cat-btn.danger:hover { background: #ffe5e5; }
         .form-row { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
         .form-row .mini-input { flex: 1; margin-bottom: 0; }
         .form-label { font-size: 8px; color: #999; min-width: 24px; }
@@ -150,7 +154,8 @@
         .timeline-task { position: absolute; left: 2px; right: 2px; border-radius: 3px; padding: 1px 3px; font-size: 6px; overflow: hidden; z-index: 1; }
         .timeline-task.solid { background: var(--theme-color); opacity: 0.9; }
         .timeline-task.gradient { background: linear-gradient(to bottom, var(--theme-color), transparent); }
-        .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); }
+        .timeline-task .task-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); opacity: 0; transition: opacity 0.2s; }
+        .timeline-task:hover .task-name { opacity: 1; }
         .timeline-now-line { position: absolute; left: 20px; right: 0; height: 2px; background: var(--dark-theme-color); z-index: 10; }
         .timeline-now-dot { position: absolute; left: 16px; width: 8px; height: 8px; background: var(--dark-theme-color); border-radius: 50%; transform: translateY(-3px); z-index: 10; }
         .timeline-date-label { position: absolute; top: 4px; left: 24px; font-size: 8px; color: #999; font-weight: 600; z-index: 5; }
@@ -161,7 +166,8 @@
         .timeline-h-grid { display: flex; height: 100%; min-width: max-content; position: relative; }
         .timeline-h-hour { width: 50px; height: 100%; border-left: 1px solid #eee; position: relative; flex-shrink: 0; }
         .timeline-h-hour-label { position: absolute; top: 0; left: 2px; font-size: 7px; color: #bbb; }
-        .timeline-h-task { position: absolute; top: 16px; bottom: 4px; background: var(--theme-color); border-radius: 4px; padding: 2px 4px; font-size: 7px; color: var(--header-text-color); overflow: hidden; }
+        .timeline-h-task { position: absolute; top: 16px; bottom: 4px; background: var(--theme-color); border-radius: 4px; padding: 2px 4px; font-size: 7px; color: transparent; overflow: hidden; transition: color 0.2s; }
+        .timeline-h-task:hover { color: var(--header-text-color); }
         .timeline-h-now { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--dark-theme-color); z-index: 10; }
         .timeline-h-date { position: absolute; top: 4px; right: 24px; font-size: 8px; color: #999; font-weight: 600; }
 
@@ -187,8 +193,8 @@
         .calendar-date.has-priority { background: rgba(0,0,0,0.04); }
         .calendar-date.today.has-priority { background: var(--theme-color); }
 
-        /* Calendar Popup - click to show */
-        .calendar-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 140px; max-width: 200px; display: none; }
+        /* Calendar Popup - click to show, constrained within widget */
+        .calendar-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 160px; max-height: 140px; overflow-y: auto; display: none; }
         .calendar-popup.show { display: block; }
         .calendar-popup-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
         .calendar-popup-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
@@ -251,16 +257,6 @@
                     <div class="color-palette" id="palette"></div>
                     <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
                     <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;border-radius:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
-
-                    <div class="option-group">
-                        <label>위젯 폰트</label>
-                        <select id="fontSelect" onchange="setFont(this.value)" style="padding:8px;">
-                            <option value="system">System Default</option>
-                            <option value="serif">Serif (Georgia)</option>
-                            <option value="mono">Monospace</option>
-                            <option value="round">Rounded (Nunito)</option>
-                        </select>
-                    </div>
 
                     <div class="option-group">
                         <label>완료된 일정 표시</label>
@@ -433,9 +429,13 @@
                         <div class="repeat-day" data-day="6" onclick="toggleRepeatDay(6)">토</div>
                     </div>
                 </div>
-                <select class="mini-select" id="taskCategory">
-                    <option value="">카테고리 선택</option>
-                </select>
+                <div class="form-row" style="align-items:stretch;">
+                    <select class="mini-select" id="taskCategory" style="flex:1;margin-bottom:0;">
+                        <option value="">카테고리 선택</option>
+                    </select>
+                    <button type="button" class="mini-cat-btn" onclick="editSelectedCategory()" title="이름 변경">✎</button>
+                    <button type="button" class="mini-cat-btn danger" onclick="deleteSelectedCategory()" title="삭제">×</button>
+                </div>
                 <input type="text" class="mini-input" id="newCategory" placeholder="새 카테고리 입력...">
                 <div class="btn-row">
                     <button class="btn-cancel" onclick="hideSetupForm()">Cancel</button>
@@ -494,7 +494,6 @@
     let timelineShape = "vertical";
     let timeStart = 6;
     let timeEnd = 23;
-    let selectedFont = "system";
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
@@ -513,6 +512,15 @@
     function getLocalDate() {
         const now = new Date();
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    // Format time to GMT/UTC ISO string for Notion
+    function formatDateTimeForNotion(date, time) {
+        if (!time) return date; // date only
+        // Create datetime in local timezone, then convert to ISO
+        const [hours, minutes] = time.split(':');
+        const dt = new Date(date + 'T' + time + ':00');
+        return dt.toISOString();
     }
 
     function updateClock() {
@@ -582,9 +590,6 @@
         timelineShape = params.get('ts') || 'vertical';
         timeStart = parseInt(params.get('th1')) || 6;
         timeEnd = parseInt(params.get('th2')) || 23;
-        selectedFont = params.get('f') || 'system';
-        applyFont(selectedFont);
-
         initWidget(widgetType);
     } else {
         const pal = document.getElementById('palette');
@@ -641,21 +646,6 @@
         timeEnd = parseInt(document.getElementById('timeEnd').value);
     }
 
-    function setFont(font) {
-        selectedFont = font;
-        applyFont(font);
-    }
-
-    function applyFont(font) {
-        const fonts = {
-            'system': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            'serif': 'Georgia, "Times New Roman", serif',
-            'mono': '"SF Mono", "Fira Code", monospace',
-            'round': '"Nunito", "Varela Round", sans-serif'
-        };
-        document.documentElement.style.setProperty('--widget-font', fonts[font] || fonts.system);
-    }
-
     async function moveStep(n) {
         const newStep = step + n;
         if (n === 1 && step === 1) {
@@ -688,7 +678,7 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}&f=${selectedFont}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}`;
 
         document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
@@ -828,6 +818,61 @@
         select.innerHTML = '<option value="">카테고리 선택</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
+    async function editSelectedCategory() {
+        const select = document.getElementById('taskCategory');
+        const oldName = select.value;
+        if (!oldName) { showToast('카테고리를 선택하세요'); return; }
+
+        const newName = prompt('새 카테고리 이름:', oldName);
+        if (!newName || newName === oldName) return;
+
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/rename-category`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId(), oldName, newName })
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('카테고리 이름 변경됨!');
+                const idx = categories.indexOf(oldName);
+                if (idx > -1) categories[idx] = newName;
+                updateCategorySelect();
+                select.value = newName;
+            } else {
+                showToast(result.error || '변경 실패');
+            }
+        } catch (e) {
+            showToast('연결 오류');
+        }
+    }
+
+    async function deleteSelectedCategory() {
+        const select = document.getElementById('taskCategory');
+        const catName = select.value;
+        if (!catName) { showToast('카테고리를 선택하세요'); return; }
+
+        if (!confirm(`"${catName}" 카테고리를 삭제하시겠습니까?`)) return;
+
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/delete-category`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId(), categoryName: catName })
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('카테고리 삭제됨!');
+                categories = categories.filter(c => c !== catName);
+                updateCategorySelect();
+            } else {
+                showToast(result.error || '삭제 실패');
+            }
+        } catch (e) {
+            showToast('연결 오류');
+        }
+    }
+
     function updateCategoryFilter() {
         const filter = document.getElementById('categoryFilter');
         if (!filter) return;
@@ -877,16 +922,25 @@
         if (!title) { showToast('할 일을 입력하세요'); return; }
         if (!date) { showToast('날짜를 선택하세요'); return; }
 
+        // Format start/end datetime in GMT for Notion
+        const startDateTime = startTime ? formatDateTimeForNotion(date, startTime) : null;
+        const endDateTime = endTime ? formatDateTimeForNotion(date, endTime) : null;
+
         try {
             if (formType === 'routine' && repeatDays.length > 0) {
                 // Create multiple entries for routine until end of month
                 const routineDates = getRoutineDates(date, repeatDays);
                 for (const routineDate of routineDates) {
+                    const routineStart = startTime ? formatDateTimeForNotion(routineDate, startTime) : null;
+                    const routineEnd = endTime ? formatDateTimeForNotion(routineDate, endTime) : null;
+
                     const body = {
                         token: getToken(),
                         dbId: getDbId(),
                         title,
                         date: routineDate,
+                        startDateTime: routineStart,
+                        endDateTime: routineEnd,
                         startTime: startTime || null,
                         endTime: endTime || null,
                         category: category || null,
@@ -907,6 +961,8 @@
                     dbId: getDbId(),
                     title,
                     date,
+                    startDateTime: startDateTime,
+                    endDateTime: endDateTime,
                     startTime: startTime || null,
                     endTime: endTime || null,
                     category: category || null,
@@ -1245,7 +1301,8 @@
         taskGroups.forEach(group => {
             group.forEach((t, index) => {
                 const startMin = timeToMinutes(t.startTime);
-                const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
+                const hasEndTime = !!t.endTime;
+                const endMin = hasEndTime ? timeToMinutes(t.endTime) : startMin + 60;
                 const startHour = Math.floor(startMin / 60);
 
                 if (startHour < timeStart || startHour > timeEnd) return;
@@ -1262,9 +1319,17 @@
                 taskEl.style.left = leftOffset + 'px';
                 taskEl.style.width = width + 'px';
                 taskEl.style.top = `calc(16px + ${topPercent}%)`;
-                taskEl.style.height = `calc(${heightPercent}% - 4px)`;
+                taskEl.style.height = `calc(${heightPercent}% - 20px)`;
                 taskEl.style.bottom = 'auto';
-                taskEl.style.background = getTaskColor(index, group.length);
+
+                // Apply gradient if no end time
+                if (hasEndTime) {
+                    taskEl.style.background = getTaskColor(index, group.length);
+                } else {
+                    const color = getTaskColor(index, group.length);
+                    taskEl.style.background = `linear-gradient(to right, ${color}, transparent)`;
+                }
+
                 taskEl.innerText = t.title;
                 grid.appendChild(taskEl);
             });
@@ -1314,10 +1379,15 @@
 
         const taskGroups = groupOverlappingTasksCircle(scheduledTasks);
 
+        // Define gradient for tasks without end time
+        let gradientDefs = '<defs>';
+        let gradientId = 0;
+
         taskGroups.forEach(group => {
             group.forEach((t, index) => {
                 const startMin = timeToMinutes(t.startTime);
-                const endMin = t.endTime ? timeToMinutes(t.endTime) : startMin + 60;
+                const hasEndTime = !!t.endTime;
+                const endMin = hasEndTime ? timeToMinutes(t.endTime) : startMin + 60;
 
                 const layerOffset = index * 8;
                 const taskInnerRadius = innerRadius + layerOffset;
@@ -1341,9 +1411,22 @@
                 const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
                 const color = getTaskColor(index, group.length);
 
-                arcsHtml += `<path d="M${x1},${y1} A${taskInnerRadius},${taskInnerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${taskOuterRadius},${taskOuterRadius} 0 ${largeArc},0 ${x4},${y4} Z" fill="${color}" opacity="0.8"/>`;
+                let fillAttr;
+                if (hasEndTime) {
+                    fillAttr = `fill="${color}" opacity="0.8"`;
+                } else {
+                    // Create gradient for no end time
+                    const gId = `grad${gradientId++}`;
+                    const midRad = (startRad + endRad) / 2;
+                    gradientDefs += `<linearGradient id="${gId}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}"><stop offset="0%" stop-color="${color}" stop-opacity="0.8"/><stop offset="100%" stop-color="${color}" stop-opacity="0.1"/></linearGradient>`;
+                    fillAttr = `fill="url(#${gId})"`;
+                }
+
+                arcsHtml += `<path d="M${x1},${y1} A${taskInnerRadius},${taskInnerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${taskOuterRadius},${taskOuterRadius} 0 ${largeArc},0 ${x4},${y4} Z" ${fillAttr}/>`;
             });
         });
+
+        gradientDefs += '</defs>';
 
         const nowAngle = ((currentHour * 60 + currentMinute) / (24 * 60)) * 360 - 90;
         const nowRad = nowAngle * Math.PI / 180;
@@ -1355,6 +1438,7 @@
         container.innerHTML = `
             <div class="timeline-circle">
                 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                    ${gradientDefs}
                     <circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="#eee" stroke-width="1"/>
                     <circle cx="${center}" cy="${center}" r="${innerRadius}" fill="none" stroke="#eee" stroke-width="1"/>
                     ${arcsHtml}
@@ -1504,8 +1588,28 @@
 
         const rect = e.target.getBoundingClientRect();
         const containerRect = document.getElementById('calendarContainer').getBoundingClientRect();
-        popup.style.left = Math.min(rect.left - containerRect.left, containerRect.width - 150) + 'px';
-        popup.style.top = (rect.bottom - containerRect.top + 4) + 'px';
+        const widgetRect = document.getElementById('calendarWidget').getBoundingClientRect();
+
+        // Calculate position relative to container
+        let left = rect.left - containerRect.left;
+        let top = rect.bottom - containerRect.top + 4;
+
+        // Constrain within widget bounds
+        const popupWidth = 140;
+        const popupHeight = 120;
+
+        if (left + popupWidth > containerRect.width) {
+            left = containerRect.width - popupWidth - 8;
+        }
+        if (left < 0) left = 4;
+
+        if (top + popupHeight > widgetRect.height - containerRect.top + widgetRect.top - 8) {
+            top = rect.top - containerRect.top - popupHeight - 4;
+        }
+        if (top < 0) top = 4;
+
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
         popup.classList.add('show');
     }
 
