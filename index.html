@@ -892,10 +892,9 @@
         document.documentElement.style.setProperty('--neu-inset-sm',
             `inset 2px 2px 4px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.7}), inset -2px -2px 4px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.7})`);
 
-        // Only change body background for embedded widgets, not setup page
-        if (document.body.classList.contains('is-embed')) {
-            document.body.style.background = hex;
-        }
+        // Change page background
+        document.body.style.background = hex;
+        document.documentElement.style.background = hex;
 
         // Auto-update text color if enabled
         if (isAutoText) {
