@@ -85,9 +85,12 @@
         .copy-btn:active { box-shadow: var(--neu-inset-sm); }
 
         /* Preview Section */
-        .preview-section { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .preview-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        .preview-widgets { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+        .preview-section { display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 520px; }
+        .preview-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .preview-row { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+        .preview-widgets { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+        .timeline-previews { display: flex; gap: 12px; align-items: flex-end; }
+        .timeline-preview-label { font-size: 8px; color: var(--text-muted); text-align: center; margin-top: 6px; font-weight: 600; text-transform: uppercase; }
 
         /* Widget Frame */
         .widget-frame { width: 240px !important; height: 175px !important; background: var(--neu-bg); border-radius: 24px; box-shadow: var(--neu-shadow); overflow: hidden; display: flex; flex-direction: column; border: none; position: relative; transition: all 0.5s ease; }
@@ -421,38 +424,74 @@
         <div class="preview-section" id="previewSection">
             <div class="preview-title">Widget Preview</div>
             <div class="preview-widgets" id="widgetPreviews">
-                <div class="widget-frame" id="previewSetup">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Setup</div></div>
-                    <div class="widget-home">
-                        <div class="current-time">00:00</div>
-                        <div class="current-date">SUN, FEB 1</div>
-                        <div class="action-btns">
-                            <button class="action-btn">+ Task</button>
-                            <button class="action-btn">+ Routine</button>
+                <!-- Row 1: Setup & Todo -->
+                <div class="preview-row">
+                    <div class="widget-frame" id="previewSetup">
+                        <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Setup</div></div>
+                        <div class="widget-home">
+                            <div class="current-time">00:00</div>
+                            <div class="current-date">SUN, FEB 1</div>
+                            <div class="action-btns">
+                                <button class="action-btn">+ Task</button>
+                                <button class="action-btn">+ Routine</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="widget-frame todo-widget" id="previewTodo">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
-                    <div class="widget-home">
-                        <div class="current-time">00:00</div>
-                        <div class="current-date">SUN, FEB 1</div>
-                        <button class="action-btn">View Tasks</button>
+                    <div class="widget-frame calendar-widget" id="previewCalendar">
+                        <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Calendar</div></div>
+                        <div class="calendar-container" id="previewCalendarContainer"></div>
                     </div>
                 </div>
 
-                <div class="widget-frame timeline-widget" id="previewTimeline">
-                    <div class="timeline-container">
-                        <div class="timeline-scroll">
-                            <div class="timeline-grid" id="previewGrid"></div>
+                <!-- Row 2: Timeline Types -->
+                <div class="preview-row">
+                    <div>
+                        <div class="widget-frame timeline-widget" id="previewTimelineV" style="width:80px !important;height:280px !important;">
+                            <div class="timeline-container">
+                                <div class="timeline-scroll">
+                                    <div class="timeline-grid" id="previewGridV"></div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="timeline-preview-label">Vertical</div>
+                    </div>
+
+                    <div>
+                        <div class="widget-frame" id="previewTimelineC" style="width:120px !important;height:140px !important;">
+                            <div class="timeline-circle" id="previewCircleContainer">
+                                <canvas id="previewCircleCanvas" width="100" height="100"></canvas>
+                                <div class="circle-date" style="bottom:8px;font-size:8px;">Feb 8</div>
+                            </div>
+                        </div>
+                        <div class="timeline-preview-label">Circle</div>
+                    </div>
+
+                    <div>
+                        <div class="widget-frame todo-widget" id="previewTodo" style="width:180px !important;height:160px !important;">
+                            <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
+                            <div class="widget-home">
+                                <div class="current-time" style="font-size:28px;">00:00</div>
+                                <div class="current-date">SUN, FEB 1</div>
+                                <button class="action-btn" style="font-size:9px;padding:6px 12px;">View Tasks</button>
+                            </div>
+                        </div>
+                        <div class="timeline-preview-label">Todo</div>
                     </div>
                 </div>
 
-                <div class="widget-frame calendar-widget" id="previewCalendar">
-                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Calendar</div></div>
-                    <div class="calendar-container" id="previewCalendarContainer"></div>
+                <!-- Row 3: Horizontal Timeline -->
+                <div class="preview-row" style="width:100%;">
+                    <div style="width:100%;">
+                        <div class="widget-frame timeline-widget horizontal" id="previewTimelineH" style="width:100% !important;max-width:480px !important;height:100px !important;">
+                            <div class="timeline-horizontal" id="previewHContainer">
+                                <div class="timeline-h-scroll">
+                                    <div class="timeline-h-grid" id="previewGridH"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-preview-label">Horizontal Timeline</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -623,15 +662,61 @@
     updateClock();
 
     function renderPreviewTimeline() {
-        const grid = document.getElementById('previewGrid');
-        if (!grid) return;
-        let html = '';
-        for (let h = 9; h <= 20; h++) {
-            html += `<div class="timeline-hour"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content"></div></div>`;
+        // Vertical timeline
+        const gridV = document.getElementById('previewGridV');
+        if (gridV) {
+            let html = '';
+            for (let h = 8; h <= 18; h++) {
+                html += `<div class="timeline-hour"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content"></div></div>`;
+            }
+            gridV.innerHTML = html;
         }
-        grid.innerHTML = html;
+
+        // Horizontal timeline
+        const gridH = document.getElementById('previewGridH');
+        if (gridH) {
+            let html = '';
+            for (let h = 8; h <= 20; h++) {
+                html += `<div class="timeline-h-hour"><div class="timeline-h-hour-label">${h}:00</div></div>`;
+            }
+            gridH.innerHTML = html;
+        }
+
+        // Circle timeline
+        const canvas = document.getElementById('previewCircleCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = 100;
+            const cx = size / 2, cy = size / 2, radius = 38;
+            ctx.clearRect(0, 0, size, size);
+
+            // Background circle
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(163,177,198,0.3)';
+            ctx.lineWidth = 6;
+            ctx.stroke();
+
+            // Progress arc (theme color)
+            const now = new Date();
+            const progress = (now.getHours() * 60 + now.getMinutes()) / (24 * 60);
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim() || '#a8c5a0';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Center time
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#3a4556';
+            ctx.font = 'bold 14px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }), cx, cy);
+        }
     }
     renderPreviewTimeline();
+    setInterval(renderPreviewTimeline, 60000); // Update circle every minute
 
     function renderPreviewCalendar() {
         const container = document.getElementById('previewCalendarContainer');
