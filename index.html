@@ -292,21 +292,6 @@
             </div>
             <div class="content">
                 <div class="step active" id="step1">
-                    <h1>Connect Notion</h1>
-                    <p>Internal Integration 토큰을 입력하면 데이터베이스 목록을 불러옵니다.</p>
-                    <label class="label-text">Notion API Token</label>
-                    <input type="password" id="tokenInput" placeholder="ntn_...">
-                    <div style="margin-bottom: 10px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">내 인테그레이션 바로가기 ↗</a></div>
-                </div>
-
-                <div class="step" id="step2">
-                    <h1>Select Database</h1>
-                    <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
-                    <label class="label-text">Database</label>
-                    <select id="dbSelect"></select>
-                </div>
-
-                <div class="step" id="step3">
                     <h1>Customize</h1>
                     <p>위젯 테마와 옵션을 설정하세요.</p>
                     <label class="label-text">Theme Color</label>
@@ -365,7 +350,28 @@
                     </div>
                 </div>
 
-                <div class="step" id="step4">
+                <div class="step" id="step2">
+                    <h1>Connect Notion</h1>
+                    <p>Internal Integration 토큰을 입력하고 데이터베이스를 불러오세요.</p>
+
+                    <div id="notionConnectArea">
+                        <label class="label-text">Notion API Token</label>
+                        <input type="password" id="tokenInput" placeholder="ntn_...">
+                        <div style="margin-bottom: 12px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">내 인테그레이션 바로가기 ↗</a></div>
+                        <button class="nav-btn" style="width:100%;padding:14px;border-radius:12px;font-size:13px;font-weight:600;" onclick="loadDatabases()">Load Databases</button>
+                    </div>
+
+                    <div id="notionConnectedArea" style="display:none;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:12px;border-radius:12px;background:var(--neu-bg);box-shadow:var(--neu-inset-sm);">
+                            <span style="color:#4CAF50;font-size:16px;">✓</span>
+                            <span style="font-size:13px;color:var(--text-secondary);">Notion 연결됨</span>
+                        </div>
+                        <label class="label-text">Database</label>
+                        <select id="dbSelect"></select>
+                    </div>
+                </div>
+
+                <div class="step" id="step3">
                     <h1>Embed Widgets</h1>
                     <p>아래 URL을 Notion <strong>/embed</strong> 블록에 붙여넣으세요.</p>
 
@@ -727,32 +733,42 @@
         document.querySelector(`[data-indicator="${shape}"]`)?.classList.add('active');
     }
 
+    let notionConnected = false;
+
+    async function loadDatabases() {
+        const tk = document.getElementById('tokenInput').value;
+        if (!tk) { showToast('토큰을 입력하세요'); return; }
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: tk })
+            });
+            const dbs = await res.json();
+            if (dbs.error) { showToast('토큰 오류'); return; }
+            document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
+            document.getElementById('notionConnectArea').style.display = 'none';
+            document.getElementById('notionConnectedArea').style.display = 'block';
+            notionConnected = true;
+            showToast('데이터베이스 로드 완료!');
+        } catch (e) {
+            showToast('연결 실패');
+        }
+    }
+
     async function moveStep(n) {
         const newStep = step + n;
-        if (n === 1 && step === 1) {
-            const tk = document.getElementById('tokenInput').value;
-            if (!tk) { showToast('토큰을 입력하세요'); return; }
-            try {
-                const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tk })
-                });
-                const dbs = await res.json();
-                if (dbs.error) { showToast('토큰 오류'); return; }
-                document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
-            } catch (e) {
-                showToast('연결 실패');
-                return;
-            }
+        if (n === 1 && step === 2 && !notionConnected) {
+            showToast('먼저 Load Databases를 클릭하세요');
+            return;
         }
-        if (newStep === 4) generateUrls();
-        if (newStep < 1 || newStep > 4) return;
+        if (newStep === 3) generateUrls();
+        if (newStep < 1 || newStep > 3) return;
         document.getElementById(`step${step}`).classList.remove('active');
         step = newStep;
         document.getElementById(`step${step}`).classList.add('active');
         document.getElementById('prevBtn').disabled = (step === 1);
-        document.getElementById('nextBtn').style.visibility = (step === 4) ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').style.visibility = (step === 3) ? 'hidden' : 'visible';
     }
 
     function generateUrls() {
