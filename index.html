@@ -706,7 +706,37 @@
 
     function updateBgColor(hex) {
         selectedBgColor = hex.replace('#', '');
+        const r = parseInt(selectedBgColor.slice(0,2), 16);
+        const g = parseInt(selectedBgColor.slice(2,4), 16);
+        const b = parseInt(selectedBgColor.slice(4,6), 16);
+
+        // Calculate neumorphism shadow colors dynamically
+        // Light shadow: blend towards white
+        const lightR = Math.min(255, Math.round(r + (255 - r) * 0.7));
+        const lightG = Math.min(255, Math.round(g + (255 - g) * 0.7));
+        const lightB = Math.min(255, Math.round(b + (255 - b) * 0.7));
+
+        // Dark shadow: blend towards darker
+        const darkR = Math.max(0, Math.round(r * 0.75));
+        const darkG = Math.max(0, Math.round(g * 0.78));
+        const darkB = Math.max(0, Math.round(b * 0.82));
+
         document.documentElement.style.setProperty('--neu-bg', hex);
+        document.documentElement.style.setProperty('--neu-light', `rgb(${lightR},${lightG},${lightB})`);
+        document.documentElement.style.setProperty('--neu-dark', `rgb(${darkR},${darkG},${darkB})`);
+
+        // Update shadow CSS variables
+        document.documentElement.style.setProperty('--neu-shadow',
+            `9px 9px 16px rgba(${darkR},${darkG},${darkB},0.5), -9px -9px 16px rgba(${lightR},${lightG},${lightB},0.8)`);
+        document.documentElement.style.setProperty('--neu-shadow-sm',
+            `5px 5px 10px rgba(${darkR},${darkG},${darkB},0.45), -5px -5px 10px rgba(${lightR},${lightG},${lightB},0.7)`);
+        document.documentElement.style.setProperty('--neu-shadow-xs',
+            `3px 3px 6px rgba(${darkR},${darkG},${darkB},0.4), -3px -3px 6px rgba(${lightR},${lightG},${lightB},0.6)`);
+        document.documentElement.style.setProperty('--neu-inset',
+            `inset 4px 4px 8px rgba(${darkR},${darkG},${darkB},0.4), inset -4px -4px 8px rgba(${lightR},${lightG},${lightB},0.6)`);
+        document.documentElement.style.setProperty('--neu-inset-sm',
+            `inset 2px 2px 5px rgba(${darkR},${darkG},${darkB},0.35), inset -2px -2px 5px rgba(${lightR},${lightG},${lightB},0.5)`);
+
         document.body.style.background = hex;
     }
 
