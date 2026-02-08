@@ -360,18 +360,18 @@
                     <h1>Connect Notion</h1>
                     <p>Enter your Internal Integration token to load databases.</p>
 
+                    <label class="label-text" style="display:flex;align-items:center;gap:8px;">
+                        Notion API Token
+                        <span id="connectionIndicator" style="width:8px;height:8px;border-radius:50%;background:#ccc;box-shadow:0 0 0 2px rgba(0,0,0,0.1);transition:all 0.3s;"></span>
+                    </label>
+                    <input type="password" id="tokenInput" placeholder="ntn_..." style="margin-bottom:8px;">
+                    <div style="margin-bottom:16px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:11px;color:var(--text-muted);text-decoration:none;">Go to My Integrations ↗</a></div>
+
                     <div id="notionConnectArea">
-                        <label class="label-text">Notion API Token</label>
-                        <input type="password" id="tokenInput" placeholder="ntn_...">
-                        <div style="margin-bottom: 12px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">Go to My Integrations ↗</a></div>
                         <button class="nav-btn" style="width:100%;padding:14px;border-radius:12px;font-size:13px;font-weight:600;" onclick="loadDatabases()">Load Databases</button>
                     </div>
 
                     <div id="notionConnectedArea" style="display:none;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:12px;border-radius:12px;background:var(--neu-bg);box-shadow:var(--neu-inset-sm);">
-                            <span style="color:#4CAF50;font-size:16px;">✓</span>
-                            <span style="font-size:13px;color:var(--text-secondary);">Connected to Notion</span>
-                        </div>
                         <label class="label-text">Database</label>
                         <select id="dbSelect"></select>
                     </div>
@@ -743,38 +743,38 @@
         // Calculate luminance to determine if bg is light or dark
         const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-        // Refined neumorphism shadow calculation
-        // Light shadow: subtle highlight (less intense for better look)
-        const lightFactor = luminance > 0.5 ? 0.35 : 0.15;
+        // Stronger neumorphism shadow calculation for more pronounced 3D effect
+        // Light shadow: blend towards white
+        const lightFactor = luminance > 0.5 ? 0.6 : 0.25;
         const lightR = Math.min(255, Math.round(r + (255 - r) * lightFactor));
         const lightG = Math.min(255, Math.round(g + (255 - g) * lightFactor));
         const lightB = Math.min(255, Math.round(b + (255 - b) * lightFactor));
 
-        // Dark shadow: gentle shade
-        const darkFactor = luminance > 0.5 ? 0.85 : 0.7;
+        // Dark shadow: stronger contrast
+        const darkFactor = luminance > 0.5 ? 0.75 : 0.55;
         const darkR = Math.max(0, Math.round(r * darkFactor));
         const darkG = Math.max(0, Math.round(g * darkFactor));
         const darkB = Math.max(0, Math.round(b * darkFactor));
 
-        // Shadow opacity based on luminance
-        const darkOpacity = luminance > 0.5 ? 0.25 : 0.4;
-        const lightOpacity = luminance > 0.5 ? 0.5 : 0.15;
+        // Higher opacity for more visible shadows
+        const darkOpacity = luminance > 0.5 ? 0.5 : 0.6;
+        const lightOpacity = luminance > 0.5 ? 0.7 : 0.25;
 
         document.documentElement.style.setProperty('--neu-bg', hex);
         document.documentElement.style.setProperty('--neu-light', `rgb(${lightR},${lightG},${lightB})`);
         document.documentElement.style.setProperty('--neu-dark', `rgb(${darkR},${darkG},${darkB})`);
 
-        // Update shadow CSS variables with refined values
+        // Update shadow CSS variables - stronger values for 3D effect
         document.documentElement.style.setProperty('--neu-shadow',
-            `9px 9px 18px rgba(${darkR},${darkG},${darkB},${darkOpacity}), -9px -9px 18px rgba(${lightR},${lightG},${lightB},${lightOpacity})`);
+            `8px 8px 16px rgba(${darkR},${darkG},${darkB},${darkOpacity}), -8px -8px 16px rgba(${lightR},${lightG},${lightB},${lightOpacity})`);
         document.documentElement.style.setProperty('--neu-shadow-sm',
-            `5px 5px 10px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.9}), -5px -5px 10px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.9})`);
+            `5px 5px 10px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.85}), -5px -5px 10px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.85})`);
         document.documentElement.style.setProperty('--neu-shadow-xs',
-            `3px 3px 6px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.8}), -3px -3px 6px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.8})`);
+            `3px 3px 6px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.7}), -3px -3px 6px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.7})`);
         document.documentElement.style.setProperty('--neu-inset',
-            `inset 4px 4px 8px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.9}), inset -4px -4px 8px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.9})`);
+            `inset 4px 4px 8px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.8}), inset -4px -4px 8px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.8})`);
         document.documentElement.style.setProperty('--neu-inset-sm',
-            `inset 2px 2px 5px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.8}), inset -2px -2px 5px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.8})`);
+            `inset 2px 2px 4px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.7}), inset -2px -2px 4px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.7})`);
 
         document.body.style.background = hex;
 
@@ -897,6 +897,7 @@
     async function loadDatabases() {
         const tk = document.getElementById('tokenInput').value;
         if (!tk) { showToast('Please enter a token'); return; }
+        const indicator = document.getElementById('connectionIndicator');
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
                 method: 'POST',
@@ -904,13 +905,23 @@
                 body: JSON.stringify({ token: tk })
             });
             const dbs = await res.json();
-            if (dbs.error) { showToast('Token error'); return; }
+            if (dbs.error) {
+                indicator.style.background = '#e57373';
+                indicator.style.boxShadow = '0 0 6px rgba(229,115,115,0.6)';
+                showToast('Token error');
+                return;
+            }
             document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
             document.getElementById('notionConnectArea').style.display = 'none';
             document.getElementById('notionConnectedArea').style.display = 'block';
+            // Green indicator with glow
+            indicator.style.background = '#4CAF50';
+            indicator.style.boxShadow = '0 0 6px rgba(76,175,80,0.6)';
             notionConnected = true;
             showToast('Databases loaded!');
         } catch (e) {
+            indicator.style.background = '#e57373';
+            indicator.style.boxShadow = '0 0 6px rgba(229,115,115,0.6)';
             showToast('Connection failed');
         }
     }
