@@ -50,6 +50,7 @@
         .nav-btn { background: var(--neu-bg); border: none; cursor: pointer; color: var(--text-primary); padding: 7px; display: flex; align-items: center; justify-content: center; border-radius: 10px; box-shadow: var(--neu-shadow-xs); transition: all 0.2s ease; }
         .nav-btn:hover { box-shadow: 2px 2px 4px rgba(163,177,198,0.5), -2px -2px 4px rgba(255,255,255,0.5); }
         .nav-btn:active { box-shadow: var(--neu-inset-sm); }
+        .nav-btn.active { box-shadow: var(--neu-inset-sm); color: var(--text-primary); }
         .nav-btn:disabled { opacity: 0.25; cursor: default; box-shadow: none; }
         .content { padding: 30px 25px; min-height: 300px; position: relative; background: var(--neu-bg); overflow-y: auto; }
         .step { display: none; animation: fadeUp 0.3s ease; }
@@ -299,6 +300,12 @@
                     <div class="color-palette" id="bgPalette"></div>
                     <input type="color" id="bgCp" style="visibility:hidden;width:0;height:0;" oninput="updateBgColor(this.value)">
                     <button class="nav-btn" style="width:100%;padding:12px;margin-bottom:16px;border-radius:12px;font-size:12px;font-weight:600;color:var(--text-muted);" onclick="document.getElementById('bgCp').click()">Custom Color</button>
+
+                    <label class="label-text">Text & Icon Color</label>
+                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;">
+                        <div class="color-palette" id="textPalette" style="flex:1;margin-bottom:0;"></div>
+                        <button class="nav-btn" id="autoTextBtn" style="padding:8px 14px;border-radius:10px;font-size:11px;font-weight:600;" onclick="setAutoTextColor()">Auto</button>
+                    </div>
 
                     <label class="label-text">Widget Color</label>
                     <div class="color-palette" id="palette"></div>
@@ -566,9 +573,12 @@
     const SERVER_URL = "https://calendar-server-hrgs.onrender.com";
     // Neumorphism-friendly soft pastel colors
     const bgThemes = ["E8ECEF", "F5F0EB", "EBF0E8", "E8EBF0", "F0E8EB", "E8F0EF"];
+    const textThemes = ["3a4556", "5a6a7a", "8895a7"];
     const themes = ["d4a5a5", "e8d5a3", "a8c5a0", "9fb8c7", "c4b8d4", "8fa5a0"];
     let step = 1;
     let selectedBgColor = "E8ECEF";
+    let selectedTextColor = "3a4556";
+    let isAutoText = true;
     let selectedColor = "a8c5a0";
     let doneStyle = "bottom";
     let weekStart = "sun";
@@ -671,6 +681,11 @@
         timeEnd = parseInt(params.get('th2')) || 23;
         const bg = params.get('bg');
         if (bg) updateBgColor('#' + bg);
+        const tc = params.get('tc');
+        if (tc) {
+            isAutoText = false;
+            applyTextColor(tc);
+        }
         initWidget(widgetType);
     } else {
         // Background color palette
@@ -686,6 +701,21 @@
             };
             bgPal.appendChild(d);
         });
+
+        // Text color palette
+        const textPal = document.getElementById('textPalette');
+        textThemes.forEach(t => {
+            const d = document.createElement('div');
+            d.className = 'color-dot';
+            d.style.background = '#' + t;
+            d.onclick = () => {
+                textPal.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                d.classList.add('active');
+                setTextColor(t);
+            };
+            textPal.appendChild(d);
+        });
+        document.getElementById('autoTextBtn').classList.add('active');
 
         // Widget color palette
         const pal = document.getElementById('palette');
@@ -710,34 +740,116 @@
         const g = parseInt(selectedBgColor.slice(2,4), 16);
         const b = parseInt(selectedBgColor.slice(4,6), 16);
 
-        // Calculate neumorphism shadow colors dynamically
-        // Light shadow: blend towards white
-        const lightR = Math.min(255, Math.round(r + (255 - r) * 0.7));
-        const lightG = Math.min(255, Math.round(g + (255 - g) * 0.7));
-        const lightB = Math.min(255, Math.round(b + (255 - b) * 0.7));
+        // Calculate luminance to determine if bg is light or dark
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-        // Dark shadow: blend towards darker
-        const darkR = Math.max(0, Math.round(r * 0.75));
-        const darkG = Math.max(0, Math.round(g * 0.78));
-        const darkB = Math.max(0, Math.round(b * 0.82));
+        // Refined neumorphism shadow calculation
+        // Light shadow: subtle highlight (less intense for better look)
+        const lightFactor = luminance > 0.5 ? 0.35 : 0.15;
+        const lightR = Math.min(255, Math.round(r + (255 - r) * lightFactor));
+        const lightG = Math.min(255, Math.round(g + (255 - g) * lightFactor));
+        const lightB = Math.min(255, Math.round(b + (255 - b) * lightFactor));
+
+        // Dark shadow: gentle shade
+        const darkFactor = luminance > 0.5 ? 0.85 : 0.7;
+        const darkR = Math.max(0, Math.round(r * darkFactor));
+        const darkG = Math.max(0, Math.round(g * darkFactor));
+        const darkB = Math.max(0, Math.round(b * darkFactor));
+
+        // Shadow opacity based on luminance
+        const darkOpacity = luminance > 0.5 ? 0.25 : 0.4;
+        const lightOpacity = luminance > 0.5 ? 0.5 : 0.15;
 
         document.documentElement.style.setProperty('--neu-bg', hex);
         document.documentElement.style.setProperty('--neu-light', `rgb(${lightR},${lightG},${lightB})`);
         document.documentElement.style.setProperty('--neu-dark', `rgb(${darkR},${darkG},${darkB})`);
 
-        // Update shadow CSS variables
+        // Update shadow CSS variables with refined values
         document.documentElement.style.setProperty('--neu-shadow',
-            `9px 9px 16px rgba(${darkR},${darkG},${darkB},0.5), -9px -9px 16px rgba(${lightR},${lightG},${lightB},0.8)`);
+            `9px 9px 18px rgba(${darkR},${darkG},${darkB},${darkOpacity}), -9px -9px 18px rgba(${lightR},${lightG},${lightB},${lightOpacity})`);
         document.documentElement.style.setProperty('--neu-shadow-sm',
-            `5px 5px 10px rgba(${darkR},${darkG},${darkB},0.45), -5px -5px 10px rgba(${lightR},${lightG},${lightB},0.7)`);
+            `5px 5px 10px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.9}), -5px -5px 10px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.9})`);
         document.documentElement.style.setProperty('--neu-shadow-xs',
-            `3px 3px 6px rgba(${darkR},${darkG},${darkB},0.4), -3px -3px 6px rgba(${lightR},${lightG},${lightB},0.6)`);
+            `3px 3px 6px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.8}), -3px -3px 6px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.8})`);
         document.documentElement.style.setProperty('--neu-inset',
-            `inset 4px 4px 8px rgba(${darkR},${darkG},${darkB},0.4), inset -4px -4px 8px rgba(${lightR},${lightG},${lightB},0.6)`);
+            `inset 4px 4px 8px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.9}), inset -4px -4px 8px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.9})`);
         document.documentElement.style.setProperty('--neu-inset-sm',
-            `inset 2px 2px 5px rgba(${darkR},${darkG},${darkB},0.35), inset -2px -2px 5px rgba(${lightR},${lightG},${lightB},0.5)`);
+            `inset 2px 2px 5px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.8}), inset -2px -2px 5px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.8})`);
 
         document.body.style.background = hex;
+
+        // Auto-update text color if enabled
+        if (isAutoText) {
+            autoCalculateTextColor(r, g, b, luminance);
+        }
+    }
+
+    function autoCalculateTextColor(r, g, b, luminance) {
+        // Calculate appropriate text color based on background
+        let textColor;
+        if (luminance > 0.6) {
+            textColor = '3a4556'; // Dark text for light bg
+        } else if (luminance > 0.4) {
+            textColor = '4a5568'; // Medium text
+        } else {
+            textColor = 'e8ecef'; // Light text for dark bg
+        }
+        applyTextColor(textColor);
+
+        // Update text palette selection
+        const textPal = document.getElementById('textPalette');
+        if (textPal) {
+            textPal.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+        }
+    }
+
+    function applyTextColor(color) {
+        selectedTextColor = color;
+        const hex = '#' + color;
+        document.documentElement.style.setProperty('--text-primary', hex);
+
+        // Calculate secondary and muted colors
+        const r = parseInt(color.slice(0,2), 16);
+        const g = parseInt(color.slice(2,4), 16);
+        const b = parseInt(color.slice(4,6), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        if (luminance > 0.5) {
+            // Light text - make secondary darker
+            document.documentElement.style.setProperty('--text-secondary', `rgba(${r},${g},${b},0.7)`);
+            document.documentElement.style.setProperty('--text-muted', `rgba(${r},${g},${b},0.5)`);
+        } else {
+            // Dark text - make secondary lighter
+            const secR = Math.min(255, r + 50);
+            const secG = Math.min(255, g + 50);
+            const secB = Math.min(255, b + 50);
+            const mutR = Math.min(255, r + 90);
+            const mutG = Math.min(255, g + 90);
+            const mutB = Math.min(255, b + 90);
+            document.documentElement.style.setProperty('--text-secondary', `rgb(${secR},${secG},${secB})`);
+            document.documentElement.style.setProperty('--text-muted', `rgb(${mutR},${mutG},${mutB})`);
+        }
+    }
+
+    function setAutoTextColor() {
+        isAutoText = true;
+        document.getElementById('autoTextBtn').classList.add('active');
+        const textPal = document.getElementById('textPalette');
+        if (textPal) {
+            textPal.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+        }
+        // Recalculate based on current bg
+        const r = parseInt(selectedBgColor.slice(0,2), 16);
+        const g = parseInt(selectedBgColor.slice(2,4), 16);
+        const b = parseInt(selectedBgColor.slice(4,6), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        autoCalculateTextColor(r, g, b, luminance);
+    }
+
+    function setTextColor(color) {
+        isAutoText = false;
+        document.getElementById('autoTextBtn').classList.remove('active');
+        applyTextColor(color);
     }
 
     function updateTheme(hex) {
@@ -822,7 +934,7 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&bg=${selectedBgColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&bg=${selectedBgColor}&tc=${selectedTextColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}`;
 
         document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
