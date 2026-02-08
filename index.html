@@ -6,196 +6,1754 @@
     <title>Life Cooker</title>
     <style>
         :root {
-            --theme-color: #ffffff; 
+            --theme-color: #c5e8c5;
             --accent-color: #1d1d1f;
             --hover-color: rgba(0, 0, 0, 0.04);
             --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
             --dark-theme-color: #333;
+            --header-text-color: #1d1d1f;
+            --onboarding-btn-color: #f5f5f7;
+            --onboarding-btn-active: #1d1d1f;
+            --widget-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.01em; }
+        * { box-sizing: border-box; font-family: var(--widget-font); letter-spacing: -0.01em; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; }
 
-        /* [기존 책 검색 위젯 UI 복구] */
-        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; margin-bottom: 25px; z-index: 10; }
+        /* Main Layout */
+        .main-layout { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 30px; width: 100%; max-width: 900px; }
+        @media (max-width: 700px), (max-height: 600px) and (max-width: 500px) {
+            .main-layout { flex-direction: column; align-items: center; }
+        }
+
+        .window { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; z-index: 10; flex-shrink: 0; }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
         .dot { width: 11px; height: 11px; border-radius: 50%; }
         .dot.red { background: #e8bcbc; } .dot.yellow { background: #f4f4bd; } .dot.green { background: #c5e8c5; }
         .bar-title { font-size: 13px; font-weight: 700; color: #333; flex: 2; text-align: center; }
         .nav-controls { flex: 1; display: flex; justify-content: flex-end; gap: 12px; }
-        
+        .nav-btn { background: none; border: none; cursor: pointer; color: #333; }
+        .nav-btn:disabled { color: #ccc; cursor: not-allowed; }
         .content { padding: 30px 25px; min-height: 280px; position: relative; }
         .step { display: none; animation: fadeUp 0.3s ease; }
         .step.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
         h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: #1d1d1f; }
         p { font-size: 13px; color: #86868b; margin-bottom: 20px; line-height: 1.4; }
         input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; background: #f9f9fc; outline: none; font-size: 13px; margin-bottom: 10px; }
+        .color-palette { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; }
+        .color-dot.active { box-shadow: 0 0 0 2px #333; }
+        .option-group { margin-bottom: 15px; }
+        .option-group label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
+        .option-row { display: flex; gap: 8px; }
+        .option-btn { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: var(--onboarding-btn-color); font-size: 11px; cursor: pointer; text-align: center; transition: 0.2s; color: #666; }
+        .option-btn.active { background: var(--onboarding-btn-active); border-color: var(--onboarding-btn-active); color: #fff; }
+        .time-range-group { display: flex; gap: 8px; margin-top: 8px; }
+        .time-range-group select { flex: 1; padding: 8px; font-size: 11px; }
+        .url-box { background: #f5f5f7; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .url-box label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px; }
+        .url-box .url-text { font-size: 9px; color: #333; word-break: break-all; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #eee; max-height: 50px; overflow-y: auto; }
+        .copy-btn { background: #1d1d1f; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; cursor: pointer; margin-top: 6px; }
 
-        /* 위젯 디자인 롤백 */
-        .widget-frame {
-            width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px;
-            box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05); margin: 0 auto; position: relative;
-        }
+        /* Preview Section */
+        .preview-section { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .preview-title { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preview-widgets { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+        /* Widget Frame */
+        .widget-frame { width: 240px !important; height: 175px !important; background: #fff; border-radius: 16px; box-shadow: var(--shadow-pale); overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.05); position: relative; }
+        .widget-frame.timeline-widget { width: 90px !important; height: 360px !important; }
+        .widget-frame.timeline-widget.horizontal { width: 100% !important; max-width: 600px !important; height: 160px !important; }
+        .widget-frame.calendar-widget { width: 200px !important; height: 240px !important; }
+        .widget-frame.todo-widget { width: 240px !important; height: 220px !important; }
         .widget-top { height: 32px; background: var(--theme-color); display: flex; align-items: center; padding: 0 10px; transition: 0.3s; position: relative; flex-shrink: 0; }
+        .widget-top.hidden { display: none; }
         .w-dots { display: flex; gap: 4.5px; position: absolute; left: 10px; }
         .w-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.12); }
-        .w-title { font-size: 10px; font-weight: 700; color: #1d1d1f; width: 100%; text-align: center; }
+        .w-title { font-size: 10px; font-weight: 700; color: var(--header-text-color); width: 100%; text-align: center; cursor: pointer; }
 
-        /* 홈 화면 시계 레이아웃 */
-        #widgetHome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 143px; }
-        #currentTime { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
-        #currentDate { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-        
-        .action-btn { background: rgba(0,0,0,0.03); border: 0.5px solid rgba(0,0,0,0.05); padding: 3px 12px; border-radius: 12px; font-size: 9px; color: var(--theme-color); cursor: pointer; filter: contrast(0.8) brightness(0.8); }
+        /* Refresh Button - unified position: top right */
+        .refresh-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #ccc; transition: 0.2s; position: absolute; top: 6px; right: 6px; z-index: 5; }
+        .refresh-btn:hover { color: #999; }
+        .refresh-btn svg { width: 12px; height: 12px; }
+        .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 투두리스트 목록 뷰 */
-        #widgetList { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-        .todo-container { padding: 8px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .todo-card { display: flex; align-items: center; gap: 6px; padding: 6px; background: #fafafa; border-radius: 8px; font-size: 9px; cursor: pointer; }
-        .todo-card .star { color: #ddd; transition: 0.2s; }
-        .todo-card .star.active { color: #ffcc00; }
-        .todo-card .check { margin-left: auto; color: #eee; }
-        .todo-card.done { opacity: 0.5; text-decoration: line-through; }
+        /* Home Screen Clock */
+        .widget-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .current-time { font-size: 32px; font-weight: 800; color: var(--dark-theme-color); line-height: 0.9; margin-bottom: 2px; }
+        .current-date { font-size: 8px; color: #bbb; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        .action-btn { background: var(--theme-color); border: none; padding: 6px 14px; border-radius: 14px; font-size: 9px; color: var(--header-text-color); cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .action-btn:hover { opacity: 0.85; }
+        .action-btns { display: flex; gap: 6px; }
 
-        /* 입력 폼 */
-        #widgetAdd { display: none; flex: 1; flex-direction: column; padding: 12px; }
-        .mini-input { width: 100%; padding: 6px; font-size: 9px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 4px; }
+        /* Setup Widget Form Styles */
+        .setup-form { flex: 1; display: flex; flex-direction: column; padding: 8px; overflow-y: auto; min-height: 0; }
+        .setup-form-header { display: flex; align-items: center; margin-bottom: 4px; flex-shrink: 0; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 2px; color: #999; }
+        .back-btn:hover { color: #333; }
+        .form-type-btns { display: flex; gap: 4px; flex: 1; justify-content: center; }
+        .form-type-btn { padding: 3px 10px; border: none; border-radius: 10px; background: #f5f5f7; font-size: 8px; cursor: pointer; color: #666; transition: 0.2s; }
+        .form-type-btn.active { background: var(--theme-color); color: var(--header-text-color); }
+        .mini-input { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .mini-select { width: 100%; padding: 5px 8px; font-size: 10px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 4px; background: #fafafa; }
+        .mini-cat-btn { padding: 4px 8px; font-size: 10px; border: none; border-radius: 6px; background: #f0f0f0; cursor: pointer; margin-left: 2px; }
+        .mini-cat-btn:hover { background: #e0e0e0; }
+        .mini-cat-btn.danger { color: #ff3b30; }
+        .mini-cat-btn.danger:hover { background: #ffe5e5; }
+        .form-row { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
+        .form-row .mini-input { flex: 1; margin-bottom: 0; }
+        .form-label { font-size: 8px; color: #999; min-width: 24px; }
+        .form-check { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 9px; color: #666; }
+        .form-check input[type="checkbox"] { width: 14px; height: 14px; margin: 0; }
+        .btn-row { display: flex; gap: 4px; margin-top: 8px; flex-shrink: 0; padding-top: 4px; }
+        .btn-row button { flex: 1; padding: 8px; font-size: 10px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-save { background: var(--theme-color); color: var(--header-text-color); }
+        .btn-save:hover { opacity: 0.85; }
+        .btn-cancel { background: #f5f5f7; color: #666; }
 
+        /* Routine repeat options */
+        .repeat-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+        .repeat-day { width: 22px; height: 22px; border-radius: 50%; border: none; background: #f5f5f7; font-size: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #999; transition: 0.2s; }
+        .repeat-day.active { background: var(--theme-color); color: var(--header-text-color); }
+
+        /* Todo Widget Styles */
+        .todo-header { padding: 5px 10px; display: flex; justify-content: center; align-items: center; border-bottom: 0.5px solid #eee; flex-shrink: 0; gap: 4px; }
+        .todo-tab { padding: 4px 12px; border: none; border-radius: 10px; background: #f5f5f7; font-size: 8px; cursor: pointer; color: #666; font-weight: 600; transition: 0.2s; }
+        .todo-tab.active { background: var(--theme-color); color: var(--header-text-color); }
+        .todo-container { flex: 1; overflow-y: auto; padding: 4px 8px; min-height: 0; }
+        .task-section { margin-bottom: 4px; }
+        .task-section-divider { height: 1px; background: #eee; margin: 6px 0; }
+        .task-card { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: #fafafa; border-radius: 6px; font-size: 9px; margin-bottom: 2px; cursor: default; }
+        .task-card.done { opacity: 0.5; }
+        .task-card.done .task-title { text-decoration: line-through; color: #999; }
+        .task-card .star { cursor: pointer; flex-shrink: 0; }
+        .task-card .star svg { width: 12px; height: 12px; fill: #ddd; transition: 0.2s; }
+        .task-card .star.active svg { fill: var(--dark-theme-color); }
+        .task-card .task-time { font-size: 7px; color: #999; flex-shrink: 0; }
+        .task-card .task-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .task-card .check { cursor: pointer; flex-shrink: 0; }
+        .task-card .check svg { width: 14px; height: 14px; color: #ddd; transition: 0.2s; }
+        .task-card .check.active svg { color: var(--dark-theme-color); }
+        .task-card .drag-handle { cursor: grab; color: #ccc; font-size: 8px; padding: 0 2px; flex-shrink: 0; }
+        .task-card.dragging { opacity: 0.5; background: var(--theme-color); }
+        .category-filter { display: none; padding: 4px 8px; gap: 4px; flex-wrap: wrap; border-bottom: 0.5px solid #eee; }
+        .category-filter.show { display: flex; }
+        .cat-tag { font-size: 7px; padding: 2px 6px; border-radius: 10px; background: #f0f0f0; cursor: pointer; }
+        .cat-tag.active { background: var(--theme-color); color: var(--header-text-color); }
+
+        /* Timeline Widget Styles - Notion-like thin translucent design */
+        .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 16px; position: relative; }
+        .timeline-scroll { flex: 1; overflow-y: auto; position: relative; padding-top: 20px; }
+        .timeline-grid { position: relative; min-height: 100%; }
+        .timeline-hour { display: flex; align-items: flex-start; height: 20px; border-bottom: 1px solid #f8f8f8; }
+        .timeline-hour-label { width: 18px; font-size: 6px; color: #ccc; text-align: right; padding-right: 3px; flex-shrink: 0; padding-top: 1px; }
+        .timeline-hour-content { flex: 1; position: relative; height: 100%; }
+        .timeline-task { position: absolute; left: 1px; right: 1px; border-radius: 2px; padding: 0 2px; font-size: 5px; overflow: hidden; z-index: 1; border-left: 2px solid var(--dark-theme-color); }
+        .timeline-task.solid { background: var(--theme-color); opacity: 0.6; }
+        .timeline-task.gradient { background: linear-gradient(to bottom, var(--theme-color), transparent); opacity: 0.5; }
+        .timeline-task .task-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--header-text-color); opacity: 0; transition: opacity 0.2s; font-size: 6px; }
+        .timeline-task:hover .task-name { opacity: 1; }
+        .timeline-task:hover { opacity: 0.9; }
+        .timeline-now-line { position: absolute; left: 18px; right: 0; height: 1px; background: var(--dark-theme-color); z-index: 10; }
+        .timeline-now-indicator { position: absolute; left: 14px; z-index: 11; }
+        .timeline-date-label { position: absolute; top: 4px; left: 4px; right: 4px; font-size: 7px; color: #999; font-weight: 600; z-index: 15; background: #fff; padding: 2px 0; text-align: center; }
+
+        /* Horizontal Timeline - Notion-like */
+        .timeline-horizontal { flex: 1; display: flex; flex-direction: column; background: #fff; position: relative; padding-top: 24px; }
+        .timeline-h-scroll { flex: 1; overflow-x: auto; padding: 4px 8px; }
+        .timeline-h-grid { display: flex; height: 100%; min-width: max-content; position: relative; }
+        .timeline-h-hour { width: 60px; height: 100%; border-left: 1px solid #f0f0f0; position: relative; flex-shrink: 0; }
+        .timeline-h-hour-label { position: absolute; top: 2px; left: 4px; font-size: 8px; color: #bbb; }
+        .timeline-h-task { position: absolute; top: 22px; height: 20px; background: var(--theme-color); border-radius: 3px; padding: 2px 6px; font-size: 8px; color: transparent; overflow: hidden; transition: all 0.2s; opacity: 0.7; border-top: 2px solid var(--dark-theme-color); }
+        .timeline-h-task:hover { color: var(--header-text-color); opacity: 0.95; }
+        .timeline-h-now { position: absolute; top: 14px; bottom: 0; width: 2px; background: var(--dark-theme-color); z-index: 10; }
+        .timeline-h-now-indicator { position: absolute; top: 10px; z-index: 11; }
+        .timeline-h-date { position: absolute; top: 6px; left: 10px; font-size: 9px; color: #666; font-weight: 600; z-index: 5; }
+
+        /* Circle Timeline - fills calendar-like size */
+        .timeline-circle { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; padding: 8px; }
+        .timeline-circle .circle-date { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 8px; color: #999; font-weight: 600; cursor: pointer; }
+
+        /* All-day events popup */
+        .allday-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 160px; max-height: 150px; overflow-y: auto; display: none; }
+        .allday-popup.show { display: block; }
+        .allday-popup-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .allday-popup-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
+        .allday-popup-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--theme-color); flex-shrink: 0; }
+
+        /* Calendar Widget Styles */
+        .calendar-container { flex: 1; display: flex; flex-direction: column; padding: 8px; position: relative; }
+        .calendar-header { display: flex; align-items: center; justify-content: center; margin-bottom: 4px; gap: 8px; }
+        .calendar-nav-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #999; padding: 2px 6px; }
+        .calendar-nav-btn:hover { color: #333; }
+        .calendar-month { font-size: 14px; font-weight: 700; color: #333; }
+        .calendar-year { font-size: 10px; color: #999; text-align: center; margin-bottom: 6px; }
+        .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 2px; }
+        .calendar-day-label { font-size: 6px; color: #999; text-align: center; font-weight: 600; padding: 2px 0; }
+        .calendar-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+        .calendar-date { font-size: 9px; text-align: center; padding: 3px 1px; border-radius: 4px; cursor: pointer; position: relative; color: #666; }
+        .calendar-date:hover { background: #f5f5f5; }
+        .calendar-date.other-month { color: #ccc; }
+        .calendar-date.today { font-weight: 700; color: var(--header-text-color); background: var(--theme-color); }
+        .calendar-date.has-event::after { content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-theme-color); border-radius: 50%; }
+        .calendar-date.today.has-event::after { background: var(--header-text-color); }
+        .calendar-date.has-priority { background: rgba(0,0,0,0.04); }
+        .calendar-date.today.has-priority { background: var(--theme-color); }
+
+        /* Calendar Popup - click to show, constrained within widget */
+        .calendar-popup { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 8px; z-index: 100; min-width: 120px; max-width: 170px; max-height: 180px; overflow-y: auto; display: none; }
+        .calendar-popup.show { display: block; }
+        .calendar-popup-title { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .calendar-popup-item { font-size: 8px; color: #666; padding: 3px 0; display: flex; align-items: center; gap: 4px; }
+        .calendar-popup-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dark-theme-color); flex-shrink: 0; }
+        .calendar-popup-item .star-mini { cursor: pointer; flex-shrink: 0; }
+        .calendar-popup-item .star-mini svg { width: 10px; height: 10px; fill: #ddd; }
+        .calendar-popup-item .star-mini.active svg { fill: var(--dark-theme-color); }
+        .calendar-popup-item .item-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Context Menu */
+        .context-menu { position: fixed; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; min-width: 120px; }
+        .context-menu.show { display: block; }
+        .context-menu-item { padding: 8px 12px; font-size: 11px; cursor: pointer; }
+        .context-menu-item:hover { background: #f5f5f7; }
+        .context-menu-item.danger { color: #ff3b30; }
+        .context-menu-divider { height: 1px; background: #eee; margin: 4px 0; }
+
+        /* Toast */
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 11px; transition: 0.4s; z-index: 100; }
         #toast.show { bottom: 30px; }
-        body.is-embed .window { display: none; }
+
+        body.is-embed .main-layout { display: none; }
+        body.is-embed { padding: 0; min-height: auto; }
+        body.is-embed .widget-frame { margin: 0; }
     </style>
 </head>
 <body>
 
-    <div class="window" id="setupWindow">
-        <div class="title-bar">
-            <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
-            <div class="bar-title">Life Cooker Setup</div>
-        </div>
-        <div class="content">
-            <div class="step active" id="step1">
-                <h1>Connect Notion</h1>
-                <p>프라이빗 API 토큰을 입력하세요.</p>
-                <input type="password" id="tokenInput" placeholder="secret_...">
-                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Next Step</button>
+    <div class="main-layout" id="mainLayout">
+        <div class="window" id="setupWindow">
+            <div class="title-bar">
+                <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="bar-title">Life Cooker Setup</div>
+                <div class="nav-controls">
+                    <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="step" id="step2">
-                <h1>Select Database</h1>
-                <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
-                <select id="dbSelect"></select>
-                <button class="action-btn" style="width:100%; height:40px; margin-top:10px; font-size:13px; background:#1d1d1f; color:#fff;" onclick="moveStep(1)">Create Widget</button>
+            <div class="content">
+                <div class="step active" id="step1">
+                    <h1>Connect Notion</h1>
+                    <p>프라이빗 API 토큰을 입력하세요.</p>
+                    <input type="password" id="tokenInput" placeholder="secret_...">
+                    <div style="margin-top: 5px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:12px; color:#86868b; text-decoration:none;">내 인테그레이션 바로가기 ↗</a></div>
+                </div>
+
+                <div class="step" id="step2">
+                    <h1>Select Database</h1>
+                    <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
+                    <select id="dbSelect"></select>
+                </div>
+
+                <div class="step" id="step3">
+                    <h1>Customize</h1>
+                    <p>위젯 테마를 설정하세요.</p>
+                    <div class="color-palette" id="palette"></div>
+                    <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
+                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;border-radius:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+
+                    <div class="option-group">
+                        <label>완료된 일정 표시</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
+                            <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label>캘린더 시작 요일</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">일요일</div>
+                            <div class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label>타임라인 모양</label>
+                        <div class="option-row">
+                            <div class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">세로 바</div>
+                            <div class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">가로 바</div>
+                            <div class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">원형</div>
+                        </div>
+                        <div class="time-range-group" id="timeRangeGroup">
+                            <select id="timeStart" onchange="setTimeRange()">
+                                <option value="0">0시</option>
+                                <option value="5">5시</option>
+                                <option value="6" selected>6시</option>
+                                <option value="7">7시</option>
+                                <option value="8">8시</option>
+                                <option value="9">9시</option>
+                            </select>
+                            <span style="font-size:11px;color:#999;">~</span>
+                            <select id="timeEnd" onchange="setTimeRange()">
+                                <option value="18">18시</option>
+                                <option value="20">20시</option>
+                                <option value="22">22시</option>
+                                <option value="23" selected>23시</option>
+                                <option value="24">24시</option>
+                            </select>
+                        </div>
+                        <div class="option-row" style="margin-top:8px;">
+                            <div class="option-btn active" data-indicator="circle" onclick="setIndicatorShape('circle')">●</div>
+                            <div class="option-btn" data-indicator="triangle" onclick="setIndicatorShape('triangle')">▶</div>
+                            <div class="option-btn" data-indicator="square" onclick="setIndicatorShape('square')">■</div>
+                            <div class="option-btn" data-indicator="heart" onclick="setIndicatorShape('heart')">♥</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="step4">
+                    <h1>Your Widgets</h1>
+                    <p>아래 URL을 노션에 임베드하세요.</p>
+
+                    <div class="url-box">
+                        <label>1. Setup Widget (할일 추가)</label>
+                        <div class="url-text" id="setupUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('setup')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>2. Todo Widget (오늘의 할일)</label>
+                        <div class="url-text" id="todoUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>3. Timeline Widget (타임라인)</label>
+                        <div class="url-text" id="timelineUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('timeline')">Copy</button>
+                    </div>
+
+                    <div class="url-box">
+                        <label>4. Calendar Widget (미니 캘린더)</label>
+                        <div class="url-text" id="calendarUrl">-</div>
+                        <button class="copy-btn" onclick="copyUrl('calendar')">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-title">Widget Preview</div>
+            <div class="preview-widgets" id="widgetPreviews">
+                <div class="widget-frame" id="previewSetup">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Setup</div></div>
+                    <div class="widget-home">
+                        <div class="current-time">00:00</div>
+                        <div class="current-date">SUN, FEB 1</div>
+                        <div class="action-btns">
+                            <button class="action-btn">+ Task</button>
+                            <button class="action-btn">+ Routine</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-frame todo-widget" id="previewTodo">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Todo</div></div>
+                    <div class="widget-home">
+                        <div class="current-time">00:00</div>
+                        <div class="current-date">SUN, FEB 1</div>
+                        <button class="action-btn">View Tasks</button>
+                    </div>
+                </div>
+
+                <div class="widget-frame timeline-widget" id="previewTimeline">
+                    <div class="timeline-container">
+                        <div class="timeline-scroll">
+                            <div class="timeline-grid" id="previewGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-frame calendar-widget" id="previewCalendar">
+                    <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Calendar</div></div>
+                    <div class="calendar-container" id="previewCalendarContainer"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="widget-frame">
-        <div class="widget-top"><div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div><div class="w-title">Focus</div></div>
-        
-        <div id="widgetHome">
-            <div id="currentTime">00:00</div>
-            <div id="currentDate">SUN, FEB 1</div>
-            <div style="display:flex; gap:5px;">
-                <button class="action-btn" onclick="showList()">Tasks</button>
-                <button class="action-btn" onclick="showAdd()">Add</button>
+    <!-- Embed Widget -->
+    <div class="widget-frame" id="embedWidget" style="display:none;">
+        <div class="widget-top" id="widgetTopBar">
+            <div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div>
+            <div class="w-title" id="widgetTitle" onclick="toggleCategoryFilter()">Widget</div>
+        </div>
+
+        <!-- Setup Widget (for adding tasks) -->
+        <div id="setupWidget" style="display:none;">
+            <div class="widget-home" id="setupHome">
+                <div class="current-time" id="setupTime">00:00</div>
+                <div class="current-date" id="setupDate">SUN, FEB 1</div>
+                <div class="action-btns">
+                    <button class="action-btn" onclick="showSetupForm('task')">+ Task</button>
+                    <button class="action-btn" onclick="showSetupForm('routine')">+ Routine</button>
+                </div>
+            </div>
+            <div class="setup-form" id="setupForm" style="display:none;">
+                <div class="setup-form-header">
+                    <button class="back-btn" onclick="hideSetupForm()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="form-type-btns">
+                        <button class="form-type-btn active" id="btnTask" onclick="setFormType('task')">Task</button>
+                        <button class="form-type-btn" id="btnRoutine" onclick="setFormType('routine')">Routine</button>
+                    </div>
+                </div>
+                <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력..." onkeydown="handleEnterKey(event)">
+                <input type="date" class="mini-input" id="taskDate">
+                <label class="form-check">
+                    <input type="checkbox" id="allDayCheck" onchange="toggleAllDay()">
+                    <span>종일</span>
+                </label>
+                <div id="timeInputs">
+                    <div class="form-row">
+                        <span class="form-label">시작</span>
+                        <input type="time" class="mini-input" id="taskStartTime">
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">종료</span>
+                        <input type="time" class="mini-input" id="taskEndTime">
+                    </div>
+                </div>
+                <div id="routineOptions" style="display:none;">
+                    <div class="form-label" style="margin-bottom:4px;">반복 요일</div>
+                    <div class="repeat-row">
+                        <div class="repeat-day" data-day="0" onclick="toggleRepeatDay(0)">일</div>
+                        <div class="repeat-day" data-day="1" onclick="toggleRepeatDay(1)">월</div>
+                        <div class="repeat-day" data-day="2" onclick="toggleRepeatDay(2)">화</div>
+                        <div class="repeat-day" data-day="3" onclick="toggleRepeatDay(3)">수</div>
+                        <div class="repeat-day" data-day="4" onclick="toggleRepeatDay(4)">목</div>
+                        <div class="repeat-day" data-day="5" onclick="toggleRepeatDay(5)">금</div>
+                        <div class="repeat-day" data-day="6" onclick="toggleRepeatDay(6)">토</div>
+                    </div>
+                </div>
+                <div class="form-row" style="align-items:stretch;">
+                    <select class="mini-select" id="taskCategory" style="flex:1;margin-bottom:0;">
+                        <option value="">카테고리 선택</option>
+                    </select>
+                    <button type="button" class="mini-cat-btn" onclick="editSelectedCategory()" title="이름 변경">✎</button>
+                    <button type="button" class="mini-cat-btn danger" onclick="deleteSelectedCategory()" title="삭제">×</button>
+                </div>
+                <input type="text" class="mini-input" id="newCategory" placeholder="새 카테고리 입력...">
+                <div class="btn-row">
+                    <button class="btn-cancel" onclick="hideSetupForm()">Cancel</button>
+                    <button class="btn-save" onclick="saveTask()">Save</button>
+                </div>
             </div>
         </div>
 
-        <div id="widgetList">
-            <div style="padding: 5px 10px; display:flex; justify-content:space-between; align-items:center; border-bottom: 0.5px solid #eee;">
-                <button class="action-btn" onclick="goHome()" style="padding: 2px 6px;">←</button>
-                <span style="font-size:8px; font-weight:bold;">TO-DO</span>
-                <button class="action-btn" onclick="fetchTasks()" style="padding: 2px 6px;">🔄</button>
+        <!-- Todo Widget (for viewing/editing tasks) -->
+        <div id="todoWidget" style="display:none;">
+            <button class="refresh-btn" id="todoRefreshBtn" onclick="refreshTasksWithSpin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            </button>
+            <div class="category-filter" id="categoryFilter"></div>
+            <div class="todo-header">
+                <button class="todo-tab active" id="tabTasks" onclick="setTodoTab('tasks')">Tasks</button>
+                <button class="todo-tab" id="tabRoutines" onclick="setTodoTab('routines')">Routines</button>
             </div>
             <div class="todo-container" id="todoContainer"></div>
         </div>
 
-        <div id="widgetAdd">
-            <input type="text" id="addTitle" class="mini-input" placeholder="What to do?">
-            <input type="datetime-local" id="addDate" class="mini-input">
-            <button class="action-btn" style="width:100%; background:#1d1d1f; color:#fff;" onclick="saveTask()">Save Task</button>
-            <button class="action-btn" style="width:100%; background:none; color:#999; border:none; margin-top:5px;" onclick="goHome()">Cancel</button>
+        <!-- Timeline Widget -->
+        <div id="timelineWidget" style="display:none;">
+            <button class="refresh-btn" id="timelineRefreshBtn" onclick="refreshTasksWithSpin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            </button>
+            <div class="timeline-container" id="timelineContainer"></div>
+            <div class="allday-popup" id="allDayPopup"></div>
+        </div>
+
+        <!-- Calendar Widget -->
+        <div id="calendarWidget" style="display:none;">
+            <button class="refresh-btn" id="calendarRefreshBtn" onclick="refreshTasksWithSpin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            </button>
+            <div class="calendar-container" id="calendarContainer"></div>
+            <div class="calendar-popup" id="calendarPopup"></div>
         </div>
     </div>
 
-    <div id="toast">Saved! 🤍</div>
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="postponeTask()">내일로 미루기</div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item danger" onclick="deleteTask()">삭제</div>
+    </div>
+
+    <div id="toast">Saved!</div>
 
 <script>
-    const SERVER_URL = "https://calendar-server-hrgs.onrender.com"; 
+    const SERVER_URL = "https://calendar-server-hrgs.onrender.com";
+    const themes = ["e8bcbc", "f4f4bd", "c5e8c5", "a4c4e4", "ffffff", "1d1d1f"];
     let step = 1;
-    const params = new URLSearchParams(window.location.search);
+    let selectedColor = "c5e8c5";
+    let doneStyle = "bottom";
+    let weekStart = "sun";
+    let timelineShape = "vertical";
+    let timeStart = 6;
+    let timeEnd = 23;
+    let indicatorShape = "circle"; // circle, triangle, square, heart
+    let categories = [];
+    let tasks = [];
+    let selectedTaskId = null;
+    let showCategoryFilter = false;
+    let selectedCategory = null;
+    let calendarDate = new Date();
+    let formType = 'task';
+    let repeatDays = [];
+    let draggedItem = null;
+    let todoTab = 'tasks';
+    let selectedDateStr = null;
 
-    // 시계 업데이트
+    const params = new URLSearchParams(window.location.search);
+    const widgetType = params.get('w');
+
+    function getLocalDate() {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    // Format time for Notion - keep as local time string (GMT+0 style)
+    function formatDateTimeForNotion(date, time) {
+        if (!time) return date; // date only
+        // Return as simple datetime string without timezone conversion
+        return `${date}T${time}:00.000+00:00`;
+    }
+
     function updateClock() {
         const now = new Date();
-        document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        document.querySelectorAll('.current-time').forEach(el => el.innerText = timeStr);
+        document.querySelectorAll('.current-date').forEach(el => el.innerText = dateStr);
     }
-    setInterval(updateClock, 1000); updateClock();
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    if (params.get('t')) {
+    function renderPreviewTimeline() {
+        const grid = document.getElementById('previewGrid');
+        if (!grid) return;
+        let html = '';
+        for (let h = 9; h <= 20; h++) {
+            html += `<div class="timeline-hour"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content"></div></div>`;
+        }
+        grid.innerHTML = html;
+    }
+    renderPreviewTimeline();
+
+    function renderPreviewCalendar() {
+        const container = document.getElementById('previewCalendarContainer');
+        if (!container) return;
+        renderCalendarContent(container, new Date(), weekStart, [], false);
+    }
+    renderPreviewCalendar();
+
+    function updateHeaderTextColor(hex) {
+        const r = parseInt(hex.slice(1,3), 16);
+        const g = parseInt(hex.slice(3,5), 16);
+        const b = parseInt(hex.slice(5,7), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        const textColor = brightness < 128 ? '#ffffff' : '#1d1d1f';
+        document.documentElement.style.setProperty('--header-text-color', textColor);
+    }
+
+    // Initialize
+    if (params.get('t') && widgetType) {
         document.body.classList.add('is-embed');
-        fetchTasks();
+        document.getElementById('embedWidget').style.display = 'flex';
+
+        if (widgetType === 'timeline') {
+            const shape = params.get('ts') || 'vertical';
+            if (shape === 'horizontal') {
+                document.getElementById('embedWidget').classList.add('timeline-widget', 'horizontal');
+            } else if (shape === 'circle') {
+                document.getElementById('embedWidget').classList.add('calendar-widget');
+            } else {
+                document.getElementById('embedWidget').classList.add('timeline-widget');
+            }
+            document.getElementById('widgetTopBar').classList.add('hidden');
+        } else if (widgetType === 'calendar') {
+            document.getElementById('embedWidget').classList.add('calendar-widget');
+            document.getElementById('widgetTopBar').classList.add('hidden');
+        } else if (widgetType === 'todo') {
+            document.getElementById('embedWidget').classList.add('todo-widget');
+        }
+
+        const c = params.get('c');
+        if (c) updateTheme('#' + c);
+
+        doneStyle = params.get('ds') || 'bottom';
+        weekStart = params.get('ws') || 'sun';
+        timelineShape = params.get('ts') || 'vertical';
+        timeStart = parseInt(params.get('th1')) || 6;
+        timeEnd = parseInt(params.get('th2')) || 23;
+        indicatorShape = params.get('ti') || 'circle';
+        initWidget(widgetType);
+    } else {
+        const pal = document.getElementById('palette');
+        themes.forEach(t => {
+            const d = document.createElement('div');
+            d.className = 'color-dot' + (t === 'c5e8c5' ? ' active' : '');
+            d.style.background = '#' + t;
+            d.onclick = () => {
+                document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                d.classList.add('active');
+                updateTheme('#' + t);
+            };
+            pal.appendChild(d);
+        });
+        updateTheme('#c5e8c5');
+    }
+
+    function updateTheme(hex) {
+        selectedColor = hex.replace('#', '');
+        document.documentElement.style.setProperty('--theme-color', hex);
+        const r = parseInt(selectedColor.slice(0,2), 16);
+        const g = parseInt(selectedColor.slice(2,4), 16);
+        const b = parseInt(selectedColor.slice(4,6), 16);
+        const darkR = Math.max(0, r - 100);
+        const darkG = Math.max(0, g - 100);
+        const darkB = Math.max(0, b - 100);
+        document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
+        updateHeaderTextColor(hex);
+        renderPreviewCalendar();
+    }
+
+    function setDoneStyle(style) {
+        doneStyle = style;
+        document.querySelectorAll('[data-done]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-done="${style}"]`)?.classList.add('active');
+    }
+
+    function setWeekStart(start) {
+        weekStart = start;
+        document.querySelectorAll('[data-weekstart]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-weekstart="${start}"]`)?.classList.add('active');
+        renderPreviewCalendar();
+    }
+
+    function setTimelineShape(shape) {
+        timelineShape = shape;
+        document.querySelectorAll('[data-shape]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-shape="${shape}"]`)?.classList.add('active');
+        document.getElementById('timeRangeGroup').style.display = shape === 'circle' ? 'none' : 'flex';
+    }
+
+    function setTimeRange() {
+        timeStart = parseInt(document.getElementById('timeStart').value);
+        timeEnd = parseInt(document.getElementById('timeEnd').value);
+    }
+
+    function setIndicatorShape(shape) {
+        indicatorShape = shape;
+        document.querySelectorAll('[data-indicator]').forEach(el => el.classList.remove('active'));
+        document.querySelector(`[data-indicator="${shape}"]`)?.classList.add('active');
     }
 
     async function moveStep(n) {
-        if (step === 1) {
+        const newStep = step + n;
+        if (n === 1 && step === 1) {
             const tk = document.getElementById('tokenInput').value;
-            const res = await fetch(`${SERVER_URL}/api/notion/databases`, { 
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ token: tk })
-            });
-            const dbs = await res.json();
-            document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
-            step = 2;
-        } else {
-            const t = btoa(document.getElementById('tokenInput').value);
-            const d = btoa(document.getElementById('dbSelect').value);
-            const url = `${window.location.origin}${window.location.pathname}?t=${t}&d=${d}`;
-            navigator.clipboard.writeText(url); alert("URL 복사 완료! 노션에 임베드하세요.");
+            if (!tk) { showToast('토큰을 입력하세요'); return; }
+            try {
+                const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: tk })
+                });
+                const dbs = await res.json();
+                if (dbs.error) { showToast('토큰 오류'); return; }
+                document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
+            } catch (e) {
+                showToast('연결 실패');
+                return;
+            }
+        }
+        if (newStep === 4) generateUrls();
+        if (newStep < 1 || newStep > 4) return;
+        document.getElementById(`step${step}`).classList.remove('active');
+        step = newStep;
+        document.getElementById(`step${step}`).classList.add('active');
+        document.getElementById('prevBtn').disabled = (step === 1);
+        document.getElementById('nextBtn').style.visibility = (step === 4) ? 'hidden' : 'visible';
+    }
+
+    function generateUrls() {
+        const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
+        const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
+        const base = `${window.location.origin}${window.location.pathname}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}&ti=${indicatorShape}`;
+
+        document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
+        document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
+        document.getElementById('timelineUrl').innerText = `${base}?w=timeline&${common}`;
+        document.getElementById('calendarUrl').innerText = `${base}?w=calendar&${common}`;
+    }
+
+    function copyUrl(type) {
+        const urlText = document.getElementById(`${type}Url`).innerText;
+        navigator.clipboard.writeText(urlText);
+        showToast('URL 복사됨!');
+    }
+
+    function initWidget(type) {
+        const titles = { setup: 'Setup', todo: 'Todo', timeline: 'Timeline', calendar: 'Calendar' };
+        document.getElementById('widgetTitle').innerText = titles[type] || 'Widget';
+
+        if (type === 'setup') {
+            document.getElementById('setupWidget').style.display = 'flex';
+            document.getElementById('setupWidget').style.flexDirection = 'column';
+            document.getElementById('setupWidget').style.flex = '1';
+            document.getElementById('setupWidget').style.minHeight = '0';
+            loadCategories();
+        } else if (type === 'todo') {
+            document.getElementById('todoWidget').style.display = 'flex';
+            document.getElementById('todoWidget').style.flexDirection = 'column';
+            document.getElementById('todoWidget').style.flex = '1';
+            document.getElementById('todoWidget').style.minHeight = '0';
+            loadCategories();
+            refreshTasks();
+        } else if (type === 'timeline') {
+            document.getElementById('timelineWidget').style.display = 'flex';
+            document.getElementById('timelineWidget').style.flex = '1';
+            document.getElementById('timelineWidget').style.position = 'relative';
+            refreshTasks();
+            setInterval(refreshTasks, 60000);
+        } else if (type === 'calendar') {
+            document.getElementById('calendarWidget').style.display = 'flex';
+            document.getElementById('calendarWidget').style.flex = '1';
+            document.getElementById('calendarWidget').style.position = 'relative';
+            refreshTasks();
         }
     }
 
-    async function fetchTasks() {
-        const container = document.getElementById('todoContainer');
-        container.innerHTML = '<div style="font-size:8px; text-align:center; color:#ccc;">Loading...</div>';
+    function showSetupForm(type) {
+        formType = type;
+        document.getElementById('setupHome').style.display = 'none';
+        document.getElementById('setupForm').style.display = 'flex';
+        document.getElementById('taskDate').value = getLocalDate();
+        document.getElementById('btnTask').classList.toggle('active', type === 'task');
+        document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
+        document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+        document.getElementById('allDayCheck').checked = false;
+        document.getElementById('timeInputs').style.display = 'block';
+        document.getElementById('taskTitle').focus();
+    }
+
+    function hideSetupForm() {
+        document.getElementById('setupForm').style.display = 'none';
+        document.getElementById('setupHome').style.display = 'flex';
+        clearSetupForm();
+    }
+
+    function setFormType(type) {
+        formType = type;
+        document.getElementById('btnTask').classList.toggle('active', type === 'task');
+        document.getElementById('btnRoutine').classList.toggle('active', type === 'routine');
+        document.getElementById('routineOptions').style.display = type === 'routine' ? 'block' : 'none';
+    }
+
+    function toggleAllDay() {
+        const isAllDay = document.getElementById('allDayCheck').checked;
+        document.getElementById('timeInputs').style.display = isAllDay ? 'none' : 'block';
+        if (isAllDay) {
+            document.getElementById('taskStartTime').value = '';
+            document.getElementById('taskEndTime').value = '';
+        }
+    }
+
+    function toggleRepeatDay(day) {
+        const el = document.querySelector(`[data-day="${day}"]`);
+        if (repeatDays.includes(day)) {
+            repeatDays = repeatDays.filter(d => d !== day);
+            el.classList.remove('active');
+        } else {
+            repeatDays.push(day);
+            el.classList.add('active');
+        }
+    }
+
+    function clearSetupForm() {
+        document.getElementById('taskTitle').value = '';
+        document.getElementById('taskStartTime').value = '';
+        document.getElementById('taskEndTime').value = '';
+        document.getElementById('taskCategory').value = '';
+        document.getElementById('newCategory').value = '';
+        document.getElementById('allDayCheck').checked = false;
+        document.getElementById('timeInputs').style.display = 'block';
+        repeatDays = [];
+        document.querySelectorAll('.repeat-day').forEach(el => el.classList.remove('active'));
+        selectedTaskId = null;
+    }
+
+    function handleEnterKey(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveTask();
+        }
+    }
+
+    function getToken() {
+        return atob(decodeURIComponent(params.get('t') || ''));
+    }
+    function getDbId() {
+        return atob(decodeURIComponent(params.get('d') || ''));
+    }
+
+    async function loadCategories() {
         try {
-            const res = await fetch(`${SERVER_URL}/api/notion/events`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')) })
+            const res = await fetch(`${SERVER_URL}/api/notion/categories`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId() })
             });
-            const tasks = await res.json();
-            container.innerHTML = tasks.map(t => `
-                <div class="todo-card" oncontextmenu="event.preventDefault(); postpone('${t.id}')">
-                    <span class="star" onclick="toggleStar('${t.id}')">★</span>
-                    <span style="flex:1">${t.title}</span>
-                    <span class="check" onclick="complete('${t.id}')">✔</span>
-                </div>
-            `).join('');
-        } catch (e) { container.innerHTML = "Load failed."; }
+            const data = await res.json();
+            categories = data.categories || [];
+            updateCategorySelect();
+            updateCategoryFilter();
+        } catch (e) {
+            console.error('카테고리 로드 실패', e);
+        }
+    }
+
+    function updateCategorySelect() {
+        const select = document.getElementById('taskCategory');
+        if (!select) return;
+        select.innerHTML = '<option value="">카테고리 선택</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    async function editSelectedCategory() {
+        const select = document.getElementById('taskCategory');
+        const oldName = select.value;
+        if (!oldName) { showToast('카테고리를 선택하세요'); return; }
+
+        const newName = prompt('새 카테고리 이름:', oldName);
+        if (!newName || newName === oldName) return;
+
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/rename-category`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId(), oldName, newName })
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('카테고리 이름 변경됨!');
+                const idx = categories.indexOf(oldName);
+                if (idx > -1) categories[idx] = newName;
+                updateCategorySelect();
+                select.value = newName;
+            } else {
+                showToast(result.error || '변경 실패');
+            }
+        } catch (e) {
+            showToast('연결 오류');
+        }
+    }
+
+    async function deleteSelectedCategory() {
+        const select = document.getElementById('taskCategory');
+        const catName = select.value;
+        if (!catName) { showToast('카테고리를 선택하세요'); return; }
+
+        if (!confirm(`"${catName}" 카테고리를 삭제하시겠습니까?`)) return;
+
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/delete-category`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId(), categoryName: catName })
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('카테고리 삭제됨!');
+                categories = categories.filter(c => c !== catName);
+                updateCategorySelect();
+            } else {
+                showToast(result.error || '삭제 실패');
+            }
+        } catch (e) {
+            showToast('연결 오류');
+        }
+    }
+
+    function updateCategoryFilter() {
+        const filter = document.getElementById('categoryFilter');
+        if (!filter) return;
+        filter.innerHTML = '<div class="cat-tag' + (!selectedCategory ? ' active' : '') + '" onclick="filterByCategory(null)">전체</div>' +
+            categories.map(c => `<div class="cat-tag${selectedCategory === c ? ' active' : ''}" onclick="filterByCategory('${c}')">${c}</div>`).join('');
+    }
+
+    function toggleCategoryFilter() {
+        if (widgetType !== 'todo') return;
+        showCategoryFilter = !showCategoryFilter;
+        document.getElementById('categoryFilter').classList.toggle('show', showCategoryFilter);
+    }
+
+    function filterByCategory(cat) {
+        selectedCategory = cat;
+        updateCategoryFilter();
+        renderTasks();
+    }
+
+    // Generate routine dates until end of month
+    function getRoutineDates(startDate, repeatDays) {
+        const dates = [];
+        const start = new Date(startDate);
+        const endOfMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+
+        let current = new Date(start);
+        while (current <= endOfMonth) {
+            if (repeatDays.includes(current.getDay())) {
+                dates.push(`${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`);
+            }
+            current.setDate(current.getDate() + 1);
+        }
+        return dates;
     }
 
     async function saveTask() {
-        const title = document.getElementById('addTitle').value;
-        const date = document.getElementById('addDate').value;
-        if(!title || !date) return alert("Fill all fields.");
+        const title = document.getElementById('taskTitle').value.trim();
+        const date = document.getElementById('taskDate').value;
+        const isAllDay = document.getElementById('allDayCheck').checked;
+        const startTime = isAllDay ? null : document.getElementById('taskStartTime').value;
+        const endTime = isAllDay ? null : document.getElementById('taskEndTime').value;
+        let category = document.getElementById('taskCategory').value;
+        const newCategory = document.getElementById('newCategory').value.trim();
 
-        const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ token: atob(params.get('t')), dbId: atob(params.get('d')), title, date })
-        });
-        if(res.ok) { showToast("Saved! 🤍"); goHome(); fetchTasks(); }
+        if (newCategory) category = newCategory;
+
+        if (!title) { showToast('할 일을 입력하세요'); return; }
+        if (!date) { showToast('날짜를 선택하세요'); return; }
+
+        // Format start/end datetime in GMT for Notion
+        const startDateTime = startTime ? formatDateTimeForNotion(date, startTime) : null;
+        const endDateTime = endTime ? formatDateTimeForNotion(date, endTime) : null;
+
+        try {
+            if (formType === 'routine' && repeatDays.length > 0) {
+                // Create multiple entries for routine until end of month
+                const routineDates = getRoutineDates(date, repeatDays);
+                for (const routineDate of routineDates) {
+                    const routineStart = startTime ? formatDateTimeForNotion(routineDate, startTime) : null;
+                    const routineEnd = endTime ? formatDateTimeForNotion(routineDate, endTime) : null;
+
+                    const body = {
+                        token: getToken(),
+                        dbId: getDbId(),
+                        title,
+                        date: routineDate,
+                        startDateTime: routineStart,
+                        endDateTime: routineEnd,
+                        startTime: startTime || null,
+                        endTime: endTime || null,
+                        category: category || null,
+                        isRoutine: true,
+                        repeatDays: repeatDays,
+                        isAllDay: isAllDay
+                    };
+                    await fetch(`${SERVER_URL}/api/notion/add-event`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                }
+                showToast(`${routineDates.length}개 루틴 생성됨!`);
+            } else {
+                const body = {
+                    token: getToken(),
+                    dbId: getDbId(),
+                    title,
+                    date,
+                    startDateTime: startDateTime,
+                    endDateTime: endDateTime,
+                    startTime: startTime || null,
+                    endTime: endTime || null,
+                    category: category || null,
+                    isRoutine: false,
+                    isAllDay: isAllDay
+                };
+                const res = await fetch(`${SERVER_URL}/api/notion/add-event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const result = await res.json();
+                if (res.ok && result.success) {
+                    showToast('저장됨!');
+                } else {
+                    showToast(result.error || '저장 실패');
+                    return;
+                }
+            }
+            hideSetupForm();
+            if (newCategory && !categories.includes(newCategory)) {
+                categories.push(newCategory);
+                updateCategorySelect();
+            }
+        } catch (e) {
+            showToast('연결 오류');
+        }
     }
 
-    function showList() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetList').style.display='flex'; }
-    function showAdd() { document.getElementById('widgetHome').style.display='none'; document.getElementById('widgetAdd').style.display='flex'; }
-    function goHome() { document.getElementById('widgetList').style.display='none'; document.getElementById('widgetAdd').style.display='none'; document.getElementById('widgetHome').style.display='flex'; }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+    async function refreshTasksWithSpin() {
+        const btns = document.querySelectorAll('.refresh-btn');
+        btns.forEach(btn => btn.classList.add('spinning'));
+        await refreshTasks();
+        setTimeout(() => {
+            btns.forEach(btn => btn.classList.remove('spinning'));
+        }, 500);
+    }
+
+    async function refreshTasks() {
+        try {
+            const res = await fetch(`${SERVER_URL}/api/notion/events`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), dbId: getDbId() })
+            });
+            tasks = await res.json();
+            if (Array.isArray(tasks)) {
+                if (widgetType === 'todo') renderTasks();
+                else if (widgetType === 'timeline') renderTimeline();
+                else if (widgetType === 'calendar') renderCalendar();
+            }
+        } catch (e) {
+            console.error('태스크 로드 실패', e);
+        }
+    }
+
+    function setTodoTab(tab) {
+        todoTab = tab;
+        document.getElementById('tabTasks').classList.toggle('active', tab === 'tasks');
+        document.getElementById('tabRoutines').classList.toggle('active', tab === 'routines');
+        renderTasks();
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('todoContainer');
+        if (!container) return;
+
+        // Use YYYY-MM-DD format for consistent date comparison
+        const todayStr = getLocalDate();
+        let filtered = tasks.filter(t => {
+            if (!t.date) return false;
+            // Compare just the date part (YYYY-MM-DD)
+            const taskDate = t.date.split('T')[0];
+            return taskDate === todayStr;
+        });
+
+        if (selectedCategory) {
+            filtered = filtered.filter(t => t.category === selectedCategory);
+        }
+
+        // Filter by tab
+        if (todoTab === 'tasks') {
+            filtered = filtered.filter(t => !t.isRoutine);
+        } else {
+            filtered = filtered.filter(t => t.isRoutine);
+        }
+
+        // Separate done and not done
+        const notDone = filtered.filter(t => !t.done);
+        const done = filtered.filter(t => t.done);
+
+        // Sort by time
+        notDone.sort((a, b) => (a.startTime || '99:99').localeCompare(b.startTime || '99:99'));
+
+        let html = '';
+
+        notDone.forEach(t => html += renderTaskCard(t));
+
+        if (done.length > 0 && doneStyle === 'bottom') {
+            html += '<div class="task-section-divider"></div>';
+            done.forEach(t => html += renderTaskCard(t));
+        }
+
+        container.innerHTML = html || '<div style="text-align:center;color:#ccc;font-size:9px;padding:20px;">항목 없음</div>';
+    }
+
+    function renderTaskCard(t) {
+        const timeDisplay = t.startTime ? t.startTime.substring(0,5) : '';
+        return `
+        <div class="task-card ${t.done ? 'done' : ''}" data-id="${t.id}" oncontextmenu="showContextMenu(event, '${t.id}')">
+            <span class="star ${t.priority ? 'active' : ''}" onclick="togglePriority('${t.id}')">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </span>
+            ${timeDisplay ? `<span class="task-time">${timeDisplay}</span>` : ''}
+            <span class="task-title">${t.title}</span>
+            <span class="check ${t.done ? 'active' : ''}" onclick="toggleDone('${t.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            </span>
+        </div>`;
+    }
+
+    async function togglePriority(id) {
+        try {
+            await fetch(`${SERVER_URL}/api/notion/toggle-star`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: id })
+            });
+            refreshTasks();
+        } catch (e) {
+            showToast('오류 발생');
+        }
+    }
+
+    async function toggleDone(id) {
+        try {
+            await fetch(`${SERVER_URL}/api/notion/complete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: id })
+            });
+            refreshTasks();
+        } catch (e) {
+            showToast('오류 발생');
+        }
+    }
+
+    function showContextMenu(e, id) {
+        e.preventDefault();
+        selectedTaskId = id;
+        const menu = document.getElementById('contextMenu');
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        menu.classList.add('show');
+    }
+
+    document.addEventListener('click', (e) => {
+        document.getElementById('contextMenu').classList.remove('show');
+        if (!e.target.closest('.calendar-popup') && !e.target.closest('.calendar-date')) {
+            hideCalendarPopup();
+        }
+        if (!e.target.closest('.allday-popup') && !e.target.closest('.timeline-date-label') && !e.target.closest('.timeline-h-date') && !e.target.closest('.circle-date')) {
+            hideAllDayPopup();
+        }
+    });
+
+    async function postponeTask() {
+        if (!selectedTaskId) return;
+        try {
+            await fetch(`${SERVER_URL}/api/notion/postpone`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
+            });
+            showToast('내일로 미룸!');
+            refreshTasks();
+        } catch (e) {
+            showToast('미루기 실패');
+        }
+        selectedTaskId = null;
+    }
+
+    async function deleteTask() {
+        if (!selectedTaskId) return;
+        try {
+            await fetch(`${SERVER_URL}/api/notion/delete-event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
+            });
+            showToast('삭제됨!');
+            refreshTasks();
+        } catch (e) {
+            showToast('삭제 실패');
+        }
+        selectedTaskId = null;
+    }
+
+    // Timeline Functions
+    function renderTimeline() {
+        const container = document.getElementById('timelineContainer');
+        if (!container) return;
+
+        if (timelineShape === 'horizontal') {
+            renderHorizontalTimeline(container);
+        } else if (timelineShape === 'circle') {
+            renderCircleTimeline(container);
+        } else {
+            renderVerticalTimeline(container);
+        }
+    }
+
+    function getTaskColor(index, total) {
+        // Generate slight variations in brightness/saturation for overlapping tasks
+        const baseColor = selectedColor;
+        const r = parseInt(baseColor.slice(0,2), 16);
+        const g = parseInt(baseColor.slice(2,4), 16);
+        const b = parseInt(baseColor.slice(4,6), 16);
+
+        const variation = (index / Math.max(total, 1)) * 30 - 15;
+        const newR = Math.min(255, Math.max(0, r + variation));
+        const newG = Math.min(255, Math.max(0, g + variation));
+        const newB = Math.min(255, Math.max(0, b + variation));
+
+        return `rgb(${Math.round(newR)}, ${Math.round(newG)}, ${Math.round(newB)})`;
+    }
+
+    function getIndicatorSvg(shape, color) {
+        const shapes = {
+            circle: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="${color}"/></svg>`,
+            triangle: `<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 4 L7 1 L7 7 Z" fill="${color}"/></svg>`,
+            square: `<svg width="8" height="8" viewBox="0 0 8 8"><rect x="1" y="1" width="6" height="6" fill="${color}"/></svg>`,
+            heart: `<svg width="8" height="8" viewBox="0 0 8 8"><path d="M4 7 C1 4.5 0 3 0 2 C0 0.5 1 0 2 0 C3 0 4 1 4 1 C4 1 5 0 6 0 C7 0 8 0.5 8 2 C8 3 7 4.5 4 7Z" fill="${color}"/></svg>`
+        };
+        return shapes[shape] || shapes.circle;
+    }
+
+    function renderVerticalTimeline(container) {
+        const now = new Date();
+        const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
+        const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
+
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const hourHeight = 20;
+
+        let gridHtml = '';
+        for (let h = timeStart; h <= timeEnd; h++) {
+            gridHtml += `<div class="timeline-hour" data-hour="${h}"><div class="timeline-hour-label">${h}</div><div class="timeline-hour-content" id="hour-${h}"></div></div>`;
+        }
+
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
+        container.innerHTML = `
+            <div class="timeline-date-label" ${allDayClick} style="cursor:${allDayTasks.length > 0 ? 'pointer' : 'default'}">${dateLabel}${allDayTasks.length > 0 ? ` <span style="font-size:6px;color:#bbb;">(${allDayTasks.length})</span>` : ''}</div>
+            <div class="timeline-scroll">
+                <div class="timeline-grid" id="timelineGrid">${gridHtml}</div>
+            </div>
+        `;
+
+        const taskGroups = groupOverlappingTasks(scheduledTasks);
+
+        taskGroups.forEach(group => {
+            group.forEach((t, index) => {
+                const startMin = timeToMinutes(t.startTime);
+                const endMin = t.endTime ? timeToMinutes(t.endTime) : null;
+                const startHour = Math.floor(startMin / 60);
+
+                if (startHour < timeStart || startHour > timeEnd) return;
+
+                const hourEl = document.getElementById(`hour-${startHour}`);
+                if (!hourEl) return;
+
+                const topOffset = (startMin % 60) / 60 * hourHeight;
+                let height, styleClass;
+
+                if (endMin !== null) {
+                    const duration = endMin - startMin;
+                    height = Math.max(duration / 60 * hourHeight, 12);
+                    styleClass = 'solid';
+                } else {
+                    height = hourHeight * 2;
+                    styleClass = 'gradient';
+                }
+
+                const taskEl = document.createElement('div');
+                taskEl.className = `timeline-task ${styleClass}`;
+                taskEl.style.top = topOffset + 'px';
+                taskEl.style.height = height + 'px';
+                const color = getTaskColor(index, group.length);
+                taskEl.style.background = styleClass === 'solid' ? color : `linear-gradient(to bottom, ${color}, transparent)`;
+                taskEl.style.borderLeftColor = 'var(--dark-theme-color)';
+
+                const widthPercent = 100 / group.length;
+                const leftPercent = index * widthPercent;
+                taskEl.style.left = `calc(1px + ${leftPercent}%)`;
+                taskEl.style.width = `calc(${widthPercent}% - 2px)`;
+                taskEl.style.right = 'auto';
+
+                taskEl.innerHTML = `<div class="task-name">${t.title}</div>`;
+                hourEl.appendChild(taskEl);
+            });
+        });
+
+        if (currentHour >= timeStart && currentHour <= timeEnd) {
+            const grid = document.getElementById('timelineGrid');
+            const hourOffset = (currentHour - timeStart) * hourHeight;
+            const minOffset = currentMinute / 60 * hourHeight;
+            const nowTop = hourOffset + minOffset;
+
+            const nowLine = document.createElement('div');
+            nowLine.className = 'timeline-now-line';
+            nowLine.style.top = nowTop + 'px';
+            grid.appendChild(nowLine);
+
+            const nowIndicator = document.createElement('div');
+            nowIndicator.className = 'timeline-now-indicator';
+            nowIndicator.style.top = (nowTop - 4) + 'px';
+            nowIndicator.innerHTML = getIndicatorSvg(indicatorShape, 'var(--dark-theme-color)');
+            grid.appendChild(nowIndicator);
+        }
+    }
+
+    function renderHorizontalTimeline(container) {
+        const now = new Date();
+        const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
+        const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
+
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const hourWidth = 60;
+
+        let gridHtml = '';
+        for (let h = timeStart; h <= timeEnd; h++) {
+            gridHtml += `<div class="timeline-h-hour" data-hour="${h}"><span class="timeline-h-hour-label">${h}</span></div>`;
+        }
+
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
+        container.innerHTML = `
+            <div class="timeline-horizontal">
+                <div class="timeline-h-date" ${allDayClick} style="cursor:${allDayTasks.length > 0 ? 'pointer' : 'default'}">${dateLabel}${allDayTasks.length > 0 ? ` <span style="font-size:7px;color:#bbb;">(${allDayTasks.length})</span>` : ''}</div>
+                <div class="timeline-h-scroll">
+                    <div class="timeline-h-grid" id="timelineHGrid">${gridHtml}</div>
+                </div>
+            </div>
+        `;
+
+        const grid = document.getElementById('timelineHGrid');
+        const taskGroups = groupOverlappingTasks(scheduledTasks);
+
+        taskGroups.forEach(group => {
+            group.forEach((t, index) => {
+                const startMin = timeToMinutes(t.startTime);
+                const hasEndTime = !!t.endTime;
+                const endMin = hasEndTime ? timeToMinutes(t.endTime) : startMin + 60;
+                const startHour = Math.floor(startMin / 60);
+
+                if (startHour < timeStart || startHour > timeEnd) return;
+
+                const leftOffset = (startHour - timeStart) * hourWidth + (startMin % 60) / 60 * hourWidth;
+                const duration = endMin - startMin;
+                const width = Math.max(duration / 60 * hourWidth, 40);
+
+                const rowHeight = 24;
+                const topOffset = 22 + (index * rowHeight);
+
+                const taskEl = document.createElement('div');
+                taskEl.className = 'timeline-h-task';
+                taskEl.style.left = leftOffset + 'px';
+                taskEl.style.width = width + 'px';
+                taskEl.style.top = topOffset + 'px';
+                taskEl.style.height = '20px';
+
+                // Apply gradient if no end time
+                const color = getTaskColor(index, group.length);
+                if (hasEndTime) {
+                    taskEl.style.background = color;
+                } else {
+                    taskEl.style.background = `linear-gradient(to right, ${color}, transparent)`;
+                }
+
+                taskEl.innerText = t.title;
+                grid.appendChild(taskEl);
+            });
+        });
+
+        if (currentHour >= timeStart && currentHour <= timeEnd) {
+            const nowLeft = (currentHour - timeStart) * hourWidth + currentMinute / 60 * hourWidth;
+            const nowLine = document.createElement('div');
+            nowLine.className = 'timeline-h-now';
+            nowLine.style.left = nowLeft + 'px';
+            grid.appendChild(nowLine);
+
+            const nowIndicator = document.createElement('div');
+            nowIndicator.className = 'timeline-h-now-indicator';
+            nowIndicator.style.left = (nowLeft - 4) + 'px';
+            nowIndicator.innerHTML = getIndicatorSvg(indicatorShape, 'var(--dark-theme-color)');
+            grid.appendChild(nowIndicator);
+        }
+    }
+
+    function renderCircleTimeline(container) {
+        const now = new Date();
+        const today = now.toDateString();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+
+        const todayStr = getLocalDate();
+        const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
+        const scheduledTasks = todayTasks.filter(t => t.startTime);
+        const allDayTasks = todayTasks.filter(t => !t.startTime);
+
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        const size = 180;
+        const center = size / 2;
+        const radius = 75;
+        const innerRadius = 50;
+
+        let arcsHtml = '';
+
+        for (let h = 0; h < 24; h++) {
+            const angle = (h / 24) * 360 - 90;
+            const rad = angle * Math.PI / 180;
+            const x1 = center + Math.cos(rad) * (radius - 3);
+            const y1 = center + Math.sin(rad) * (radius - 3);
+            const x2 = center + Math.cos(rad) * radius;
+            const y2 = center + Math.sin(rad) * radius;
+            arcsHtml += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#eee" stroke-width="1"/>`;
+
+            if (h % 6 === 0) {
+                const labelX = center + Math.cos(rad) * (radius + 10);
+                const labelY = center + Math.sin(rad) * (radius + 10);
+                arcsHtml += `<text x="${labelX}" y="${labelY}" font-size="7" fill="#999" text-anchor="middle" dominant-baseline="middle">${h}</text>`;
+            }
+        }
+
+        const taskGroups = groupOverlappingTasksCircle(scheduledTasks);
+
+        // Define gradient for tasks without end time
+        let gradientDefs = '<defs>';
+        let gradientId = 0;
+
+        taskGroups.forEach(group => {
+            group.forEach((t, index) => {
+                const startMin = timeToMinutes(t.startTime);
+                const hasEndTime = !!t.endTime;
+                const endMin = hasEndTime ? timeToMinutes(t.endTime) : startMin + 60;
+
+                const layerOffset = index * 8;
+                const taskInnerRadius = innerRadius + layerOffset;
+                const taskOuterRadius = Math.min(taskInnerRadius + 8, radius - 2);
+
+                const startAngle = (startMin / (24 * 60)) * 360 - 90;
+                const endAngle = (endMin / (24 * 60)) * 360 - 90;
+
+                const startRad = startAngle * Math.PI / 180;
+                const endRad = endAngle * Math.PI / 180;
+
+                const x1 = center + Math.cos(startRad) * taskInnerRadius;
+                const y1 = center + Math.sin(startRad) * taskInnerRadius;
+                const x2 = center + Math.cos(endRad) * taskInnerRadius;
+                const y2 = center + Math.sin(endRad) * taskInnerRadius;
+                const x3 = center + Math.cos(endRad) * taskOuterRadius;
+                const y3 = center + Math.sin(endRad) * taskOuterRadius;
+                const x4 = center + Math.cos(startRad) * taskOuterRadius;
+                const y4 = center + Math.sin(startRad) * taskOuterRadius;
+
+                const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+                const color = getTaskColor(index, group.length);
+
+                let fillAttr;
+                if (hasEndTime) {
+                    fillAttr = `fill="${color}" opacity="0.7"`;
+                } else {
+                    // Create gradient for no end time
+                    const gId = `grad${gradientId++}`;
+                    gradientDefs += `<linearGradient id="${gId}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}"><stop offset="0%" stop-color="${color}" stop-opacity="0.7"/><stop offset="100%" stop-color="${color}" stop-opacity="0.1"/></linearGradient>`;
+                    fillAttr = `fill="url(#${gId})"`;
+                }
+
+                // Add title element for hover
+                arcsHtml += `<path d="M${x1},${y1} A${taskInnerRadius},${taskInnerRadius} 0 ${largeArc},1 ${x2},${y2} L${x3},${y3} A${taskOuterRadius},${taskOuterRadius} 0 ${largeArc},0 ${x4},${y4} Z" ${fillAttr} style="cursor:pointer"><title>${t.title}</title></path>`;
+            });
+        });
+
+        gradientDefs += '</defs>';
+
+        const nowAngle = ((currentHour * 60 + currentMinute) / (24 * 60)) * 360 - 90;
+        const nowRad = nowAngle * Math.PI / 180;
+        const nowX = center + Math.cos(nowRad) * (radius + 3);
+        const nowY = center + Math.sin(nowRad) * (radius + 3);
+        arcsHtml += `<circle cx="${nowX}" cy="${nowY}" r="3" fill="var(--dark-theme-color)"/>`;
+        arcsHtml += `<line x1="${center}" y1="${center}" x2="${center + Math.cos(nowRad) * innerRadius}" y2="${center + Math.sin(nowRad) * innerRadius}" stroke="var(--dark-theme-color)" stroke-width="1.5"/>`;
+
+        const allDayClick = allDayTasks.length > 0 ? `onclick="showAllDayPopup(event)"` : '';
+        container.innerHTML = `
+            <div class="timeline-circle">
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                    ${gradientDefs}
+                    <circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="#eee" stroke-width="1"/>
+                    <circle cx="${center}" cy="${center}" r="${innerRadius}" fill="none" stroke="#eee" stroke-width="1"/>
+                    ${arcsHtml}
+                </svg>
+                <div class="circle-date" ${allDayClick}>${dateLabel}${allDayTasks.length > 0 ? ` (${allDayTasks.length})` : ''}</div>
+            </div>
+        `;
+    }
+
+    function groupOverlappingTasks(tasks) {
+        if (tasks.length === 0) return [];
+
+        const sorted = [...tasks].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+        const groups = [];
+        let currentGroup = [sorted[0]];
+        let currentEnd = sorted[0].endTime ? timeToMinutes(sorted[0].endTime) : timeToMinutes(sorted[0].startTime) + 60;
+
+        for (let i = 1; i < sorted.length; i++) {
+            const taskStart = timeToMinutes(sorted[i].startTime);
+            if (taskStart < currentEnd) {
+                currentGroup.push(sorted[i]);
+                const taskEnd = sorted[i].endTime ? timeToMinutes(sorted[i].endTime) : taskStart + 60;
+                currentEnd = Math.max(currentEnd, taskEnd);
+            } else {
+                groups.push(currentGroup);
+                currentGroup = [sorted[i]];
+                currentEnd = sorted[i].endTime ? timeToMinutes(sorted[i].endTime) : taskStart + 60;
+            }
+        }
+        groups.push(currentGroup);
+
+        return groups;
+    }
+
+    function groupOverlappingTasksCircle(tasks) {
+        // For circle, return all tasks as one group to layer them
+        if (tasks.length === 0) return [];
+        return [tasks];
+    }
+
+    function timeToMinutes(timeStr) {
+        if (!timeStr) return 0;
+        const parts = timeStr.split(':');
+        return parseInt(parts[0]) * 60 + parseInt(parts[1] || 0);
+    }
+
+    // Calendar Functions
+    function renderCalendar() {
+        const container = document.getElementById('calendarContainer');
+        if (!container) return;
+        renderCalendarContent(container, calendarDate, weekStart, tasks, true);
+    }
+
+    function renderCalendarContent(container, date, startDay, taskList, interactive) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const dayLabels = startDay === 'sun' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        let startOffset = firstDay.getDay();
+        if (startDay === 'mon') startOffset = startOffset === 0 ? 6 : startOffset - 1;
+
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+        const eventDates = new Map();
+        const priorityDates = new Set();
+        if (Array.isArray(taskList)) {
+            taskList.forEach(t => {
+                if (t.date) {
+                    // Normalize date to YYYY-MM-DD format for consistent comparison
+                    const normalizedDate = t.date.split('T')[0];
+                    if (!eventDates.has(normalizedDate)) eventDates.set(normalizedDate, []);
+                    eventDates.get(normalizedDate).push(t);
+                    if (t.priority) priorityDates.add(normalizedDate);
+                }
+            });
+        }
+
+        let datesHtml = '';
+        const prevMonth = new Date(year, month, 0);
+        for (let i = startOffset - 1; i >= 0; i--) {
+            datesHtml += `<div class="calendar-date other-month">${prevMonth.getDate() - i}</div>`;
+        }
+
+        for (let d = 1; d <= lastDay.getDate(); d++) {
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isToday = dateStr === todayStr;
+            const hasEvent = eventDates.has(dateStr);
+            const hasPriority = priorityDates.has(dateStr);
+            let classes = 'calendar-date';
+            if (isToday) classes += ' today';
+            if (hasEvent) classes += ' has-event';
+            if (hasPriority) classes += ' has-priority';
+            const clickAttr = interactive && hasEvent ? `onclick="showCalendarPopup(event, '${dateStr}')"` : '';
+            datesHtml += `<div class="${classes}" ${clickAttr}>${d}</div>`;
+        }
+
+        const totalCells = startOffset + lastDay.getDate();
+        const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+        for (let d = 1; d <= remaining; d++) {
+            datesHtml += `<div class="calendar-date other-month">${d}</div>`;
+        }
+
+        container.innerHTML = `
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                <span class="calendar-month">${monthNames[month]}</span>
+                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="calendar-year">${year}</div>
+            <div class="calendar-days">${dayLabels.map(d => `<div class="calendar-day-label">${d}</div>`).join('')}</div>
+            <div class="calendar-dates">${datesHtml}</div>
+        `;
+    }
+
+    function showCalendarPopup(e, dateStr) {
+        e.stopPropagation();
+        selectedDateStr = dateStr;
+
+        const popup = document.getElementById('calendarPopup');
+        if (!popup) return;
+
+        const dateTasks = tasks.filter(t => t.date === dateStr);
+        if (dateTasks.length === 0) return;
+
+        dateTasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+        const d = new Date(dateStr);
+        const title = `${d.getMonth()+1}월 ${d.getDate()}일`;
+
+        popup.innerHTML = `
+            <div class="calendar-popup-title">${title}</div>
+            ${dateTasks.map(t => `
+                <div class="calendar-popup-item">
+                    <span class="star-mini ${t.priority ? 'active' : ''}" onclick="togglePriorityFromPopup(event, '${t.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="dot"></span>
+                    ${t.startTime ? '<span style="color:#999;font-size:7px;">' + t.startTime.substring(0,5) + '</span>' : ''}
+                    <span class="item-title">${t.title}</span>
+                </div>
+            `).join('')}
+        `;
+
+        const rect = e.target.getBoundingClientRect();
+        const containerRect = document.getElementById('calendarContainer').getBoundingClientRect();
+        const widgetRect = document.getElementById('calendarWidget').getBoundingClientRect();
+
+        // Calculate position relative to container
+        let left = rect.left - containerRect.left;
+        let top = rect.bottom - containerRect.top + 4;
+
+        // Constrain within widget bounds
+        const popupWidth = 140;
+        const popupHeight = 120;
+
+        if (left + popupWidth > containerRect.width) {
+            left = containerRect.width - popupWidth - 8;
+        }
+        if (left < 0) left = 4;
+
+        if (top + popupHeight > widgetRect.height - containerRect.top + widgetRect.top - 8) {
+            top = rect.top - containerRect.top - popupHeight - 4;
+        }
+        if (top < 0) top = 4;
+
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
+        popup.classList.add('show');
+    }
+
+    function hideCalendarPopup() {
+        const popup = document.getElementById('calendarPopup');
+        if (popup) popup.classList.remove('show');
+    }
+
+    function showAllDayPopup(e) {
+        e.stopPropagation();
+        const popup = document.getElementById('allDayPopup');
+        if (!popup) return;
+
+        const now = new Date();
+        const todayStr = getLocalDate();
+        const allDayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr && !t.startTime);
+
+        if (allDayTasks.length === 0) return;
+
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const title = `${monthNames[now.getMonth()]} ${now.getDate()}일 종일`;
+
+        popup.innerHTML = `
+            <div class="allday-popup-title">${title}</div>
+            ${allDayTasks.map(t => `
+                <div class="allday-popup-item">
+                    <span class="dot"></span>
+                    <span>${t.title}</span>
+                </div>
+            `).join('')}
+        `;
+
+        popup.style.top = '30px';
+        popup.style.left = '10px';
+        popup.classList.add('show');
+    }
+
+    function hideAllDayPopup() {
+        const popup = document.getElementById('allDayPopup');
+        if (popup) popup.classList.remove('show');
+    }
+
+    async function togglePriorityFromPopup(e, id) {
+        e.stopPropagation();
+        await togglePriority(id);
+        renderCalendar();
+        if (selectedDateStr) {
+            // Re-show popup with updated data
+            const dateTasks = tasks.filter(t => t.date === selectedDateStr);
+            if (dateTasks.length > 0) {
+                const popup = document.getElementById('calendarPopup');
+                const d = new Date(selectedDateStr);
+                const title = `${d.getMonth()+1}월 ${d.getDate()}일`;
+                dateTasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+                popup.innerHTML = `
+                    <div class="calendar-popup-title">${title}</div>
+                    ${dateTasks.map(t => `
+                        <div class="calendar-popup-item">
+                            <span class="star-mini ${t.priority ? 'active' : ''}" onclick="togglePriorityFromPopup(event, '${t.id}')">
+                                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </span>
+                            <span class="dot"></span>
+                            ${t.startTime ? '<span style="color:#999;font-size:7px;">' + t.startTime.substring(0,5) + '</span>' : ''}
+                            <span class="item-title">${t.title}</span>
+                        </div>
+                    `).join('')}
+                `;
+            }
+        }
+    }
+
+    function changeMonth(delta) {
+        calendarDate.setMonth(calendarDate.getMonth() + delta);
+        if (widgetType === 'calendar') renderCalendar();
+        else renderPreviewCalendar();
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
 </script>
 </body>
 </html>
