@@ -136,11 +136,14 @@
         .w-title { font-size: 11px; font-weight: 700; color: var(--header-text-color); width: 100%; text-align: center; cursor: pointer; }
 
         /* Refresh Button - unified position: top right */
-        .refresh-btn { background: var(--neu-bg); border: none; cursor: pointer; color: var(--text-muted); transition: all 0.2s; position: absolute; top: 8px; right: 8px; z-index: 5; border-radius: 8px; box-shadow: var(--neu-shadow-xs); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-        .refresh-btn:hover { color: var(--text-primary); box-shadow: 2px 2px 4px rgba(163,177,198,0.5), -2px -2px 4px rgba(255,255,255,0.5); }
-        .refresh-btn:active { box-shadow: var(--neu-inset-sm); }
-        .refresh-btn svg { width: 14px; height: 14px; }
-        .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+        /* Old refresh button - hidden */
+        .refresh-btn { display: none; }
+
+        /* Header refresh button - inside top bar */
+        .header-refresh-btn { background: transparent; border: none; cursor: pointer; color: var(--header-text-color); opacity: 0.6; transition: all 0.2s; padding: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center; position: absolute; right: 10px; }
+        .header-refresh-btn:hover { opacity: 1; }
+        .header-refresh-btn svg { width: 12px; height: 12px; }
+        .header-refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* Home Screen Clock */
@@ -439,11 +442,11 @@
                         <button class="copy-btn" onclick="copyUrl('calendar')">Copy Link</button>
                     </div>
 
-                    <div style="padding: 14px; border-radius: 14px; background: var(--neu-bg); box-shadow: var(--neu-shadow-xs); margin-top: 8px;">
-                        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
-                            <strong style="color: var(--text-primary);">How to embed:</strong><br>
+                    <div style="padding: 14px; border-radius: 14px; background: #E8ECEF; box-shadow: inset 2px 2px 4px rgba(174,184,194,0.35), inset -2px -2px 4px rgba(255,255,255,0.55); margin-top: 8px;">
+                        <div style="font-size: 12px; color: #6b7a8d; line-height: 1.7;">
+                            <strong style="color: #3a4556;">How to embed:</strong><br>
                             1. Open your Notion page<br>
-                            2. Type <code style="padding: 2px 6px; border-radius: 4px; background: var(--neu-bg); box-shadow: var(--neu-inset-sm); font-size: 11px;">/embed</code> and press Enter<br>
+                            2. Type <code style="padding: 2px 6px; border-radius: 4px; background: #E8ECEF; box-shadow: inset 2px 2px 4px rgba(174,184,194,0.35), inset -2px -2px 4px rgba(255,255,255,0.55); font-size: 11px;">/embed</code> and press Enter<br>
                             3. Paste URL and click "Embed link"
                         </div>
                     </div>
@@ -533,6 +536,9 @@
         <div class="widget-top" id="widgetTopBar">
             <div class="w-dots"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div>
             <div class="w-title" id="widgetTitle" onclick="toggleCategoryFilter()">Widget</div>
+            <button class="header-refresh-btn" id="headerRefreshBtn" onclick="refreshTasksWithSpin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            </button>
         </div>
 
         <!-- Setup Widget (for adding tasks) -->
@@ -983,6 +989,7 @@
         document.documentElement.style.setProperty('--dark-theme-color', `rgb(${darkR},${darkG},${darkB})`);
         updateHeaderTextColor(hex);
         renderPreviewCalendar();
+        renderPreviewTimeline();
     }
 
     function setDoneStyle(style) {
@@ -1378,11 +1385,11 @@
     }
 
     async function refreshTasksWithSpin() {
-        const btns = document.querySelectorAll('.refresh-btn');
-        btns.forEach(btn => btn.classList.add('spinning'));
+        const headerBtn = document.getElementById('headerRefreshBtn');
+        if (headerBtn) headerBtn.classList.add('spinning');
         await refreshTasks();
         setTimeout(() => {
-            btns.forEach(btn => btn.classList.remove('spinning'));
+            if (headerBtn) headerBtn.classList.remove('spinning');
         }, 500);
     }
 
