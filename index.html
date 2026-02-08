@@ -31,8 +31,8 @@
         }
 
         * { box-sizing: border-box; font-family: var(--widget-font); letter-spacing: -0.01em; margin: 0; padding: 0; }
-        html { background: var(--neu-bg); }
-        body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--neu-bg); padding: 20px; transition: background 0.3s; }
+        html { background: #E8ECEF; }
+        body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #E8ECEF; padding: 20px; }
 
         /* Main Layout */
         .main-layout { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 40px; width: 100%; max-width: 900px; }
@@ -40,8 +40,39 @@
             .main-layout { flex-direction: column; align-items: center; gap: 25px; }
         }
 
-        .window { width: 100%; max-width: 420px; background: var(--neu-bg); border-radius: 24px; box-shadow: var(--neu-shadow); overflow: hidden; border: none; display: flex; flex-direction: column; z-index: 10; flex-shrink: 0; }
-        .title-bar { height: 54px; background: var(--neu-bg); display: flex; align-items: center; padding: 0 18px; border-bottom: 1px solid rgba(163,177,198,0.25); }
+        /* Setup Window - Fixed colors (not affected by theme) */
+        .window {
+            --setup-bg: #E8ECEF;
+            --setup-shadow: 8px 8px 16px rgba(174,184,194,0.5), -8px -8px 16px rgba(255,255,255,0.7);
+            --setup-shadow-sm: 5px 5px 10px rgba(174,184,194,0.45), -5px -5px 10px rgba(255,255,255,0.65);
+            --setup-shadow-xs: 3px 3px 6px rgba(174,184,194,0.4), -3px -3px 6px rgba(255,255,255,0.6);
+            --setup-inset: inset 4px 4px 8px rgba(174,184,194,0.4), inset -4px -4px 8px rgba(255,255,255,0.6);
+            --setup-inset-sm: inset 2px 2px 4px rgba(174,184,194,0.35), inset -2px -2px 4px rgba(255,255,255,0.55);
+            --setup-text: #3a4556;
+            --setup-text-secondary: #6b7a8d;
+            --setup-text-muted: #8895a7;
+            width: 100%; max-width: 420px; background: var(--setup-bg); border-radius: 24px; box-shadow: var(--setup-shadow); overflow: hidden; border: none; display: flex; flex-direction: column; z-index: 10; flex-shrink: 0;
+        }
+        .window .title-bar { height: 54px; background: var(--setup-bg); display: flex; align-items: center; padding: 0 18px; border-bottom: 1px solid rgba(163,177,198,0.25); }
+        .window .bar-title { color: var(--setup-text); }
+        .window .content { background: var(--setup-bg); }
+        .window .nav-btn { background: var(--setup-bg); color: var(--setup-text); box-shadow: var(--setup-shadow-xs); }
+        .window .nav-btn:hover { box-shadow: 2px 2px 4px rgba(174,184,194,0.5), -2px -2px 4px rgba(255,255,255,0.5); }
+        .window .nav-btn:active, .window .nav-btn.active { box-shadow: var(--setup-inset-sm); }
+        .window input, .window select { background: var(--setup-bg); box-shadow: var(--setup-inset-sm); color: var(--setup-text); }
+        .window input:focus, .window select:focus { box-shadow: inset 3px 3px 6px rgba(174,184,194,0.5), inset -3px -3px 6px rgba(255,255,255,0.6); }
+        .window .label-text { color: var(--setup-text-muted); }
+        .window .option-group > label { color: var(--setup-text-muted); }
+        .window .option-btn { background: var(--setup-bg); color: var(--setup-text-secondary); box-shadow: var(--setup-shadow-xs); }
+        .window .option-btn:hover { box-shadow: 2px 2px 4px rgba(174,184,194,0.5), -2px -2px 4px rgba(255,255,255,0.5); }
+        .window .option-btn.active { box-shadow: var(--setup-inset); color: var(--setup-text); }
+        .window .color-dot { box-shadow: var(--setup-shadow-xs); }
+        .window .color-dot.active { box-shadow: var(--setup-inset), 0 0 0 3px var(--theme-color); }
+        .window .url-box { background: var(--setup-bg); box-shadow: var(--setup-inset-sm); }
+        .window .url-box .url-text { background: var(--setup-bg); box-shadow: var(--setup-shadow-xs); color: var(--setup-text); }
+        .window h1 { color: var(--setup-text); }
+        .window p { color: var(--setup-text-secondary); }
+        .title-bar { height: 54px; background: #E8ECEF; display: flex; align-items: center; padding: 0 18px; border-bottom: 1px solid rgba(163,177,198,0.25); }
         .dots { display: flex; gap: 7px; flex: 1; }
         .dot { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1), 1px 1px 2px rgba(255,255,255,0.5); }
         .dot.red { background: #d4a0a0; } .dot.yellow { background: #d4d4a0; } .dot.green { background: #a0c8a0; }
@@ -861,7 +892,10 @@
         document.documentElement.style.setProperty('--neu-inset-sm',
             `inset 2px 2px 4px rgba(${darkR},${darkG},${darkB},${darkOpacity * 0.7}), inset -2px -2px 4px rgba(${lightR},${lightG},${lightB},${lightOpacity * 0.7})`);
 
-        document.body.style.background = hex;
+        // Only change body background for embedded widgets, not setup page
+        if (document.body.classList.contains('is-embed')) {
+            document.body.style.background = hex;
+        }
 
         // Auto-update text color if enabled
         if (isAutoText) {
