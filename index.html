@@ -293,46 +293,49 @@
             <div class="content">
                 <div class="step active" id="step1">
                     <h1>Connect Notion</h1>
-                    <p>프라이빗 API 토큰을 입력하세요.</p>
-                    <input type="password" id="tokenInput" placeholder="secret_...">
-                    <div style="margin-top: 5px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size:12px; color:#86868b; text-decoration:none;">내 인테그레이션 바로가기 ↗</a></div>
+                    <p>Internal Integration 토큰을 입력하면 데이터베이스 목록을 불러옵니다.</p>
+                    <label class="label-text">Notion API Token</label>
+                    <input type="password" id="tokenInput" placeholder="ntn_...">
+                    <div style="margin-bottom: 10px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">내 인테그레이션 바로가기 ↗</a></div>
                 </div>
 
                 <div class="step" id="step2">
                     <h1>Select Database</h1>
                     <p>연동할 캘린더/투두 데이터베이스를 선택하세요.</p>
+                    <label class="label-text">Database</label>
                     <select id="dbSelect"></select>
                 </div>
 
                 <div class="step" id="step3">
                     <h1>Customize</h1>
-                    <p>위젯 테마를 설정하세요.</p>
+                    <p>위젯 테마와 옵션을 설정하세요.</p>
+                    <label class="label-text">Theme Color</label>
                     <div class="color-palette" id="palette"></div>
                     <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
-                    <button class="action-btn" style="background:#f5f5f7;color:#999;font-weight:600;font-size:11px;width:100%;padding:10px;margin-bottom:15px;border-radius:10px;" onclick="document.getElementById('cp').click()">Custom Color</button>
+                    <button class="nav-btn" style="width:100%;padding:12px;margin-bottom:16px;border-radius:12px;font-size:12px;font-weight:600;color:var(--text-muted);" onclick="document.getElementById('cp').click()">Custom Color</button>
 
                     <div class="option-group">
                         <label>완료된 일정 표시</label>
                         <div class="option-row">
-                            <div class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</div>
-                            <div class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</div>
+                            <button class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</button>
+                            <button class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</button>
                         </div>
                     </div>
 
                     <div class="option-group">
                         <label>캘린더 시작 요일</label>
                         <div class="option-row">
-                            <div class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">일요일</div>
-                            <div class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</div>
+                            <button class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">일요일</button>
+                            <button class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</button>
                         </div>
                     </div>
 
                     <div class="option-group">
                         <label>타임라인 모양</label>
                         <div class="option-row">
-                            <div class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">세로 바</div>
-                            <div class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">가로 바</div>
-                            <div class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">원형</div>
+                            <button class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">세로</button>
+                            <button class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">가로</button>
+                            <button class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">원형</button>
                         </div>
                         <div class="time-range-group" id="timeRangeGroup">
                             <select id="timeStart" onchange="setTimeRange()">
@@ -343,7 +346,7 @@
                                 <option value="8">8시</option>
                                 <option value="9">9시</option>
                             </select>
-                            <span style="font-size:11px;color:#999;">~</span>
+                            <span style="font-size:11px;color:var(--text-muted);">~</span>
                             <select id="timeEnd" onchange="setTimeRange()">
                                 <option value="18">18시</option>
                                 <option value="20">20시</option>
@@ -352,41 +355,51 @@
                                 <option value="24">24시</option>
                             </select>
                         </div>
-                        <div class="option-row" style="margin-top:8px;">
-                            <div class="option-btn active" data-indicator="circle" onclick="setIndicatorShape('circle')">●</div>
-                            <div class="option-btn" data-indicator="triangle" onclick="setIndicatorShape('triangle')">▶</div>
-                            <div class="option-btn" data-indicator="square" onclick="setIndicatorShape('square')">■</div>
-                            <div class="option-btn" data-indicator="heart" onclick="setIndicatorShape('heart')">♥</div>
+                        <label class="label-text" style="margin-top:12px;">현재 시간 표시</label>
+                        <div class="option-row">
+                            <button class="option-btn active" data-indicator="circle" onclick="setIndicatorShape('circle')">●</button>
+                            <button class="option-btn" data-indicator="triangle" onclick="setIndicatorShape('triangle')">▶</button>
+                            <button class="option-btn" data-indicator="square" onclick="setIndicatorShape('square')">■</button>
+                            <button class="option-btn" data-indicator="heart" onclick="setIndicatorShape('heart')">♥</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="step" id="step4">
-                    <h1>Your Widgets</h1>
-                    <p>아래 URL을 노션에 임베드하세요.</p>
+                    <h1>Embed Widgets</h1>
+                    <p>아래 URL을 Notion <strong>/embed</strong> 블록에 붙여넣으세요.</p>
 
                     <div class="url-box">
-                        <label>1. Setup Widget (할일 추가)</label>
+                        <label>1. Setup Widget</label>
                         <div class="url-text" id="setupUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('setup')">Copy</button>
+                        <button class="copy-btn" onclick="copyUrl('setup')">Copy Link</button>
                     </div>
 
                     <div class="url-box">
-                        <label>2. Todo Widget (오늘의 할일)</label>
+                        <label>2. Todo Widget</label>
                         <div class="url-text" id="todoUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('todo')">Copy</button>
+                        <button class="copy-btn" onclick="copyUrl('todo')">Copy Link</button>
                     </div>
 
                     <div class="url-box">
-                        <label>3. Timeline Widget (타임라인)</label>
+                        <label>3. Timeline Widget</label>
                         <div class="url-text" id="timelineUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('timeline')">Copy</button>
+                        <button class="copy-btn" onclick="copyUrl('timeline')">Copy Link</button>
                     </div>
 
                     <div class="url-box">
-                        <label>4. Calendar Widget (미니 캘린더)</label>
+                        <label>4. Calendar Widget</label>
                         <div class="url-text" id="calendarUrl">-</div>
-                        <button class="copy-btn" onclick="copyUrl('calendar')">Copy</button>
+                        <button class="copy-btn" onclick="copyUrl('calendar')">Copy Link</button>
+                    </div>
+
+                    <div style="padding: 14px; border-radius: 14px; background: var(--neu-bg); box-shadow: var(--neu-shadow-xs); margin-top: 8px;">
+                        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+                            <strong style="color: var(--text-primary);">임베드 방법:</strong><br>
+                            1. Notion 페이지를 열고<br>
+                            2. <code style="padding: 2px 6px; border-radius: 4px; background: var(--neu-bg); box-shadow: var(--neu-inset-sm); font-size: 11px;">/embed</code> 입력 후 Enter<br>
+                            3. URL 붙여넣기 → "Embed link" 클릭
+                        </div>
                     </div>
                 </div>
             </div>
