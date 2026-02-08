@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -191,7 +191,7 @@
         .timeline-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--neu-bg); border-radius: 16px; position: relative; }
         .timeline-scroll { flex: 1; overflow-y: auto; position: relative; padding-top: 24px; }
         .timeline-grid { position: relative; min-height: 100%; }
-        .timeline-hour { display: flex; align-items: flex-start; height: 20px; border-bottom: 1px solid rgba(163,177,198,0.15); }
+        .timeline-hour { display: flex; align-items: flex-start; height: 40px; border-bottom: 1px solid rgba(163,177,198,0.15); }
         .timeline-hour-label { width: 20px; font-size: 7px; color: var(--text-secondary); text-align: right; padding-right: 4px; flex-shrink: 0; padding-top: 1px; font-weight: 500; }
         .timeline-hour-content { flex: 1; position: relative; height: 100%; }
         .timeline-task { position: absolute; left: 2px; right: 2px; border-radius: 6px; padding: 1px 4px; font-size: 6px; overflow: hidden; z-index: 1; border-left: 2px solid var(--dark-theme-color); box-shadow: 2px 2px 4px rgba(163,177,198,0.3); }
@@ -208,7 +208,7 @@
         .timeline-horizontal { flex: 1; display: flex; flex-direction: column; background: var(--neu-bg); position: relative; padding-top: 28px; }
         .timeline-h-scroll { flex: 1; overflow-x: auto; padding: 6px 10px; }
         .timeline-h-grid { display: flex; height: 100%; min-width: max-content; position: relative; }
-        .timeline-h-hour { width: 60px; height: 100%; border-left: 1px solid rgba(163,177,198,0.2); position: relative; flex-shrink: 0; }
+        .timeline-h-hour { width: 90px; height: 100%; border-left: 1px solid rgba(163,177,198,0.2); position: relative; flex-shrink: 0; }
         .timeline-h-hour-label { position: absolute; top: 4px; left: 6px; font-size: 9px; color: var(--text-secondary); font-weight: 500; }
         .timeline-h-task { position: absolute; top: 26px; height: 22px; background: var(--theme-color); border-radius: 8px; padding: 3px 8px; font-size: 9px; color: transparent; overflow: hidden; transition: all 0.2s; opacity: 0.8; border-top: 2px solid var(--dark-theme-color); box-shadow: 2px 2px 4px rgba(163,177,198,0.3); }
         .timeline-h-task:hover { color: var(--header-text-color); opacity: 0.95; box-shadow: 3px 3px 6px rgba(163,177,198,0.4); }
@@ -293,78 +293,77 @@
             <div class="content">
                 <div class="step active" id="step1">
                     <h1>Customize</h1>
-                    <p>위젯 테마와 옵션을 설정하세요.</p>
-                    <label class="label-text">Theme Color</label>
+                    <p>Set your widget theme and options.</p>
+
+                    <label class="label-text">Background Color</label>
+                    <div class="color-palette" id="bgPalette"></div>
+                    <input type="color" id="bgCp" style="visibility:hidden;width:0;height:0;" oninput="updateBgColor(this.value)">
+                    <button class="nav-btn" style="width:100%;padding:12px;margin-bottom:16px;border-radius:12px;font-size:12px;font-weight:600;color:var(--text-muted);" onclick="document.getElementById('bgCp').click()">Custom Color</button>
+
+                    <label class="label-text">Widget Color</label>
                     <div class="color-palette" id="palette"></div>
                     <input type="color" id="cp" style="visibility:hidden;width:0;height:0;" oninput="updateTheme(this.value)">
                     <button class="nav-btn" style="width:100%;padding:12px;margin-bottom:16px;border-radius:12px;font-size:12px;font-weight:600;color:var(--text-muted);" onclick="document.getElementById('cp').click()">Custom Color</button>
 
                     <div class="option-group">
-                        <label>완료된 일정 표시</label>
+                        <label>Completed Tasks</label>
                         <div class="option-row">
-                            <button class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">맨 하단으로</button>
-                            <button class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">회색 표시</button>
+                            <button class="option-btn active" data-done="bottom" onclick="setDoneStyle('bottom')">Move to Bottom</button>
+                            <button class="option-btn" data-done="gray" onclick="setDoneStyle('gray')">Gray Out</button>
                         </div>
                     </div>
 
                     <div class="option-group">
-                        <label>캘린더 시작 요일</label>
+                        <label>Week Starts On</label>
                         <div class="option-row">
-                            <button class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">일요일</button>
-                            <button class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">월요일</button>
+                            <button class="option-btn active" data-weekstart="sun" onclick="setWeekStart('sun')">Sunday</button>
+                            <button class="option-btn" data-weekstart="mon" onclick="setWeekStart('mon')">Monday</button>
                         </div>
                     </div>
 
                     <div class="option-group">
-                        <label>타임라인 모양</label>
+                        <label>Timeline Style</label>
                         <div class="option-row">
-                            <button class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">세로</button>
-                            <button class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">가로</button>
-                            <button class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">원형</button>
+                            <button class="option-btn active" data-shape="vertical" onclick="setTimelineShape('vertical')">Vertical</button>
+                            <button class="option-btn" data-shape="horizontal" onclick="setTimelineShape('horizontal')">Horizontal</button>
+                            <button class="option-btn" data-shape="circle" onclick="setTimelineShape('circle')">Circle</button>
                         </div>
                         <div class="time-range-group" id="timeRangeGroup">
                             <select id="timeStart" onchange="setTimeRange()">
-                                <option value="0">0시</option>
-                                <option value="5">5시</option>
-                                <option value="6" selected>6시</option>
-                                <option value="7">7시</option>
-                                <option value="8">8시</option>
-                                <option value="9">9시</option>
+                                <option value="0">0:00</option>
+                                <option value="5">5:00</option>
+                                <option value="6" selected>6:00</option>
+                                <option value="7">7:00</option>
+                                <option value="8">8:00</option>
+                                <option value="9">9:00</option>
                             </select>
                             <span style="font-size:11px;color:var(--text-muted);">~</span>
                             <select id="timeEnd" onchange="setTimeRange()">
-                                <option value="18">18시</option>
-                                <option value="20">20시</option>
-                                <option value="22">22시</option>
-                                <option value="23" selected>23시</option>
-                                <option value="24">24시</option>
+                                <option value="18">18:00</option>
+                                <option value="20">20:00</option>
+                                <option value="22">22:00</option>
+                                <option value="23" selected>23:00</option>
+                                <option value="24">24:00</option>
                             </select>
-                        </div>
-                        <label class="label-text" style="margin-top:12px;">현재 시간 표시</label>
-                        <div class="option-row">
-                            <button class="option-btn active" data-indicator="circle" onclick="setIndicatorShape('circle')">●</button>
-                            <button class="option-btn" data-indicator="triangle" onclick="setIndicatorShape('triangle')">▶</button>
-                            <button class="option-btn" data-indicator="square" onclick="setIndicatorShape('square')">■</button>
-                            <button class="option-btn" data-indicator="heart" onclick="setIndicatorShape('heart')">♥</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="step" id="step2">
                     <h1>Connect Notion</h1>
-                    <p>Internal Integration 토큰을 입력하고 데이터베이스를 불러오세요.</p>
+                    <p>Enter your Internal Integration token to load databases.</p>
 
                     <div id="notionConnectArea">
                         <label class="label-text">Notion API Token</label>
                         <input type="password" id="tokenInput" placeholder="ntn_...">
-                        <div style="margin-bottom: 12px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">내 인테그레이션 바로가기 ↗</a></div>
+                        <div style="margin-bottom: 12px;"><a href="https://www.notion.so/my-integrations" target="_blank" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">Go to My Integrations ↗</a></div>
                         <button class="nav-btn" style="width:100%;padding:14px;border-radius:12px;font-size:13px;font-weight:600;" onclick="loadDatabases()">Load Databases</button>
                     </div>
 
                     <div id="notionConnectedArea" style="display:none;">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:12px;border-radius:12px;background:var(--neu-bg);box-shadow:var(--neu-inset-sm);">
                             <span style="color:#4CAF50;font-size:16px;">✓</span>
-                            <span style="font-size:13px;color:var(--text-secondary);">Notion 연결됨</span>
+                            <span style="font-size:13px;color:var(--text-secondary);">Connected to Notion</span>
                         </div>
                         <label class="label-text">Database</label>
                         <select id="dbSelect"></select>
@@ -373,7 +372,7 @@
 
                 <div class="step" id="step3">
                     <h1>Embed Widgets</h1>
-                    <p>아래 URL을 Notion <strong>/embed</strong> 블록에 붙여넣으세요.</p>
+                    <p>Paste the URLs below into Notion <strong>/embed</strong> blocks.</p>
 
                     <div class="url-box">
                         <label>1. Setup Widget</label>
@@ -401,10 +400,10 @@
 
                     <div style="padding: 14px; border-radius: 14px; background: var(--neu-bg); box-shadow: var(--neu-shadow-xs); margin-top: 8px;">
                         <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
-                            <strong style="color: var(--text-primary);">임베드 방법:</strong><br>
-                            1. Notion 페이지를 열고<br>
-                            2. <code style="padding: 2px 6px; border-radius: 4px; background: var(--neu-bg); box-shadow: var(--neu-inset-sm); font-size: 11px;">/embed</code> 입력 후 Enter<br>
-                            3. URL 붙여넣기 → "Embed link" 클릭
+                            <strong style="color: var(--text-primary);">How to embed:</strong><br>
+                            1. Open your Notion page<br>
+                            2. Type <code style="padding: 2px 6px; border-radius: 4px; background: var(--neu-bg); box-shadow: var(--neu-inset-sm); font-size: 11px;">/embed</code> and press Enter<br>
+                            3. Paste URL and click "Embed link"
                         </div>
                     </div>
                 </div>
@@ -479,42 +478,42 @@
                         <button class="form-type-btn" id="btnRoutine" onclick="setFormType('routine')">Routine</button>
                     </div>
                 </div>
-                <input type="text" class="mini-input" id="taskTitle" placeholder="할 일 입력..." onkeydown="handleEnterKey(event)">
+                <input type="text" class="mini-input" id="taskTitle" placeholder="Enter task..." onkeydown="handleEnterKey(event)">
                 <input type="date" class="mini-input" id="taskDate">
                 <label class="form-check">
                     <input type="checkbox" id="allDayCheck" onchange="toggleAllDay()">
-                    <span>종일</span>
+                    <span>All day</span>
                 </label>
                 <div id="timeInputs">
                     <div class="form-row">
-                        <span class="form-label">시작</span>
+                        <span class="form-label">Start</span>
                         <input type="time" class="mini-input" id="taskStartTime">
                     </div>
                     <div class="form-row">
-                        <span class="form-label">종료</span>
+                        <span class="form-label">End</span>
                         <input type="time" class="mini-input" id="taskEndTime">
                     </div>
                 </div>
                 <div id="routineOptions" style="display:none;">
-                    <div class="form-label" style="margin-bottom:4px;">반복 요일</div>
+                    <div class="form-label" style="margin-bottom:4px;">Repeat Days</div>
                     <div class="repeat-row">
-                        <div class="repeat-day" data-day="0" onclick="toggleRepeatDay(0)">일</div>
-                        <div class="repeat-day" data-day="1" onclick="toggleRepeatDay(1)">월</div>
-                        <div class="repeat-day" data-day="2" onclick="toggleRepeatDay(2)">화</div>
-                        <div class="repeat-day" data-day="3" onclick="toggleRepeatDay(3)">수</div>
-                        <div class="repeat-day" data-day="4" onclick="toggleRepeatDay(4)">목</div>
-                        <div class="repeat-day" data-day="5" onclick="toggleRepeatDay(5)">금</div>
-                        <div class="repeat-day" data-day="6" onclick="toggleRepeatDay(6)">토</div>
+                        <div class="repeat-day" data-day="0" onclick="toggleRepeatDay(0)">Su</div>
+                        <div class="repeat-day" data-day="1" onclick="toggleRepeatDay(1)">Mo</div>
+                        <div class="repeat-day" data-day="2" onclick="toggleRepeatDay(2)">Tu</div>
+                        <div class="repeat-day" data-day="3" onclick="toggleRepeatDay(3)">We</div>
+                        <div class="repeat-day" data-day="4" onclick="toggleRepeatDay(4)">Th</div>
+                        <div class="repeat-day" data-day="5" onclick="toggleRepeatDay(5)">Fr</div>
+                        <div class="repeat-day" data-day="6" onclick="toggleRepeatDay(6)">Sa</div>
                     </div>
                 </div>
                 <div class="form-row" style="align-items:stretch;">
                     <select class="mini-select" id="taskCategory" style="flex:1;margin-bottom:0;">
-                        <option value="">카테고리 선택</option>
+                        <option value="">Select category</option>
                     </select>
-                    <button type="button" class="mini-cat-btn" onclick="editSelectedCategory()" title="이름 변경">✎</button>
-                    <button type="button" class="mini-cat-btn danger" onclick="deleteSelectedCategory()" title="삭제">×</button>
+                    <button type="button" class="mini-cat-btn" onclick="editSelectedCategory()" title="Rename">✎</button>
+                    <button type="button" class="mini-cat-btn danger" onclick="deleteSelectedCategory()" title="Delete">×</button>
                 </div>
-                <input type="text" class="mini-input" id="newCategory" placeholder="새 카테고리 입력...">
+                <input type="text" class="mini-input" id="newCategory" placeholder="New category...">
                 <div class="btn-row">
                     <button class="btn-cancel" onclick="hideSetupForm()">Cancel</button>
                     <button class="btn-save" onclick="saveTask()">Save</button>
@@ -556,9 +555,9 @@
 
     <!-- Context Menu -->
     <div class="context-menu" id="contextMenu">
-        <div class="context-menu-item" onclick="postponeTask()">내일로 미루기</div>
+        <div class="context-menu-item" onclick="postponeTask()">Postpone to Tomorrow</div>
         <div class="context-menu-divider"></div>
-        <div class="context-menu-item danger" onclick="deleteTask()">삭제</div>
+        <div class="context-menu-item danger" onclick="deleteTask()">Delete</div>
     </div>
 
     <div id="toast">Saved!</div>
@@ -566,15 +565,16 @@
 <script>
     const SERVER_URL = "https://calendar-server-hrgs.onrender.com";
     // Neumorphism-friendly soft pastel colors
+    const bgThemes = ["E8ECEF", "F5F0EB", "EBF0E8", "E8EBF0", "F0E8EB", "E8F0EF"];
     const themes = ["d4a5a5", "e8d5a3", "a8c5a0", "9fb8c7", "c4b8d4", "8fa5a0"];
     let step = 1;
+    let selectedBgColor = "E8ECEF";
     let selectedColor = "a8c5a0";
     let doneStyle = "bottom";
     let weekStart = "sun";
     let timelineShape = "vertical";
     let timeStart = 6;
     let timeEnd = 23;
-    let indicatorShape = "circle"; // circle, triangle, square, heart
     let categories = [];
     let tasks = [];
     let selectedTaskId = null;
@@ -669,22 +669,45 @@
         timelineShape = params.get('ts') || 'vertical';
         timeStart = parseInt(params.get('th1')) || 6;
         timeEnd = parseInt(params.get('th2')) || 23;
-        indicatorShape = params.get('ti') || 'circle';
+        const bg = params.get('bg');
+        if (bg) updateBgColor('#' + bg);
         initWidget(widgetType);
     } else {
+        // Background color palette
+        const bgPal = document.getElementById('bgPalette');
+        bgThemes.forEach(t => {
+            const d = document.createElement('div');
+            d.className = 'color-dot' + (t === 'E8ECEF' ? ' active' : '');
+            d.style.background = '#' + t;
+            d.onclick = () => {
+                bgPal.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                d.classList.add('active');
+                updateBgColor('#' + t);
+            };
+            bgPal.appendChild(d);
+        });
+
+        // Widget color palette
         const pal = document.getElementById('palette');
         themes.forEach(t => {
             const d = document.createElement('div');
             d.className = 'color-dot' + (t === 'a8c5a0' ? ' active' : '');
             d.style.background = '#' + t;
             d.onclick = () => {
-                document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                pal.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
                 d.classList.add('active');
                 updateTheme('#' + t);
             };
             pal.appendChild(d);
         });
+        updateBgColor('#E8ECEF');
         updateTheme('#a8c5a0');
+    }
+
+    function updateBgColor(hex) {
+        selectedBgColor = hex.replace('#', '');
+        document.documentElement.style.setProperty('--neu-bg', hex);
+        document.body.style.background = hex;
     }
 
     function updateTheme(hex) {
@@ -727,17 +750,11 @@
         timeEnd = parseInt(document.getElementById('timeEnd').value);
     }
 
-    function setIndicatorShape(shape) {
-        indicatorShape = shape;
-        document.querySelectorAll('[data-indicator]').forEach(el => el.classList.remove('active'));
-        document.querySelector(`[data-indicator="${shape}"]`)?.classList.add('active');
-    }
-
     let notionConnected = false;
 
     async function loadDatabases() {
         const tk = document.getElementById('tokenInput').value;
-        if (!tk) { showToast('토큰을 입력하세요'); return; }
+        if (!tk) { showToast('Please enter a token'); return; }
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/databases`, {
                 method: 'POST',
@@ -745,21 +762,21 @@
                 body: JSON.stringify({ token: tk })
             });
             const dbs = await res.json();
-            if (dbs.error) { showToast('토큰 오류'); return; }
+            if (dbs.error) { showToast('Token error'); return; }
             document.getElementById('dbSelect').innerHTML = dbs.map(d => `<option value="${d.id}">${d.title}</option>`).join('');
             document.getElementById('notionConnectArea').style.display = 'none';
             document.getElementById('notionConnectedArea').style.display = 'block';
             notionConnected = true;
-            showToast('데이터베이스 로드 완료!');
+            showToast('Databases loaded!');
         } catch (e) {
-            showToast('연결 실패');
+            showToast('Connection failed');
         }
     }
 
     async function moveStep(n) {
         const newStep = step + n;
         if (n === 1 && step === 2 && !notionConnected) {
-            showToast('먼저 Load Databases를 클릭하세요');
+            showToast('Please click Load Databases first');
             return;
         }
         if (newStep === 3) generateUrls();
@@ -775,7 +792,7 @@
         const t = encodeURIComponent(btoa(document.getElementById('tokenInput').value));
         const d = encodeURIComponent(btoa(document.getElementById('dbSelect').value));
         const base = `${window.location.origin}${window.location.pathname}`;
-        const common = `t=${t}&d=${d}&c=${selectedColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}&ti=${indicatorShape}`;
+        const common = `t=${t}&d=${d}&c=${selectedColor}&bg=${selectedBgColor}&ds=${doneStyle}&ws=${weekStart}&ts=${timelineShape}&th1=${timeStart}&th2=${timeEnd}`;
 
         document.getElementById('setupUrl').innerText = `${base}?w=setup&${common}`;
         document.getElementById('todoUrl').innerText = `${base}?w=todo&${common}`;
@@ -786,7 +803,7 @@
     function copyUrl(type) {
         const urlText = document.getElementById(`${type}Url`).innerText;
         navigator.clipboard.writeText(urlText);
-        showToast('URL 복사됨!');
+        showToast('URL copied!');
     }
 
     function initWidget(type) {
@@ -905,22 +922,22 @@
             updateCategorySelect();
             updateCategoryFilter();
         } catch (e) {
-            console.error('카테고리 로드 실패', e);
+            console.error('Failed to load categories', e);
         }
     }
 
     function updateCategorySelect() {
         const select = document.getElementById('taskCategory');
         if (!select) return;
-        select.innerHTML = '<option value="">카테고리 선택</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        select.innerHTML = '<option value="">Select category</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
     async function editSelectedCategory() {
         const select = document.getElementById('taskCategory');
         const oldName = select.value;
-        if (!oldName) { showToast('카테고리를 선택하세요'); return; }
+        if (!oldName) { showToast('Please select a category'); return; }
 
-        const newName = prompt('새 카테고리 이름:', oldName);
+        const newName = prompt('New category name:', oldName);
         if (!newName || newName === oldName) return;
 
         try {
@@ -931,25 +948,25 @@
             });
             const result = await res.json();
             if (result.success) {
-                showToast('카테고리 이름 변경됨!');
+                showToast('Category renamed!');
                 const idx = categories.indexOf(oldName);
                 if (idx > -1) categories[idx] = newName;
                 updateCategorySelect();
                 select.value = newName;
             } else {
-                showToast(result.error || '변경 실패');
+                showToast(result.error || 'Rename failed');
             }
         } catch (e) {
-            showToast('연결 오류');
+            showToast('Connection error');
         }
     }
 
     async function deleteSelectedCategory() {
         const select = document.getElementById('taskCategory');
         const catName = select.value;
-        if (!catName) { showToast('카테고리를 선택하세요'); return; }
+        if (!catName) { showToast('Please select a category'); return; }
 
-        if (!confirm(`"${catName}" 카테고리를 삭제하시겠습니까?`)) return;
+        if (!confirm(`Delete category "${catName}"?`)) return;
 
         try {
             const res = await fetch(`${SERVER_URL}/api/notion/delete-category`, {
@@ -959,21 +976,21 @@
             });
             const result = await res.json();
             if (result.success) {
-                showToast('카테고리 삭제됨!');
+                showToast('Category deleted!');
                 categories = categories.filter(c => c !== catName);
                 updateCategorySelect();
             } else {
-                showToast(result.error || '삭제 실패');
+                showToast(result.error || 'Delete failed');
             }
         } catch (e) {
-            showToast('연결 오류');
+            showToast('Connection error');
         }
     }
 
     function updateCategoryFilter() {
         const filter = document.getElementById('categoryFilter');
         if (!filter) return;
-        filter.innerHTML = '<div class="cat-tag' + (!selectedCategory ? ' active' : '') + '" onclick="filterByCategory(null)">전체</div>' +
+        filter.innerHTML = '<div class="cat-tag' + (!selectedCategory ? ' active' : '') + '" onclick="filterByCategory(null)">All</div>' +
             categories.map(c => `<div class="cat-tag${selectedCategory === c ? ' active' : ''}" onclick="filterByCategory('${c}')">${c}</div>`).join('');
     }
 
@@ -1016,8 +1033,8 @@
 
         if (newCategory) category = newCategory;
 
-        if (!title) { showToast('할 일을 입력하세요'); return; }
-        if (!date) { showToast('날짜를 선택하세요'); return; }
+        if (!title) { showToast('Please enter a task'); return; }
+        if (!date) { showToast('Please select a date'); return; }
 
         // Format start/end datetime in GMT for Notion
         const startDateTime = startTime ? formatDateTimeForNotion(date, startTime) : null;
@@ -1051,7 +1068,7 @@
                         body: JSON.stringify(body)
                     });
                 }
-                showToast(`${routineDates.length}개 루틴 생성됨!`);
+                showToast(`${routineDates.length} routines created!`);
             } else {
                 const body = {
                     token: getToken(),
@@ -1073,9 +1090,9 @@
                 });
                 const result = await res.json();
                 if (res.ok && result.success) {
-                    showToast('저장됨!');
+                    showToast('Saved!');
                 } else {
-                    showToast(result.error || '저장 실패');
+                    showToast(result.error || 'Save failed');
                     return;
                 }
             }
@@ -1085,7 +1102,7 @@
                 updateCategorySelect();
             }
         } catch (e) {
-            showToast('연결 오류');
+            showToast('Connection error');
         }
     }
 
@@ -1112,7 +1129,7 @@
                 else if (widgetType === 'calendar') renderCalendar();
             }
         } catch (e) {
-            console.error('태스크 로드 실패', e);
+            console.error('Failed to load tasks', e);
         }
     }
 
@@ -1163,7 +1180,7 @@
             done.forEach(t => html += renderTaskCard(t));
         }
 
-        container.innerHTML = html || '<div style="text-align:center;color:#ccc;font-size:9px;padding:20px;">항목 없음</div>';
+        container.innerHTML = html || '<div style="text-align:center;color:#ccc;font-size:9px;padding:20px;">No items</div>';
     }
 
     function renderTaskCard(t) {
@@ -1190,7 +1207,7 @@
             });
             refreshTasks();
         } catch (e) {
-            showToast('오류 발생');
+            showToast('Error occurred');
         }
     }
 
@@ -1203,7 +1220,7 @@
             });
             refreshTasks();
         } catch (e) {
-            showToast('오류 발생');
+            showToast('Error occurred');
         }
     }
 
@@ -1234,10 +1251,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
             });
-            showToast('내일로 미룸!');
+            showToast('Postponed to tomorrow!');
             refreshTasks();
         } catch (e) {
-            showToast('미루기 실패');
+            showToast('Postpone failed');
         }
         selectedTaskId = null;
     }
@@ -1250,10 +1267,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: getToken(), taskId: selectedTaskId })
             });
-            showToast('삭제됨!');
+            showToast('Deleted!');
             refreshTasks();
         } catch (e) {
-            showToast('삭제 실패');
+            showToast('Delete failed');
         }
         selectedTaskId = null;
     }
@@ -1300,8 +1317,8 @@
     function renderVerticalTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
-        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}`;
 
         const todayStr = getLocalDate();
         const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
@@ -1391,8 +1408,8 @@
     function renderHorizontalTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
-        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}`;
 
         const todayStr = getLocalDate();
         const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
@@ -1475,8 +1492,8 @@
     function renderCircleTimeline(container) {
         const now = new Date();
         const today = now.toDateString();
-        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}일`;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const dateLabel = `${monthNames[now.getMonth()]} ${now.getDate()}`;
 
         const todayStr = getLocalDate();
         const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === todayStr);
@@ -1705,7 +1722,8 @@
         dateTasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
 
         const d = new Date(dateStr);
-        const title = `${d.getMonth()+1}월 ${d.getDate()}일`;
+        const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const title = `${monthNamesShort[d.getMonth()]} ${d.getDate()}`;
 
         popup.innerHTML = `
             <div class="calendar-popup-title">${title}</div>
@@ -1764,8 +1782,8 @@
 
         if (allDayTasks.length === 0) return;
 
-        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-        const title = `${monthNames[now.getMonth()]} ${now.getDate()}일 종일`;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const title = `${monthNames[now.getMonth()]} ${now.getDate()} - All Day`;
 
         popup.innerHTML = `
             <div class="allday-popup-title">${title}</div>
@@ -1797,7 +1815,8 @@
             if (dateTasks.length > 0) {
                 const popup = document.getElementById('calendarPopup');
                 const d = new Date(selectedDateStr);
-                const title = `${d.getMonth()+1}월 ${d.getDate()}일`;
+                const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const title = `${monthNamesShort[d.getMonth()]} ${d.getDate()}`;
                 dateTasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
                 popup.innerHTML = `
                     <div class="calendar-popup-title">${title}</div>
